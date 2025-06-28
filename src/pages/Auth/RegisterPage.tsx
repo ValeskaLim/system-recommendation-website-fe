@@ -1,7 +1,180 @@
-function RegisterPage () {
-    return (
-        <h1>Deez</h1>
-    )
+import axios from "axios";
+import { useState } from "react";
+import { ROUTE_PATHS } from "../../router/routePaths";
+import { useNavigate } from "react-router-dom";
+
+function RegisterPage() {
+  const [fullname, setFullname] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
+  const [semester, setSemester] = useState("");
+  const [field_of_preference, setFieldOfPreference] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (await isFormValid()) {
+        const response = await axios.post(
+          "http://127.0.0.1:5000/api/user/submit-register-data",
+          {
+            fullname,
+            username,
+            email,
+            password,
+            gender,
+            semester,
+            field_of_preference,
+          }
+        );
+        console.log(response.data);
+        alert(response.data.message);
+        navigate(ROUTE_PATHS.LOGIN);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Register Failed");
+    }
+  };
+
+  const isFormValid = async (): Promise<boolean> => {
+    if (password.length < 4) {
+      alert("Password must be at least 4 character");
+      return false;
+    }
+
+    if (username.trim() === "") {
+      alert("Username cannot be empty or spaces only");
+      return false;
+    }
+
+    if (/\s/.test(username)) {
+      alert("Username cannot contain spaces");
+      return false;
+    }
+
+    const response = await axios.post(
+      "http://127.0.0.1:5000/api/user/get-existing-user-by-username",
+      {
+        username,
+        email,
+      }
+    );
+
+    if (response.data.usernameExist) {
+      alert("Username already exist, please choose another one");
+      return false;
+    } else if (response.data.emailExist) {
+      alert("Email already exist, please choose another one");
+      return false;
+    }
+
+    return true;
+  };
+
+  return (
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="flex flex-col h-fit w-150 border p-5 rounded-2xl justify-center">
+        <h2 className="text-4xl text-center">Register</h2>
+        <form onSubmit={handleSubmit} method="POST">
+          <div className="flex flex-col gap-2 mt-4">
+            <label className="text-lg">Full Name</label>
+            <input
+              type="text"
+              id="fullname"
+              placeholder="Your full name"
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
+              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              required
+            ></input>
+            <label className="text-lg">Username</label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              required
+            ></input>
+            <label className="text-lg">Email</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="your@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              required
+            ></input>
+            <label className="text-lg">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Password length must be more than 3"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              required
+            ></input>
+            <label className="text-lg">Gender</label>
+            <select
+              name="gender"
+              id="gender"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              required
+            >
+              <option value="" hidden>
+                --Select one--
+              </option>
+              <option value="L">Laki-laki</option>
+              <option value="P">Perempuan</option>
+            </select>
+            <label className="text-lg">Semester</label>
+            <select
+              name="semester"
+              id="semester"
+              value={semester}
+              onChange={(e) => setSemester(e.target.value)}
+              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              required
+            >
+              <option value="" hidden>
+                --Select one--
+              </option>
+              {Array.from({ length: 8 }, (_, i) => (
+                <option value={i + 1} key={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
+            </select>
+            <label className="text-lg">Field of preference</label>
+            <input
+              type="textarea"
+              id="field_of_preference"
+              placeholder="AI,ML,Web Development.. etc"
+              value={field_of_preference}
+              onChange={(e) => setFieldOfPreference(e.target.value)}
+              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              required
+            ></input>
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white mt-12 p-2 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default RegisterPage;
