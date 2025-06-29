@@ -1,6 +1,7 @@
 export const ROUTE_PATHS = {
     LOGIN: '/login',
-    REGISTER: '/register'
+    REGISTER: '/register',
+    HOME: '/home'
 };
 
 export const generatePath = (path, params) => {

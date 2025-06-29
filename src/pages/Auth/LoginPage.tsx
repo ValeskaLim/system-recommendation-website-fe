@@ -1,10 +1,16 @@
 import axios from "axios";
 import { useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/AuthProvider";
 
 function LoginPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    const { login } = useAuth();
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -14,6 +20,8 @@ function LoginPage() {
             });
             console.log(response.data);
             alert(response.data.message);
+            login(response.data.user.username);
+            navigate(ROUTE_PATHS.HOME);
         } catch (error) {
             console.log(error);
             alert("Login Failed");
@@ -30,7 +38,7 @@ function LoginPage() {
             <input
               type="text"
               id="username"
-              placeholder="username"
+              placeholder="Your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
@@ -39,7 +47,7 @@ function LoginPage() {
             <input
               type="password"
               id="password"
-              placeholder="Password"
+              placeholder="Your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
