@@ -1,36 +1,30 @@
-import axios from "axios";
 import { useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthProvider";
 import { useToast } from "../../hooks/useToast";
-import CommonConstant from "../../constant/CommonConstant";
 
 function LoginPage() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const { errorToast, successToast } = useToast();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { errorToast, successToast } = useToast();
 
-    const { login } = useAuth();
+  const { login, refreshUser } = useAuth();
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        const lowerEmail = email.toLowerCase();
-        e.preventDefault();
-        try {
-            const response = await axios.post(CommonConstant.ValidateUser, {
-                email: lowerEmail, password
-            });
-            console.log(response.data);
-            login(response.data.user.email);
-            navigate(ROUTE_PATHS.HOME);
-            successToast("Success logged in!");
-        } catch (error) {
-            console.log(error);
-            errorToast("Invalid email or password");
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email.toLowerCase(), password);
+      await refreshUser();
+      navigate(ROUTE_PATHS.HOME);
+      successToast("Success logged in!");
+    } catch (error) {
+      console.log(error);
+      errorToast("Invalid email or password");
     }
+  };
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center">
@@ -56,7 +50,12 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
             ></input>
-            <a href={ROUTE_PATHS.REGISTER} className="text-blue-400 duration-300 hover:duration:300 hover:text-blue-500">Don't have account? Register here</a>
+            <a
+              href={ROUTE_PATHS.REGISTER}
+              className="text-blue-400 duration-300 hover:duration:300 hover:text-blue-500"
+            >
+              Don't have account? Register here
+            </a>
           </div>
           <button
             type="submit"

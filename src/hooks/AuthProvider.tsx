@@ -1,6 +1,8 @@
+import axios from "axios";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import CommonConstant from "../constant/CommonConstant";
 
-interface User {
+interface Users {
     id?: number;
     username: string;
     email: string;
@@ -12,10 +14,12 @@ interface User {
 }
 
 interface AuthContextType {
-    user: User | null;
-    login: (userData: User) => void;
-    logout: () => void;
+    users: Users | null;
+    login: (email: string, password: string) => Promise<void>; 
+    logout: () => Promise<void>;
     isAuthenticated: boolean;
+    refreshUser: () => void;
+    loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,37 +29,62 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps)  => {
-    const [user, setUser] = useState<User | null>(null);
+    const [users, setUser] = useState<Users | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        const savedUser = localStorage.getItem('user');
-        if (savedUser) {
-            try {
-                setUser(JSON.parse(savedUser));
-            } catch (error) {
-                console.error('Error parsing saved user:', error);
-                localStorage.removeItem('user');
+    axios.defaults.withCredentials = true;
+
+    const fetchUser = async () => {
+        try {
+            const res = await axios.post(CommonConstant.GetCurrentUser, {}, { withCredentials: true });
+            if(res.data.user) {
+                setUser(res.data.user);
+            } else {
+                setUser(null);
             }
+        } catch (error) {
+            console.log('Error fetching user', error);
+            setUser(null);
         }
-        setLoading(false);
+    }
+
+    useEffect(() => {
+        fetchUser().finally(() => setLoading(false));
     }, []);
 
-    const login = (userData: User) => {
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+    const login = async (email: string, password: string) => {
+        try {
+            const response = await axios.post(CommonConstant.ValidateUser, { email, password }, { withCredentials: true });
+            if (response.data.user) {
+                setUser(response.data.user);
+            } 
+
+            setTimeout(() => {
+                fetchUser(); // This will call get-current-user
+            }, 100);
+
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('user');
+    const logout = async () => {
+        try {
+            await axios.post(CommonConstant.Logout, { withCredentials: true });
+            setUser(null);
+        } catch (err) {
+            console.log("Logout failed", err);
+        }
     };
 
     const value: AuthContextType = {
-        user,
+        users,
         login,
         logout,
-        isAuthenticated: !!user,
+        isAuthenticated: !!users,
+        refreshUser: fetchUser,
+        loading,
     };
 
     if (loading) {
