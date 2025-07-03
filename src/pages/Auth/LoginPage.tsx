@@ -4,6 +4,7 @@ import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthProvider";
 import { useToast } from "../../hooks/useToast";
+import CommonConstant from "../../constant/CommonConstant";
 
 function LoginPage() {
     const [email, setEmail] = useState("");
@@ -15,10 +16,11 @@ function LoginPage() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
+        const lowerEmail = email.toLowerCase();
         e.preventDefault();
         try {
-            const response = await axios.post("http://127.0.0.1:5000/api/auth/validate-user", {
-                email, password
+            const response = await axios.post(CommonConstant.ValidateUser, {
+                email: lowerEmail, password
             });
             console.log(response.data);
             login(response.data.user.email);
@@ -43,7 +45,7 @@ function LoginPage() {
               placeholder="Your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="lowercase p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
             ></input>
             <label className="text-lg">Password</label>
             <input
