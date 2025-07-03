@@ -7,6 +7,8 @@ import HomePage from './pages/Layout/HomePage'
 import { AuthProvider } from './hooks/AuthProvider'
 import ProtectedRoute from './components/ProtectedRoute'
 import NotFoundPage from './pages/Layout/NotFoundPage'
+import MasterLayout from './components/MasterLayout'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
 
@@ -22,9 +24,11 @@ function App() {
           <Route
             path={ROUTE_PATHS.HOME}
             element={
-             <ProtectedRoute>
-                <HomePage />
-             </ProtectedRoute>
+              <MasterLayout>
+                <ProtectedRoute>
+                    <HomePage />
+                </ProtectedRoute>
+              </MasterLayout>
             }
           ></Route>
 
@@ -33,6 +37,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
+    <ToastContainer />
     </>
   )
 }
