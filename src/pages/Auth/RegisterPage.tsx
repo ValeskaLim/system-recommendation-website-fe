@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
+import CommonConstant from "../../constant/CommonConstant";
 
 function RegisterPage() {
   const [fullname, setFullname] = useState("");
@@ -18,19 +19,21 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
+    const lowerEmail = email.toLowerCase();
+    const upperFieldOfPreference = field_of_preference.toUpperCase();
     e.preventDefault();
     try {
       if (await isFormValid()) {
         const response = await axios.post(
-          "http://127.0.0.1:5000/api/user/submit-register-data",
+          CommonConstant.SubmitRegister,
           {
             fullname,
             username,
-            email,
+            email: lowerEmail,
             password,
             gender,
             semester,
-            field_of_preference,
+            field_of_preference: upperFieldOfPreference,
           }
         );
         console.log(response.data);
@@ -60,7 +63,7 @@ function RegisterPage() {
     }
 
     const response = await axios.post(
-      "http://127.0.0.1:5000/api/user/get-existing-user-by-username",
+      CommonConstant.GetExistingUser,
       {
         username,
         email,
@@ -111,7 +114,7 @@ function RegisterPage() {
               placeholder="your@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="lowercase p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             ></input>
             <label className="text-lg">Password</label>
@@ -164,7 +167,7 @@ function RegisterPage() {
               placeholder="AI,ML,Web Development.. etc"
               value={field_of_preference}
               onChange={(e) => setFieldOfPreference(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="uppercase p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             ></input>
           </div>
