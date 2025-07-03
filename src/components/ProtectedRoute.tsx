@@ -3,9 +3,9 @@ import { useAuth } from "../hooks/AuthProvider"
 import { ROUTE_PATHS } from "../router/routePaths";
 
 const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, users } = useAuth();
 
-    if(!isAuthenticated) {
+    if(!users && !isAuthenticated) {
         return <Navigate to={ROUTE_PATHS.LOGIN} replace/>
     }
 
