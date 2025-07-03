@@ -3,10 +3,12 @@ import { useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthProvider";
+import { useToast } from "../../hooks/useToast";
 
 function LoginPage() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { errorToast, successToast } = useToast();
 
     const { login } = useAuth();
 
@@ -16,15 +18,15 @@ function LoginPage() {
         e.preventDefault();
         try {
             const response = await axios.post("http://127.0.0.1:5000/api/auth/validate-user", {
-                username, password
+                email, password
             });
             console.log(response.data);
-            alert(response.data.message);
-            login(response.data.user.username);
+            login(response.data.user.email);
             navigate(ROUTE_PATHS.HOME);
+            successToast("Success logged in!");
         } catch (error) {
             console.log(error);
-            alert("Login Failed");
+            errorToast("Invalid email or password");
         }
     }
 
@@ -34,13 +36,13 @@ function LoginPage() {
         <h2 className="text-4xl text-center">Login</h2>
         <form onSubmit={handleSubmit} method="POST">
           <div className="flex flex-col gap-2 mt-4">
-            <label className="text-lg">Username</label>
+            <label className="text-lg">Email</label>
             <input
-              type="text"
-              id="username"
-              placeholder="Your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              id="email"
+              placeholder="Your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
             ></input>
             <label className="text-lg">Password</label>

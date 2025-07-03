@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../hooks/useToast";
 
 function RegisterPage() {
   const [fullname, setFullname] = useState("");
@@ -11,6 +12,8 @@ function RegisterPage() {
   const [gender, setGender] = useState("");
   const [semester, setSemester] = useState("");
   const [field_of_preference, setFieldOfPreference] = useState("");
+
+  const { successToast, warningToast, errorToast } = useToast();
 
   const navigate = useNavigate();
 
@@ -31,28 +34,28 @@ function RegisterPage() {
           }
         );
         console.log(response.data);
-        alert(response.data.message);
+        successToast(response.data.message);
         navigate(ROUTE_PATHS.LOGIN);
       }
     } catch (error) {
       console.log(error);
-      alert("Register Failed");
+      errorToast("Register Failed");
     }
   };
 
   const isFormValid = async (): Promise<boolean> => {
     if (password.length < 4) {
-      alert("Password must be at least 4 character");
+      warningToast("Password must be at least 4 character");
       return false;
     }
 
     if (username.trim() === "") {
-      alert("Username cannot be empty or spaces only");
+      warningToast("Username cannot be empty or spaces only");
       return false;
     }
 
     if (/\s/.test(username)) {
-      alert("Username cannot contain spaces");
+      warningToast("Username cannot contain spaces");
       return false;
     }
 
@@ -65,10 +68,10 @@ function RegisterPage() {
     );
 
     if (response.data.usernameExist) {
-      alert("Username already exist, please choose another one");
+      warningToast("Username already exist, please choose another one");
       return false;
     } else if (response.data.emailExist) {
-      alert("Email already exist, please choose another one");
+      warningToast("Email already exist, please choose another one");
       return false;
     }
 
