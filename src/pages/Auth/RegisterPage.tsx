@@ -133,7 +133,7 @@ function RegisterPage() {
               id="gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="p-1 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             >
               <option value="" hidden>
