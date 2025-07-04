@@ -9,7 +9,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const { errorToast, successToast } = useToast();
 
-  const { login, refreshUser } = useAuth();
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -17,7 +17,6 @@ function LoginPage() {
     e.preventDefault();
     try {
       await login(email.toLowerCase(), password);
-      await refreshUser();
       navigate(ROUTE_PATHS.HOME);
       successToast("Success logged in!");
     } catch (error) {

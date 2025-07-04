@@ -1,7 +1,9 @@
 export const ROUTE_PATHS = {
     LOGIN: '/login',
     REGISTER: '/register',
-    HOME: '/home'
+    HOME: '/home',
+    COMPETITION: '/competitions',
+    ADD_COMPETITION: '/competitions/add'
 };
 
 export const generatePath = (path, params) => {
