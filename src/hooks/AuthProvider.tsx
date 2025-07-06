@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }: AuthProviderProps)  => {
             } 
 
             setTimeout(() => {
-                fetchUser(); // This will call get-current-user
+                fetchUser();
             }, 100);
 
         } catch (err) {
