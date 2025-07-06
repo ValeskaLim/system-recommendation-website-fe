@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { IoBackspaceOutline } from "react-icons/io5";
+import Select from "react-select";
 
 const COMPETITION_TYPES = [
     { label: 'Artificial Intelligence', value: 'AI' },
@@ -8,19 +9,41 @@ const COMPETITION_TYPES = [
     { label: 'Mobile Development', value: 'MD' },
 ];
 
+const FIELD_OF_PREFERENCE = [
+    { label: 'Data Science', value: 'DS' },
+    { label: 'Web Development', value: 'WD' },
+    { label: 'Mobile Development', value: 'MD' },
+    { label: 'Game Development', value: 'GD' },
+    { label: 'Cyber Security', value: 'CS' },
+    { label: 'Artificial Intelligence', value: 'AI' },
+    { label: 'Machine Learning', value: 'ML' },
+    { label: 'Blockchain', value: 'BC' },
+    { label: 'Cloud Computing', value: 'CC' },
+    { label: 'Internet of Things', value: 'IoT' },
+    { label: 'DevOps', value: 'DO' },
+    { label: 'Augmented Reality', value: 'AR' },
+    { label: 'Virtual Reality', value: 'VR' },
+    { label: 'Quantum Computing', value: 'QC' },
+    { label: 'Robotics', value: 'RO' },
+    { label: 'Natural Language Processing', value: 'NLP' },
+    { label: 'Computer Vision', value: 'CV' },
+]
+
 const AddCompetitionPage = () => {
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [status, setStatus] = useState("");
     const [type, setType] = useState("");
     const [slot, setSlot] = useState<number | undefined>();
+    const [fieldOfPreference, setFieldOfPreference] = useState([]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(fieldOfPreference.map(x => x.value));
         // try {
-        if(slot < 0 || slot == undefined) {
+        // if(slot < 0 || slot == undefined) {
 
-        }
+        // }
         //   await login(email.toLowerCase(), password);
         //   navigate(ROUTE_PATHS.HOME);
         //   successToast("Success logged in!");
@@ -29,6 +52,10 @@ const AddCompetitionPage = () => {
         //   errorToast("Invalid email or password");
         // }
     };
+
+    useEffect(() => {
+        console.log(fieldOfPreference.map(x => x.value));
+    })
 
     return (
         <div className="flex flex-col">
@@ -45,7 +72,7 @@ const AddCompetitionPage = () => {
                             placeholder="Input competition title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                         />
                     </div>
                     <div className="flex justify-between">
@@ -56,7 +83,7 @@ const AddCompetitionPage = () => {
                             placeholder="Input competition title"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                         />
                     </div>
                     <div className="flex justify-between">
@@ -66,7 +93,7 @@ const AddCompetitionPage = () => {
                             id="status"
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                             required
                         >
                             <option value="" hidden>
@@ -77,13 +104,13 @@ const AddCompetitionPage = () => {
                         </select>
                     </div>
                     <div className="flex justify-between">
-                        <label className="text-lg mr-16 items-center flex">Type</label>
+                        <label className="text-lg items-center flex">Type</label>
                         <select
                             name="type"
                             id="type"
                             value={type}
                             onChange={(e) => setType(e.target.value)}
-                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                             required
                         >
                             <option value="" hidden>
@@ -95,13 +122,26 @@ const AddCompetitionPage = () => {
                         </select>
                     </div>
                     <div className="flex justify-between">
-                        <label className="text-lg mr-16 items-center flex">Slot</label>
+                        <label className="text-lg items-center flex">Slot</label>
                         <input
                             type="number"
                             id="slot"
                             placeholder="Input initial slot"
                             value={slot}
-                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                        />
+                    </div>
+                    <div className="flex justify-between">
+                        <label className="text-lg items-center flex">Field of preference</label>
+                        <Select 
+                            isMulti
+                            name='field_of_preference'
+                            options={FIELD_OF_PREFERENCE}
+                            className="basic-multi-select w-185"
+                            classNamePrefix='select'
+                            value={fieldOfPreference.value}
+                            onChange={(selectedOptions) => setFieldOfPreference(selectedOptions)}
+                            closeMenuOnSelect={false}
                         />
                     </div>
                 </form>
