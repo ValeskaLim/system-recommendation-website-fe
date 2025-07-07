@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { IoBackspaceOutline } from "react-icons/io5";
 import Select from "react-select";
+import { useToast } from "../../hooks/useToast";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import CommonConstant from "../../constant/CommonConstant";
+
+type OptionType = {
+    label: string;
+    value: string;
+}
 
 const COMPETITION_TYPES = [
     { label: 'Artificial Intelligence', value: 'AI' },
@@ -34,28 +43,45 @@ const AddCompetitionPage = () => {
     const [date, setDate] = useState("");
     const [status, setStatus] = useState("");
     const [type, setType] = useState("");
-    const [slot, setSlot] = useState<number | undefined>();
-    const [fieldOfPreference, setFieldOfPreference] = useState([]);
+    const [slot, setSlot] = useState<number | undefined>(undefined);
+    const [description, setDescription] = useState("");
+    // const [fieldOfPreference, setFieldOfPreference] = useState<string[]>([]);
+
+    const { errorToast, successToast } = useToast();
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(fieldOfPreference.map(x => x.value));
-        // try {
-        // if(slot < 0 || slot == undefined) {
+        try {
+            if (slot === undefined || slot < 0) {
+                errorToast("Slot must be a non-negative number");
+                return;
+            }
 
-        // }
-        //   await login(email.toLowerCase(), password);
-        //   navigate(ROUTE_PATHS.HOME);
-        //   successToast("Success logged in!");
-        // } catch (error) {
-        //   console.log(error);
-        //   errorToast("Invalid email or password");
-        // }
+            const existing_data = await axios.post(CommonConstant.GetExistingCompetition, {
+                title, date
+            });
+
+            if(existing_data.data.isExist === true) {
+                errorToast(`Competition ${title} is already exist!`);
+                return;
+            }
+
+            await axios.post(CommonConstant.AddCompetition, {
+                title, date, status, type, slot, description
+            });
+            navigate(ROUTE_PATHS.COMPETITION);
+            successToast("Competition successfully added");
+        } catch (error) {
+            console.log(error);
+            errorToast("Error adding competition");
+        }
     };
 
-    useEffect(() => {
-        console.log(fieldOfPreference.map(x => x.value));
-    })
+    // useEffect(() => {
+    //     console.log(fieldOfPreference.map(x => x));
+    // })
 
     return (
         <div className="flex flex-col">
@@ -65,52 +91,54 @@ const AddCompetitionPage = () => {
                 <h1 className="text-3xl mb-5">Add Competition Data</h1>
                 <form method="POST" onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex justify-between">
-                        <label className="text-lg mr-20 items-center flex">Title</label>
+                        <label className="text-lg items-center flex w-64">Title</label>
                         <input
                             type="text"
                             id="title"
                             placeholder="Input competition title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            required
                         />
                     </div>
                     <div className="flex justify-between">
-                        <label className="text-lg mr-19 items-center flex">Date</label>
+                        <label className="text-lg items-center flex w-64">Date</label>
                         <input
                             type="date"
                             id="date"
                             placeholder="Input competition title"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            required
                         />
                     </div>
                     <div className="flex justify-between">
-                        <label className="text-lg mr-16 items-center flex">Status</label>
+                        <label className="text-lg items-center flex w-64">Status</label>
                         <select
                             name="status"
                             id="status"
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                             required
                         >
                             <option value="" hidden>
                                 --Select one--
                             </option>
-                            <option value="L">Active</option>
-                            <option value="P">Inactive</option>
+                            <option value="ACT">Active</option>
+                            <option value="INA">Inactive</option>
                         </select>
                     </div>
                     <div className="flex justify-between">
-                        <label className="text-lg items-center flex">Type</label>
+                        <label className="text-lg items-center flex w-64">Type</label>
                         <select
                             name="type"
                             id="type"
                             value={type}
                             onChange={(e) => setType(e.target.value)}
-                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                             required
                         >
                             <option value="" hidden>
@@ -122,28 +150,54 @@ const AddCompetitionPage = () => {
                         </select>
                     </div>
                     <div className="flex justify-between">
-                        <label className="text-lg items-center flex">Slot</label>
+                        <label className="text-lg items-center flex w-64">Slot</label>
                         <input
                             type="number"
                             id="slot"
+                            min="0"
                             placeholder="Input initial slot"
-                            value={slot}
-                            className="p-1 w-185 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                            value={slot ?? ""}
+                            onChange={(e) => {
+                                const value = parseInt(e.target.value, 10);
+                                setSlot(isNaN(value) ? undefined : value);
+                            }}
+                            required
+                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                         />
                     </div>
                     <div className="flex justify-between">
-                        <label className="text-lg items-center flex">Field of preference</label>
-                        <Select 
+                        <label className="text-lg items-center flex w-64">Description</label>
+                        <textarea 
+                            name="description" 
+                            id="description" 
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline" 
+                            required>
+                        </textarea>
+                    </div>
+                    {/* <div className="flex justify-between">
+                        <label className="text-lg items-center flex w-64">Field of preference</label>
+                        <Select
                             isMulti
                             name='field_of_preference'
                             options={FIELD_OF_PREFERENCE}
-                            className="basic-multi-select w-185"
+                            className="basic-multi-select w-full"
                             classNamePrefix='select'
-                            value={fieldOfPreference.value}
-                            onChange={(selectedOptions) => setFieldOfPreference(selectedOptions)}
+                            // value={fieldOfPreference}
+                            onChange={(selectedOptions) =>
+                                setFieldOfPreference((selectedOptions as OptionType[]).map(opt => opt.value))
+                            }
                             closeMenuOnSelect={false}
+                            required
                         />
-                    </div>
+                    </div> */}
+                    <button
+                        type="submit"
+                        className="w-fit bg-blue-500 text-white mt-5 py-2 px-4 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"
+                    >
+                        Submit
+                    </button>
                 </form>
             </div>
         </div>
