@@ -11,6 +11,7 @@ interface Users {
     semester: number;
     field_of_preference: string;
     major: string;
+    role: string;
 }
 
 interface AuthContextType {
