@@ -4,6 +4,32 @@ import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
 import CommonConstant from "../../constant/CommonConstant";
+import Select from "react-select";
+
+type OptionType = {
+  label: string;
+  value: string;
+};
+
+const FIELD_OF_PREFERENCE = [
+  { label: "Data Science", value: "DS" },
+  { label: "Web Development", value: "WD" },
+  { label: "Mobile Development", value: "MD" },
+  { label: "Game Development", value: "GD" },
+  { label: "Cyber Security", value: "CS" },
+  { label: "Artificial Intelligence", value: "AI" },
+  { label: "Machine Learning", value: "ML" },
+  { label: "Blockchain", value: "BC" },
+  { label: "Cloud Computing", value: "CC" },
+  { label: "Internet of Things", value: "IoT" },
+  { label: "DevOps", value: "DO" },
+  { label: "Augmented Reality", value: "AR" },
+  { label: "Virtual Reality", value: "VR" },
+  { label: "Quantum Computing", value: "QC" },
+  { label: "Robotics", value: "RO" },
+  { label: "Natural Language Processing", value: "NLP" },
+  { label: "Computer Vision", value: "CV" },
+];
 
 function RegisterPage() {
   const [fullname, setFullname] = useState("");
@@ -12,7 +38,7 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
   const [semester, setSemester] = useState("");
-  const [field_of_preference, setFieldOfPreference] = useState("");
+  const [fieldOfPreference, setFieldOfPreference] = useState<string[]>([]);
 
   const { successToast, warningToast, errorToast } = useToast();
 
@@ -20,22 +46,20 @@ function RegisterPage() {
 
   const handleSubmit = async (e) => {
     const lowerEmail = email.toLowerCase();
-    const upperFieldOfPreference = field_of_preference.toUpperCase();
+    const cleanFieldOfPreference = fieldOfPreference.join(',');
+    console.log(cleanFieldOfPreference);
     e.preventDefault();
     try {
       if (await isFormValid()) {
-        const response = await axios.post(
-          CommonConstant.SubmitRegister,
-          {
-            fullname,
-            username,
-            email: lowerEmail,
-            password,
-            gender,
-            semester,
-            field_of_preference: upperFieldOfPreference,
-          }
-        );
+        const response = await axios.post(CommonConstant.SubmitRegister, {
+          fullname,
+          username,
+          email: lowerEmail,
+          password,
+          gender,
+          semester,
+          field_of_preference: cleanFieldOfPreference,
+        });
         console.log(response.data);
         successToast(response.data.message);
         navigate(ROUTE_PATHS.LOGIN);
@@ -62,13 +86,10 @@ function RegisterPage() {
       return false;
     }
 
-    const response = await axios.post(
-      CommonConstant.GetExistingUser,
-      {
-        username,
-        email,
-      }
-    );
+    const response = await axios.post(CommonConstant.GetExistingUser, {
+      username,
+      email,
+    });
 
     if (response.data.usernameExist) {
       warningToast("Username already exist, please choose another one");
@@ -161,15 +182,21 @@ function RegisterPage() {
               ))}
             </select>
             <label className="text-lg">Field of preference</label>
-            <input
-              type="textarea"
-              id="field_of_preference"
-              placeholder="AI,ML,Web Development.. etc"
-              value={field_of_preference}
-              onChange={(e) => setFieldOfPreference(e.target.value)}
-              className="uppercase p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+            <Select
+              isMulti
+              name="field_of_preference"
+              options={FIELD_OF_PREFERENCE}
+              className="basic-multi-select w-full"
+              classNamePrefix="select"
+              // value={fieldOfPreference}
+              onChange={(selectedOptions) =>
+                setFieldOfPreference(
+                  (selectedOptions as OptionType[]).map((opt) => opt.value)
+                )
+              }
+              closeMenuOnSelect={false}
               required
-            ></input>
+            />
           </div>
           <button
             type="submit"
