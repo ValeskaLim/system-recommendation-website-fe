@@ -3,7 +3,8 @@ export const ROUTE_PATHS = {
     REGISTER: '/register',
     HOME: '/home',
     COMPETITION: '/competitions',
-    ADD_COMPETITION: '/competitions/add'
+    ADD_COMPETITION: '/competitions/add',
+    PROFILE: '/profile'
 };
 
 export const generatePath = (path, params) => {

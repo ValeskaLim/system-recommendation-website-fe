@@ -1,42 +1,16 @@
-import { useEffect, useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { IoBackspaceOutline } from "react-icons/io5";
-import Select from "react-select";
 import { useToast } from "../../hooks/useToast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CommonConstant from "../../constant/CommonConstant";
-
-type OptionType = {
-    label: string;
-    value: string;
-}
+import { useState } from "react";
 
 const COMPETITION_TYPES = [
     { label: 'Artificial Intelligence', value: 'AI' },
     { label: 'Software Development', value: 'SD' },
     { label: 'Mobile Development', value: 'MD' },
 ];
-
-const FIELD_OF_PREFERENCE = [
-    { label: 'Data Science', value: 'DS' },
-    { label: 'Web Development', value: 'WD' },
-    { label: 'Mobile Development', value: 'MD' },
-    { label: 'Game Development', value: 'GD' },
-    { label: 'Cyber Security', value: 'CS' },
-    { label: 'Artificial Intelligence', value: 'AI' },
-    { label: 'Machine Learning', value: 'ML' },
-    { label: 'Blockchain', value: 'BC' },
-    { label: 'Cloud Computing', value: 'CC' },
-    { label: 'Internet of Things', value: 'IoT' },
-    { label: 'DevOps', value: 'DO' },
-    { label: 'Augmented Reality', value: 'AR' },
-    { label: 'Virtual Reality', value: 'VR' },
-    { label: 'Quantum Computing', value: 'QC' },
-    { label: 'Robotics', value: 'RO' },
-    { label: 'Natural Language Processing', value: 'NLP' },
-    { label: 'Computer Vision', value: 'CV' },
-]
 
 const AddCompetitionPage = () => {
     const [title, setTitle] = useState("");
@@ -45,7 +19,6 @@ const AddCompetitionPage = () => {
     const [type, setType] = useState("");
     const [slot, setSlot] = useState<number | undefined>(undefined);
     const [description, setDescription] = useState("");
-    // const [fieldOfPreference, setFieldOfPreference] = useState<string[]>([]);
 
     const { errorToast, successToast } = useToast();
 
@@ -78,10 +51,6 @@ const AddCompetitionPage = () => {
             errorToast("Error adding competition");
         }
     };
-
-    // useEffect(() => {
-    //     console.log(fieldOfPreference.map(x => x));
-    // })
 
     return (
         <div className="flex flex-col">
@@ -176,22 +145,6 @@ const AddCompetitionPage = () => {
                             required>
                         </textarea>
                     </div>
-                    {/* <div className="flex justify-between">
-                        <label className="text-lg items-center flex w-64">Field of preference</label>
-                        <Select
-                            isMulti
-                            name='field_of_preference'
-                            options={FIELD_OF_PREFERENCE}
-                            className="basic-multi-select w-full"
-                            classNamePrefix='select'
-                            // value={fieldOfPreference}
-                            onChange={(selectedOptions) =>
-                                setFieldOfPreference((selectedOptions as OptionType[]).map(opt => opt.value))
-                            }
-                            closeMenuOnSelect={false}
-                            required
-                        />
-                    </div> */}
                     <button
                         type="submit"
                         className="w-fit bg-blue-500 text-white mt-5 py-2 px-4 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"

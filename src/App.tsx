@@ -10,6 +10,7 @@ import NotFoundPage from "./pages/Layout/NotFoundPage";
 import MasterLayout from "./components/MasterLayout";
 import { ToastContainer } from "react-toastify";
 import MainPage from "./pages/Competition/MainPage";
+import ProfileMainPage from "./pages/Profile/ProfileMainPage" ;
 import AddCompetitionPage from "./pages/Competition/AddCompetitionPage";
 
 function App() {
@@ -48,9 +49,21 @@ function App() {
             <Route
               path={ROUTE_PATHS.ADD_COMPETITION}
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requiredRole="admin">
                   <MasterLayout>
                     <AddCompetitionPage />
+                  </MasterLayout>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            {/* Profile region */}
+            <Route
+              path={ROUTE_PATHS.PROFILE}
+              element={
+                <ProtectedRoute>
+                  <MasterLayout>
+                    <ProfileMainPage />
                   </MasterLayout>
                 </ProtectedRoute>
               }

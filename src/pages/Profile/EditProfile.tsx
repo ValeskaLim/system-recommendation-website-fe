@@ -1,10 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
-import { ROUTE_PATHS } from "../../router/routePaths";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "../../hooks/useToast";
-import CommonConstant from "../../constant/CommonConstant";
 import Select from "react-select";
+import CommonConstant from "../../constant/CommonConstant";
+import { useEffect, useState } from "react";
+import { useToast } from "../../hooks/useToast";
 
 type OptionType = {
   label: string;
@@ -31,51 +29,50 @@ const FIELD_OF_PREFERENCE = [
   { label: "Computer Vision", value: "CV" },
 ];
 
-function RegisterPage() {
-  const [fullname, setFullname] = useState("");
+const EditProfile = ({ users, setIsEdit }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
   const [semester, setSemester] = useState("");
+  const [major, setMajor] = useState("");
   const [fieldOfPreference, setFieldOfPreference] = useState<string[]>([]);
+
+  const selectedFields = FIELD_OF_PREFERENCE.filter((option) =>
+    users?.field_of_preference?.includes(option.value)
+  );
 
   const { successToast, warningToast, errorToast } = useToast();
 
-  const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     const lowerEmail = email.toLowerCase();
-    const cleanFieldOfPreference = fieldOfPreference.join(',');
-    console.log(cleanFieldOfPreference);
+    const cleanFieldOfPreference = fieldOfPreference.join(",");
+    console.log(isFormValid);
+    console.log(username);
     e.preventDefault();
     try {
       if (await isFormValid()) {
-        const response = await axios.post(CommonConstant.SubmitRegister, {
-          fullname,
+        const response = await axios.post(CommonConstant.EditUser, {
+          user_id: users?.user_id,
           username,
           email: lowerEmail,
-          password,
           gender,
           semester,
+          major,
           field_of_preference: cleanFieldOfPreference,
         });
         console.log(response.data);
         successToast(response.data.message);
-        navigate(ROUTE_PATHS.LOGIN);
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
       }
     } catch (error) {
       console.log(error);
-      errorToast("Register Failed");
+      errorToast("Edit data failed");
     }
   };
 
   const isFormValid = async (): Promise<boolean> => {
-    if (password.length < 4) {
-      warningToast("Password must be at least 4 character");
-      return false;
-    }
-
     if (username.trim() === "") {
       warningToast("Username cannot be empty or spaces only");
       return false;
@@ -91,10 +88,10 @@ function RegisterPage() {
       email,
     });
 
-    if (response.data.usernameExist) {
+    if (response.data.usernameExist && username !== users?.username) {
       warningToast("Username already exist, please choose another one");
       return false;
-    } else if (response.data.emailExist) {
+    } else if (response.data.emailExist && email !== users?.email) {
       warningToast("Email already exist, please choose another one");
       return false;
     }
@@ -102,60 +99,52 @@ function RegisterPage() {
     return true;
   };
 
+  useEffect(() => {
+    if (users) {
+      setUsername(users.username || "");
+      setEmail(users.email || "");
+      setGender(users.gender || "");
+      setSemester(users.semester || "");
+      setMajor(users.major || "");
+      setFieldOfPreference(
+        users.field_of_preference ? users.field_of_preference.split(",") : []
+      );
+    }
+  }, [users]);
+
   return (
-    <div className="w-full min-h-screen flex justify-center items-center">
-      <div className="flex flex-col h-fit w-150 border p-5 rounded-2xl justify-center">
-        <h2 className="text-4xl text-center">Register</h2>
-        <form onSubmit={handleSubmit} method="POST">
-          <div className="flex flex-col gap-2 mt-4">
-            <label className="text-lg">Full Name</label>
+    <div>
+      <h1 className="font-bold text-5xl">
+        {users?.fullname}'s <span className="font-normal">Profile</span>
+      </h1>
+      <div className="w-1/2">
+        <form className="mt-10" onSubmit={handleSubmit} method="POST">
+          <div className="flex justify-between">
+            <h3 className="flex items-center text-lg">Username</h3>
             <input
               type="text"
-              id="fullname"
-              placeholder="Your full name"
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              required
-            ></input>
-            <label className="text-lg">Username</label>
-            <input
-              type="text"
-              id="username"
-              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              required
-            ></input>
-            <label className="text-lg">Email</label>
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+            />
+          </div>
+          <div className="flex justify-between mt-4">
+            <h3 className="flex items-center text-lg">Email</h3>
             <input
               type="email"
-              id="email"
-              placeholder="your@example.com"
-              value={email}
+              value={users?.email}
               onChange={(e) => setEmail(e.target.value)}
-              className="lowercase p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              required
-            ></input>
-            <label className="text-lg">Password</label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Password length must be more than 3"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              required
-            ></input>
-            <label className="text-lg">Gender</label>
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+            />
+          </div>
+          <div className="flex justify-between mt-4">
+            <h3 className="flex items-center text-lg">Gender</h3>
             <select
               name="gender"
               id="gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="p-1 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              required
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
             >
               <option value="" hidden>
                 --Select one--
@@ -163,14 +152,15 @@ function RegisterPage() {
               <option value="L">Laki-laki</option>
               <option value="P">Perempuan</option>
             </select>
-            <label className="text-lg">Semester</label>
+          </div>
+          <div className="flex justify-between mt-4">
+            <h3 className="flex items-center text-lg">Semester</h3>
             <select
               name="semester"
               id="semester"
               value={semester}
               onChange={(e) => setSemester(e.target.value)}
-              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              required
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
             >
               <option value="" hidden>
                 --Select one--
@@ -181,33 +171,53 @@ function RegisterPage() {
                 </option>
               ))}
             </select>
-            <label className="text-lg">Field of preference</label>
+          </div>
+          <div className="flex justify-between mt-4">
+            <h3 className="flex items-center text-lg">Major</h3>
+            <input
+              name="major"
+              id="major"
+              type="text"
+              value={major}
+              onChange={(e) => setMajor(e.target.value)}
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+            />
+          </div>
+          <div className="flex justify-between mt-4">
+            <h3 className="flex items-center text-lg">Field of preference</h3>
             <Select
               isMulti
               name="field_of_preference"
               options={FIELD_OF_PREFERENCE}
-              className="basic-multi-select w-full"
+              defaultValue={selectedFields}
+              className="basic-multi-select w-200"
               classNamePrefix="select"
-              // value={fieldOfPreference}
+              closeMenuOnSelect={false}
               onChange={(selectedOptions) =>
                 setFieldOfPreference(
                   (selectedOptions as OptionType[]).map((opt) => opt.value)
                 )
               }
-              closeMenuOnSelect={false}
-              required
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white mt-12 p-2 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"
-          >
-            Submit
-          </button>
+          <div className="flex space-x-2">
+            <button
+              type="submit"
+              className="mt-5 cursor-pointer block w-fit bg-blue-600 text-white p-3 rounded-lg duration-300 font-bold hover:bg-blue-700 hover:duration-300"
+            >
+              Save Changes
+            </button>
+            <button
+              onClick={() => setIsEdit(false)}
+              className="mt-5 cursor-pointer block w-fit p-3 text-blue-600 rounded-lg border-2 border-blue-600 duration-300 font-bold"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>
   );
-}
+};
 
-export default RegisterPage;
+export default EditProfile;
