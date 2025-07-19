@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import MainPage from "./pages/Competition/MainPage";
 import ProfileMainPage from "./pages/Profile/ProfileMainPage" ;
 import AddCompetitionPage from "./pages/Competition/AddCompetitionPage";
+import TeammatesMainPage from "./pages/Teammates/TeammatesMainPage";
 
 function App() {
   return (
@@ -64,6 +65,18 @@ function App() {
                 <ProtectedRoute>
                   <MasterLayout>
                     <ProfileMainPage />
+                  </MasterLayout>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            {/* Teammates region */}
+            <Route
+              path={ROUTE_PATHS.TEAMMATES_LIST}
+              element={
+                <ProtectedRoute>
+                  <MasterLayout>
+                    <TeammatesMainPage />
                   </MasterLayout>
                 </ProtectedRoute>
               }
