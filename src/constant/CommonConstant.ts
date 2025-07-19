@@ -11,6 +11,7 @@ const GET_ALL_COMPETITION = 'api/competition/get-all-competition';
 const EDIT_USER = 'api/user/edit-user';
 const TEAMMATES_LIST = 'api/user/get-all-teammates';
 const REMOVE_USER = 'api/user/remove-user-teammates';
+const REMOVE_COMPETITION = 'api/competition/remove-competition';
 
 // NAVIGATION CONSTANT
 const ValidateUser = BASE + '/' + VALIDATE_USER;
@@ -24,6 +25,7 @@ const GetAllCompetition = BASE + '/' + GET_ALL_COMPETITION;
 const EditUser = BASE + '/' + EDIT_USER;
 const TeammatesList = BASE + '/' + TEAMMATES_LIST;
 const RemoveUser = BASE + '/' + REMOVE_USER;
+const RemoveCompetition = BASE + '/' + REMOVE_COMPETITION;
 
 const CommonConstant = {
     ValidateUser,
@@ -36,7 +38,8 @@ const CommonConstant = {
     GetAllCompetition,
     EditUser,
     TeammatesList,
-    RemoveUser
+    RemoveUser,
+    RemoveCompetition
 };
 
 export default CommonConstant;
