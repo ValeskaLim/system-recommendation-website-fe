@@ -13,6 +13,7 @@ import MainPage from "./pages/Competition/MainPage";
 import ProfileMainPage from "./pages/Profile/ProfileMainPage" ;
 import AddCompetitionPage from "./pages/Competition/AddCompetitionPage";
 import TeammatesMainPage from "./pages/Teammates/TeammatesMainPage";
+import EditCompetitionPage from "./pages/Competition/EditCompetitionPage";
 
 function App() {
   return (
@@ -53,6 +54,16 @@ function App() {
                 <ProtectedRoute requiredRole="admin">
                   <MasterLayout>
                     <AddCompetitionPage />
+                  </MasterLayout>
+                </ProtectedRoute>
+              }
+            ></Route>
+            <Route
+              path={`${ROUTE_PATHS.EDIT_COMPETITION}/:id`}
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <MasterLayout>
+                    <EditCompetitionPage />
                   </MasterLayout>
                 </ProtectedRoute>
               }

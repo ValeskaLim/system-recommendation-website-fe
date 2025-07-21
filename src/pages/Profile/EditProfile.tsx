@@ -114,37 +114,37 @@ const EditProfile = ({ users, setIsEdit }) => {
 
   return (
     <div>
-      <h1 className="font-bold text-5xl">
+      <h1 className="font-bold text-4xl">
         {users?.fullname}'s <span className="font-normal">Profile</span>
       </h1>
-      <div className="w-1/2">
+      <div className="w-full">
         <form className="mt-10" onSubmit={handleSubmit} method="POST">
           <div className="flex justify-between">
-            <h3 className="flex items-center text-lg">Username</h3>
+            <h3 className="flex items-center text-lg w-60">Username</h3>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Email</h3>
+            <h3 className="flex items-center text-lg w-60">Email</h3>
             <input
               type="email"
               value={users?.email}
               onChange={(e) => setEmail(e.target.value)}
-              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Gender</h3>
+            <h3 className="flex items-center text-lg w-60">Gender</h3>
             <select
               name="gender"
               id="gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
             >
               <option value="" hidden>
                 --Select one--
@@ -154,13 +154,13 @@ const EditProfile = ({ users, setIsEdit }) => {
             </select>
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Semester</h3>
+            <h3 className="flex items-center text-lg w-60">Semester</h3>
             <select
               name="semester"
               id="semester"
               value={semester}
               onChange={(e) => setSemester(e.target.value)}
-              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
             >
               <option value="" hidden>
                 --Select one--
@@ -173,24 +173,24 @@ const EditProfile = ({ users, setIsEdit }) => {
             </select>
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Major</h3>
+            <h3 className="flex items-center text-lg w-60">Major</h3>
             <input
               name="major"
               id="major"
               type="text"
               value={major}
               onChange={(e) => setMajor(e.target.value)}
-              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Field of preference</h3>
+            <h3 className="flex items-center text-lg w-60">Field of preference</h3>
             <Select
               isMulti
               name="field_of_preference"
               options={FIELD_OF_PREFERENCE}
               defaultValue={selectedFields}
-              className="basic-multi-select w-200"
+              className="basic-multi-select w-full"
               classNamePrefix="select"
               closeMenuOnSelect={false}
               onChange={(selectedOptions) =>
