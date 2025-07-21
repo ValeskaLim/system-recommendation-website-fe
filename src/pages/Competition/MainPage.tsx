@@ -72,12 +72,12 @@ const MainPage = () => {
       {users?.username === "Admin" && (
         <NavLink
           to={ROUTE_PATHS.ADD_COMPETITION}
-          className="block w-fit bg-blue-600 text-white p-3 rounded-lg duration-300 hover:bg-blue-700 hover:duration-300"
+          className="block w-fit bg-blue-600 text-white p-3 rounded-lg duration-300 font-semibold hover:bg-blue-700 hover:duration-300"
         >
           Add competition
         </NavLink>
       )}
-      <div className="mt-4">
+      <div className="mt-10">
         {competitions.length === 0 ? (
           <p>No competitions available.</p>
         ) : (
@@ -85,7 +85,7 @@ const MainPage = () => {
             {competitions.map((comp, idx) => (
               <>
                 <div>
-                  <li key={idx} className="border p-3 rounded shadow-sm h-full">
+                  <li key={idx} className="border p-3 rounded-xl shadow-sm h-full">
                     <div className="flex justify-between">
                       <div>
                         <h3 className="font-semibold text-xl">{comp.title}</h3>
@@ -109,8 +109,8 @@ const MainPage = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-1">
-                      <button className="font-semibold bg-blue-500 text-white py-1 px-3 rounded-md duration-300 hover:bg-blue-600 hover:duration-300">
+                    <div className="flex gap-1 mt-2">
+                      <button onClick={() => navigate(`${ROUTE_PATHS.EDIT_COMPETITION}/${comp.competition_id}`)} className="font-semibold bg-blue-500 text-white py-1 px-3 rounded-md duration-300 hover:bg-blue-600 hover:duration-300">
                         Edit
                       </button>
                       <button

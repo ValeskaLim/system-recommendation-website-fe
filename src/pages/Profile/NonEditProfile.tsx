@@ -29,64 +29,64 @@ const NonEditProfile = ({ users, setIsEdit }) => {
 
   return (
     <div>
-      <h1 className="font-bold text-5xl">
+      <h1 className="font-bold text-4xl">
         {users?.fullname}'s <span className="font-normal">Profile</span>
       </h1>
-      <div className="w-1/2">
+      <div className="w-full">
         <form className="mt-10">
           <div className="flex justify-between">
-            <h3 className="flex items-center text-lg">Username</h3>
+            <h3 className="flex items-center text-lg w-60">Username</h3>
             <input
               type="text"
               disabled
               value={users?.username}
-              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Email</h3>
+            <h3 className="flex items-center text-lg w-60">Email</h3>
             <input
               type="email"
               disabled
               value={users?.email}
-              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Gender</h3>
+            <h3 className="flex items-center text-lg w-60">Gender</h3>
             <input
               type="text"
               disabled
               value={users?.gender === "L" ? "Laki-Laki" : "Perempuan"}
-              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Semester</h3>
+            <h3 className="flex items-center text-lg w-60">Semester</h3>
             <input
               type="number"
               disabled
               value={users?.semester}
-              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Major</h3>
+            <h3 className="flex items-center text-lg w-60">Major</h3>
             <input
               type="text"
               disabled
               value={users?.major}
-              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-200"
+              className="text-md bg-[#f2f2f2] p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg">Field of preference</h3>
+            <h3 className="flex items-center text-lg w-60">Field of preference</h3>
             <Select
               isMulti
               name="field_of_preference"
               options={FIELD_OF_PREFERENCE}
               defaultValue={selectedFields}
-              className="basic-multi-select w-200"
+              className="basic-multi-select w-full"
               classNamePrefix="select"
               closeMenuOnSelect={false}
               required

@@ -4,6 +4,7 @@ export const ROUTE_PATHS = {
     HOME: '/home',
     COMPETITION: '/competitions',
     ADD_COMPETITION: '/competitions/add',
+    EDIT_COMPETITION: '/competitions/edit',
     PROFILE: '/profile',
     TEAMMATES_LIST: '/teammates'
 };

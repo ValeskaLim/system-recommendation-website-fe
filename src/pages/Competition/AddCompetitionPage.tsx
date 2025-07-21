@@ -1,5 +1,5 @@
 import { ROUTE_PATHS } from "../../router/routePaths";
-import { IoBackspaceOutline } from "react-icons/io5";
+import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { useToast } from "../../hooks/useToast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -36,7 +36,7 @@ const AddCompetitionPage = () => {
                 title, date
             });
 
-            if(existing_data.data.isExist === true) {
+            if (existing_data.data.isExist === true) {
                 errorToast(`Competition ${title} is already exist!`);
                 return;
             }
@@ -54,10 +54,11 @@ const AddCompetitionPage = () => {
 
     return (
         <div className="flex flex-col">
-            <a href={ROUTE_PATHS.COMPETITION} className="flex items-center w-fit bg-white text-black border border-3 p-2 rounded-lg duration-300 hover:border hover:border-3 hover:border-blue-500 hover:duration-300">
-                <IoBackspaceOutline className="text-xl mr-2" />Back</a>
-            <div className="mt-5">
-                <h1 className="text-3xl mb-5">Add Competition Data</h1>
+            <div className="">
+                <div className="flex w-fit mb-5">
+                    <button onClick={() => navigate(-1)}><MdOutlineArrowBackIosNew className="cursor-pointer flex items-center text-2xl mr-2 font-semibold" /></button>
+                    <h1 className="text-3xl">Add Competition Data</h1>
+                </div>
                 <form method="POST" onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex justify-between">
                         <label className="text-lg items-center flex w-64">Title</label>
@@ -136,18 +137,18 @@ const AddCompetitionPage = () => {
                     </div>
                     <div className="flex justify-between">
                         <label className="text-lg items-center flex w-64">Description</label>
-                        <textarea 
-                            name="description" 
-                            id="description" 
+                        <textarea
+                            name="description"
+                            id="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline" 
+                            className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                             required>
                         </textarea>
                     </div>
                     <button
                         type="submit"
-                        className="w-fit bg-blue-500 text-white mt-5 py-2 px-4 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"
+                        className="w-fit bg-blue-500 text-white mt-5 py-2 px-4 rounded-md duration-300 font-semibold hover:bg-blue-600 hover:duration-300"
                     >
                         Submit
                     </button>
