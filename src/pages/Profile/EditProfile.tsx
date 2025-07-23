@@ -46,8 +46,6 @@ const EditProfile = ({ users, setIsEdit }) => {
   const handleSubmit = async (e) => {
     const lowerEmail = email.toLowerCase();
     const cleanFieldOfPreference = fieldOfPreference.join(",");
-    console.log(isFormValid);
-    console.log(username);
     e.preventDefault();
     try {
       if (await isFormValid()) {
@@ -63,12 +61,17 @@ const EditProfile = ({ users, setIsEdit }) => {
         console.log(response.data);
         successToast(response.data.message);
         setTimeout(() => {
-            window.location.reload();
+          window.location.reload();
         }, 1000);
       }
     } catch (error) {
       console.log(error);
-      errorToast("Edit data failed");
+
+      if (error.response && error.response.data && error.response.data.message) {
+        warningToast(error.response.data.message);
+      } else {
+        errorToast("Edit data failed");
+      }
     }
   };
 
@@ -87,14 +90,6 @@ const EditProfile = ({ users, setIsEdit }) => {
       username,
       email,
     });
-
-    if (response.data.usernameExist && username !== users?.username) {
-      warningToast("Username already exist, please choose another one");
-      return false;
-    } else if (response.data.emailExist && email !== users?.email) {
-      warningToast("Email already exist, please choose another one");
-      return false;
-    }
 
     return true;
   };
@@ -132,7 +127,7 @@ const EditProfile = ({ users, setIsEdit }) => {
             <h3 className="flex items-center text-lg w-60">Email</h3>
             <input
               type="email"
-              value={users?.email}
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
