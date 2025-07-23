@@ -64,7 +64,7 @@ const EditProfile = ({ users, setIsEdit }) => {
           window.location.reload();
         }, 1000);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
 
       if (error.response && error.response.data && error.response.data.message) {

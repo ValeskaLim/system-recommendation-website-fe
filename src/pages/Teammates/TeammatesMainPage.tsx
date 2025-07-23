@@ -95,7 +95,7 @@ const TeammatesMainPage = () => {
       {teammates.length === 0 && !error && <p>No teammates found.</p>}
 
       <ul className="list-none space-y-4">
-        {teammates.map((user) => (
+        {teammates.map((user: any) => (
           <li
             key={user.user_id}
             className="w-1/2 border p-3 rounded-2xl flex justify-between"

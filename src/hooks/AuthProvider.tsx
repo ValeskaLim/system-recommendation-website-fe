@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import CommonConstant from "../constant/CommonConstant";
 
 interface Users {
-    id?: number;
+    user_id?: number;
     username: string;
     email: string;
     fullname: string;
