@@ -82,7 +82,7 @@ const MainPage = () => {
           <p>No competitions available.</p>
         ) : (
           <ul className="space-y-2 grid grid-cols-3 gap-2">
-            {competitions.map((comp, idx) => (
+            {competitions.map((comp: any, idx) => (
               <>
                 <div>
                   <li key={idx} className="border p-3 rounded-xl shadow-sm h-full">

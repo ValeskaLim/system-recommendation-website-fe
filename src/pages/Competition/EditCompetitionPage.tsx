@@ -12,6 +12,15 @@ const COMPETITION_TYPES = [
     { label: 'Mobile Development', value: 'MD' },
 ];
 
+type Competition = {
+  title: string;
+  date: string;
+  status: string;
+  type: string;
+  slot: number;
+  description: string;
+};
+
 const EditCompetitionPage = () => {
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
@@ -19,7 +28,7 @@ const EditCompetitionPage = () => {
     const [type, setType] = useState("");
     const [slot, setSlot] = useState<number | undefined>(undefined);
     const [description, setDescription] = useState("");
-    const [competititonData, setCompetititonData] = useState("");
+    const [competititonData, setCompetititonData] = useState<Competition | undefined>(undefined);
 
     const { errorToast, successToast } = useToast();
     const navigate = useNavigate();
@@ -38,7 +47,7 @@ const EditCompetitionPage = () => {
                     setCompetititonData(competititonData);
                 } else {
                     errorToast("Failed to fetch competition");
-                    setCompetititonData("");
+                    setCompetititonData(undefined);
                 }
 
             } catch (error) {
@@ -73,7 +82,7 @@ const EditCompetitionPage = () => {
                 navigate(ROUTE_PATHS.COMPETITION);
                 successToast(request.data.message);
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log(error);
             if (error.response && error.response.data && error.response.data.message) {
                 errorToast(error.response.data.message);
