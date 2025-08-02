@@ -16,17 +16,7 @@ const FIELD_OF_PREFERENCE = [
   { label: "Game Development", value: "GD" },
   { label: "Cyber Security", value: "CS" },
   { label: "Artificial Intelligence", value: "AI" },
-  { label: "Machine Learning", value: "ML" },
-  { label: "Blockchain", value: "BC" },
-  { label: "Cloud Computing", value: "CC" },
-  { label: "Internet of Things", value: "IoT" },
-  { label: "DevOps", value: "DO" },
-  { label: "Augmented Reality", value: "AR" },
-  { label: "Virtual Reality", value: "VR" },
-  { label: "Quantum Computing", value: "QC" },
-  { label: "Robotics", value: "RO" },
-  { label: "Natural Language Processing", value: "NLP" },
-  { label: "Computer Vision", value: "CV" },
+  { label: "Machine Learning", value: "ML" }
 ];
 
 const EditProfile = ({ users, setIsEdit }) => {
