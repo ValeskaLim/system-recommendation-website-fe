@@ -14,6 +14,7 @@ import ProfileMainPage from "./pages/Profile/ProfileMainPage" ;
 import AddCompetitionPage from "./pages/Competition/AddCompetitionPage";
 import TeammatesMainPage from "./pages/Teammates/TeammatesMainPage";
 import EditCompetitionPage from "./pages/Competition/EditCompetitionPage";
+import RecommendationPage from "./pages/Recommendation/RecommendationPage";
 
 function App() {
   return (
@@ -88,6 +89,18 @@ function App() {
                 <ProtectedRoute>
                   <MasterLayout>
                     <TeammatesMainPage />
+                  </MasterLayout>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            {/* Recommendation Page */}
+            <Route
+              path={ROUTE_PATHS.RECOMMENDATION}
+              element={
+                <ProtectedRoute>
+                  <MasterLayout>
+                    <RecommendationPage />
                   </MasterLayout>
                 </ProtectedRoute>
               }
