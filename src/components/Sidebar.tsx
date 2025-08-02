@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
-import { IoPersonCircle, IoPeopleSharp  } from "react-icons/io5";
+import { IoPersonCircle, IoPeopleSharp, IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
 import { PiTargetBold } from "react-icons/pi";
 import { ROUTE_PATHS } from '../router/routePaths';
 import { useAuth } from '../hooks/AuthProvider';
@@ -32,6 +32,11 @@ const Sidebar = () => {
                         <NavLink to={ROUTE_PATHS.COMPETITION} className={({ isActive }) =>
                             `flex w-full py-2 pl-4 duration-300 hover:bg-blue-400 hover:duration-300 ${isActive ? 'bg-blue-400' : ''}`}><PiTargetBold className='text-2xl mr-2' />
                             Competitions</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to={ROUTE_PATHS.RECOMMENDATION} className={({ isActive }) =>
+                            `flex w-full py-2 pl-4 duration-300 hover:bg-blue-400 hover:duration-300 ${isActive ? 'bg-blue-400' : ''}`}><IoSettingsSharp className='text-2xl mr-2' />
+                            Recommendation</NavLink>
                     </li>
                 </ul>
             </nav>
