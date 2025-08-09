@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
-import { IoPersonCircle, IoPeopleSharp, IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
+import { IoPersonCircle, IoPeopleSharp, IoSettingsSharp } from "react-icons/io5";
 import { PiTargetBold } from "react-icons/pi";
 import { ROUTE_PATHS } from '../router/routePaths';
 import { useAuth } from '../hooks/AuthProvider';

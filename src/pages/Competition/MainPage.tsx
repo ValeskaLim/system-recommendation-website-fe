@@ -110,7 +110,7 @@ const MainPage = () => {
                       </div>
                     </div>
                     <div className="flex gap-1 mt-2">
-                      <button onClick={() => navigate(`${ROUTE_PATHS.EDIT_COMPETITION}/${comp.competition_id}`)} className="font-semibold bg-blue-500 text-white py-1 px-3 rounded-md duration-300 hover:bg-blue-600 hover:duration-300">
+                      <button onClick={() => navigate(`${ROUTE_PATHS.EDIT_COMPETITION}/${comp.competition_id}`)} className="cursor-pointer font-semibold bg-blue-500 text-white py-1 px-3 rounded-md duration-300 hover:bg-blue-600 hover:duration-300">
                         Edit
                       </button>
                       <button
@@ -135,7 +135,7 @@ const MainPage = () => {
                             });
                           }
                         }}
-                        className="font-semibold bg-red-500 text-white py-1 px-3 rounded-md duration-300 hover:bg-red-600 hover:duration-300"
+                        className="cursor-pointer font-semibold bg-red-500 text-white py-1 px-3 rounded-md duration-300 hover:bg-red-600 hover:duration-300"
                       >
                         Delete
                       </button>
