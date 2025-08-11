@@ -15,7 +15,8 @@ const REMOVE_COMPETITION = 'api/competition/remove-competition';
 const GET_COMPETITION_BY_ID = 'api/competition/get-competition-by-id';
 const EDIT_COMPETITION = 'api/competition/edit-competition';
 const RECOMMENDATION = 'api/recommend';
-const GET_INVITED_USER = 'api/user/get_invited_user';
+const GET_INVITED_USER = 'api/user/get-invited-user';
+const REMOVE_USER_INVITATION = 'api/user/remove-user-invitation';
 
 // NAVIGATION CONSTANT
 const ValidateUser = BASE + '/' + VALIDATE_USER;
@@ -34,6 +35,7 @@ const GetCompetitionById = BASE + '/' + GET_COMPETITION_BY_ID;
 const EditCompetition = BASE + '/' + EDIT_COMPETITION;
 const Recommendation = BASE + '/' + RECOMMENDATION;
 const GetInvitedUser = BASE + '/' + GET_INVITED_USER;
+const RemoveUserInvitation = BASE + '/' + REMOVE_USER_INVITATION;
 
 const CommonConstant = {
     ValidateUser,
@@ -51,7 +53,8 @@ const CommonConstant = {
     GetCompetitionById,
     EditCompetition,
     Recommendation,
-    GetInvitedUser
+    GetInvitedUser,
+    RemoveUserInvitation
 };
 
 export default CommonConstant;
