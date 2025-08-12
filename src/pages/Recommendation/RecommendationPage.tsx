@@ -17,8 +17,8 @@ const FIELD_OF_PREFERENCE = [
 ];
 
 const RecommendationPage = () => {
-  const [invitedUser, setInvitedUser] = useState([]);
-  const [inviterUser, setInviterUser] = useState([]);
+  const [inviteesUser, setinviteesUser] = useState([]);
+  const [invitesUser, setinvitesUser] = useState([]);
   const [isIgnoreSemester, setisIgnoreSemester] = useState(false);
   const [isIgnoreGender, setisIgnoreGender] = useState(false);
   const [isRunRecommend, setIsRunRecommend] = useState(false);
@@ -28,12 +28,12 @@ const RecommendationPage = () => {
   const { users } = useAuth();
 
   useEffect(() => {
-    const fetchInvitedUser = async () => {
+    const fetchinviteesUser = async () => {
       const response = await axios.post(CommonConstant.GetInviteesUser);
       try {
         if (response.data.success) {
-          const invitedUser = response.data.data || [];
-          setInvitedUser(invitedUser);
+          const inviteesUser = response.data.data || [];
+          setinviteesUser(inviteesUser);
         }
       } catch (error: any) {
         console.log(error);
@@ -41,16 +41,21 @@ const RecommendationPage = () => {
       }
     };
 
-    const fetchInviterUser = async () => {
-      // const response = await axios.post(CommonConstant);
-      // try {
-        
-      // } catch (error) {
-        
-      // }
+    const fetchinvitesUser = async () => {
+      const response = await axios.post(CommonConstant.GetInvitesUser);
+      try {
+        if (response.data.success) {
+          const invitesUser = response.data.data || [];
+          setinvitesUser(invitesUser);
+        }
+      } catch (error: any) {
+        console.log(error);
+        errorToast(error)
+      }
     }
 
-    fetchInvitedUser();
+    fetchinviteesUser();
+    fetchinvitesUser();
   }, []);
 
   const getFieldLabels = (valueString) => {
@@ -67,7 +72,7 @@ const RecommendationPage = () => {
   };
 
   const isMaxInvite = () => {
-    if (invitedUser.length === 2) {
+    if (inviteesUser.length === 2) {
       return true;
     }
 
@@ -112,12 +117,29 @@ const RecommendationPage = () => {
     }
   }
 
-  const handleAcceptInvitation = async () => {
+  const handleAcceptInvitation = async (user_id) => {
     try {
-      // const response = await axios.post()
-      // if(response.data.success) {
-      //   successToast();
-      // }
+      const response = await axios.post(CommonConstant.AcceptInvites, { user_id: user_id });
+      if (response.data.success) {
+        successToast(response.data.messages);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleRejectInvitation = async (user_id) => {
+    try {
+      const response = await axios.post(CommonConstant.RejectInvites, {user_id: user_id});
+      if(response.data.success) {
+        console.log(response.data.messages);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -186,12 +208,12 @@ const RecommendationPage = () => {
                   isMaxInvite() ? "text-red-500" : "text-green-500"
                 }
               >
-                {isMaxInvite() ? "0" : 2 - invitedUser.length}
+                {isMaxInvite() ? "0" : 2 - inviteesUser.length}
               </span>{" "}
               invitations left**
             </p>
             <div className="mt-3 space-y-2 grid grid-cols-3 gap-2">
-              {invitedUser.map((user: any, idx) => (
+              {inviteesUser.map((user: any, idx) => (
                 <li
                   key={idx}
                   className="flex flex-col border p-3 rounded-xl shadow-sm h-full"
@@ -269,10 +291,10 @@ const RecommendationPage = () => {
                 </li>
               ))}
             </div>
-            <hr className="mt-5 text-gray-300"/>
+            <hr className="mt-5 text-gray-300" />
             <h3 className="mt-5 text-2xl font-semibold">Your invites:</h3>
             <div className="mt-3 space-y-2 grid grid-cols-3 gap-2">
-              {inviterUser.map((user: any, idx) => (
+              {invitesUser.map((user: any, idx) => (
                 <li
                   key={idx}
                   className="flex flex-col border p-3 rounded-xl shadow-sm h-full"
@@ -280,7 +302,7 @@ const RecommendationPage = () => {
                   <div className="flex justify-between w-full">
                     <div className="w-full mr-5">
                       <h3 className="font-semibold text-xl">
-                        {user.inviter.username}
+                        {user.invites.username}
                       </h3>
                       <p className="flex justify-between">
                         <span>
@@ -288,7 +310,7 @@ const RecommendationPage = () => {
                         </span>
                         <span className="w-3/5">
                           {" "}
-                          {user.inviter.gender == "L" ? "Laki-laki" : "Perempuan"}
+                          {user.invites.gender == "L" ? "Laki-laki" : "Perempuan"}
                         </span>
                       </p>
                       <p className="flex justify-between">
@@ -296,7 +318,7 @@ const RecommendationPage = () => {
                           Email:
                         </span>
                         <span className="w-3/5">
-                          {user.inviter.email}
+                          {user.invites.email}
                         </span>
                       </p>
                       <p className="flex justify-between">
@@ -304,7 +326,7 @@ const RecommendationPage = () => {
                           Semester:
                         </span>
                         <span className="w-3/5">
-                          {user.inviter.semester}
+                          {user.invites.semester}
                         </span></p>
                       <p className="mt-2">Field of interest: </p>
                     </div>
@@ -314,7 +336,7 @@ const RecommendationPage = () => {
                     </div>
                   </div>
                   <div className="grid grid-cols-3 mt-1 gap-1.5 overflow-hidden">
-                    {getFieldLabels(user.inviter.field_of_preference).map(
+                    {getFieldLabels(user.invites.field_of_preference).map(
                       (label, idx) => (
                         <span
                           key={idx}
@@ -326,7 +348,7 @@ const RecommendationPage = () => {
                     )}
                   </div>
                   <div className="flex">
-                    <button onClick={handleAcceptInvitation} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-green-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                    <button onClick={() => handleAcceptInvitation(user.invites.user_id)} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-green-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
                         hover:bg-green-600 hover:duration-300">Accept</button>
                     <button onClick={async () => {
                       const result = await Swal.fire({
@@ -340,7 +362,7 @@ const RecommendationPage = () => {
                       });
 
                       if (result.isConfirmed) {
-                        await removeUser(user.inviter_id);
+                        await handleRejectInvitation(user.invites.user_id);
 
                         await Swal.fire({
                           title: "Invitation Deleted!",
