@@ -19,6 +19,7 @@ const FIELD_OF_PREFERENCE = [
 const RecommendationPage = () => {
   const [inviteesUser, setinviteesUser] = useState([]);
   const [invitesUser, setinvitesUser] = useState([]);
+  const [memberLength, setMemberLength] = useState();
   const [isIgnoreSemester, setisIgnoreSemester] = useState(false);
   const [isIgnoreGender, setisIgnoreGender] = useState(false);
   const [isRunRecommend, setIsRunRecommend] = useState(false);
@@ -54,6 +55,20 @@ const RecommendationPage = () => {
       }
     }
 
+    const fetchTeammates = async () => {
+      const response = await axios.post(CommonConstant.TeammatesList, {});
+      try {
+        const member_id = response.data.data.member_id;
+        const memberIds = member_id.split(",");
+        const member_length = memberIds.length;
+        setMemberLength(member_length);
+      } catch (error: any) {
+        console.log(error);
+        errorToast(error)
+      }
+    }
+
+    fetchTeammates();
     fetchinviteesUser();
     fetchinvitesUser();
   }, []);
@@ -156,7 +171,7 @@ const RecommendationPage = () => {
                 type="checkbox"
                 checked={isIgnoreGender}
                 onChange={(e) => setisIgnoreGender(e.target.checked)}
-                disabled={isMaxInvite()}
+                disabled={memberLength == 3}
               />
               <p>Ignore gender</p>
             </div>
@@ -165,7 +180,7 @@ const RecommendationPage = () => {
                 type="checkbox"
                 checked={isIgnoreSemester}
                 onChange={(e) => setisIgnoreSemester(e.target.checked)}
-                disabled={isMaxInvite()}
+                disabled={memberLength == 3}
               />
               <p>Ignore semester</p>
             </div>
@@ -173,7 +188,7 @@ const RecommendationPage = () => {
               type="submit"
               className="cursor-pointer flex gap-2 group text-lg items-center w-fit text-white bg-blue-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
                         hover:bg-blue-600 hover:duration-300 disabled:cursor-not-allowed disabled:bg-blue-300"
-              disabled={isMaxInvite()}
+              disabled={memberLength == 3}
             >
               Recommend
               <IoSettingsSharp className="text-2xl duration-300 group-hover:rotate-90 group-hover:duration-300 group-disabled:rotate-0" />
@@ -205,10 +220,10 @@ const RecommendationPage = () => {
               **Currently you have{" "}
               <span
                 className={
-                  isMaxInvite() ? "text-red-500" : "text-green-500"
+                  memberLength == 3 ? "text-red-500" : "text-green-500"
                 }
               >
-                {isMaxInvite() ? "0" : 2 - inviteesUser.length}
+                {memberLength == 3 ? "0" : 3 - (memberLength || 0)}
               </span>{" "}
               invitations left**
             </p>
