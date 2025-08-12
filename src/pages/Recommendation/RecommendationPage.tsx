@@ -18,6 +18,7 @@ const FIELD_OF_PREFERENCE = [
 
 const RecommendationPage = () => {
   const [invitedUser, setInvitedUser] = useState([]);
+  const [inviterUser, setInviterUser] = useState([]);
   const [isIgnoreSemester, setisIgnoreSemester] = useState(false);
   const [isIgnoreGender, setisIgnoreGender] = useState(false);
   const [isRunRecommend, setIsRunRecommend] = useState(false);
@@ -28,7 +29,7 @@ const RecommendationPage = () => {
 
   useEffect(() => {
     const fetchInvitedUser = async () => {
-      const response = await axios.post(CommonConstant.GetInvitedUser);
+      const response = await axios.post(CommonConstant.GetInviteesUser);
       try {
         if (response.data.success) {
           const invitedUser = response.data.data || [];
@@ -39,6 +40,15 @@ const RecommendationPage = () => {
         errorToast(error);
       }
     };
+
+    const fetchInviterUser = async () => {
+      // const response = await axios.post(CommonConstant);
+      // try {
+        
+      // } catch (error) {
+        
+      // }
+    }
 
     fetchInvitedUser();
   }, []);
@@ -102,6 +112,17 @@ const RecommendationPage = () => {
     }
   }
 
+  const handleAcceptInvitation = async () => {
+    try {
+      // const response = await axios.post()
+      // if(response.data.success) {
+      //   successToast();
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className="flex flex-col">
       <div>
@@ -157,7 +178,7 @@ const RecommendationPage = () => {
           </>
         ) : (
           <>
-            <h3 className="mt-5 text-2xl font-semibold">Your invites:</h3>
+            <h3 className="mt-5 text-2xl font-semibold">Your invitees:</h3>
             <p className="text-md font-semibold text-red-500 italic">
               **Currently you have{" "}
               <span
@@ -245,6 +266,91 @@ const RecommendationPage = () => {
                     }
                   }} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
                         hover:bg-red-600 hover:duration-300">Remove</button>
+                </li>
+              ))}
+            </div>
+            <hr className="mt-5 text-gray-300"/>
+            <h3 className="mt-5 text-2xl font-semibold">Your invites:</h3>
+            <div className="mt-3 space-y-2 grid grid-cols-3 gap-2">
+              {inviterUser.map((user: any, idx) => (
+                <li
+                  key={idx}
+                  className="flex flex-col border p-3 rounded-xl shadow-sm h-full"
+                >
+                  <div className="flex justify-between w-full">
+                    <div className="w-full mr-5">
+                      <h3 className="font-semibold text-xl">
+                        {user.inviter.username}
+                      </h3>
+                      <p className="flex justify-between">
+                        <span>
+                          Gender:
+                        </span>
+                        <span className="w-3/5">
+                          {" "}
+                          {user.inviter.gender == "L" ? "Laki-laki" : "Perempuan"}
+                        </span>
+                      </p>
+                      <p className="flex justify-between">
+                        <span>
+                          Email:
+                        </span>
+                        <span className="w-3/5">
+                          {user.inviter.email}
+                        </span>
+                      </p>
+                      <p className="flex justify-between">
+                        <span>
+                          Semester:
+                        </span>
+                        <span className="w-3/5">
+                          {user.inviter.semester}
+                        </span></p>
+                      <p className="mt-2">Field of interest: </p>
+                    </div>
+
+                    <div className="flex items-center cursor-default px-2 py-1 h-fit rounded-md font-semibold border-2 text-red-600 border-red-600">
+                      Pending
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 mt-1 gap-1.5 overflow-hidden">
+                    {getFieldLabels(user.inviter.field_of_preference).map(
+                      (label, idx) => (
+                        <span
+                          key={idx}
+                          className="flex w-full items-center cursor-default bg-blue-100 text-blue-700 px-2 py-2.5 rounded text-xs font-bold duration-300 hover:bg-blue-500 hover:duration-300 hover:text-white"
+                        >
+                          {label}
+                        </span>
+                      )
+                    )}
+                  </div>
+                  <div className="flex">
+                    <button onClick={handleAcceptInvitation} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-green-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                        hover:bg-green-600 hover:duration-300">Accept</button>
+                    <button onClick={async () => {
+                      const result = await Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Remove",
+                      });
+
+                      if (result.isConfirmed) {
+                        await removeUser(user.inviter_id);
+
+                        await Swal.fire({
+                          title: "Invitation Deleted!",
+                          text: "Invitation has been removed.",
+                          icon: "success",
+                        });
+                      }
+                    }} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                        hover:bg-red-600 hover:duration-300">Reject</button>
+                  </div>
                 </li>
               ))}
             </div>
