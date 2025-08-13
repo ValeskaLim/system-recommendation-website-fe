@@ -196,7 +196,7 @@ const MainPage = () => {
                           </button>
                         </>
                       )}
-                      <button onClick={() => isWishlisted ? handleRemoveWishlist(comp.competition_id) : handleWishlist(comp.competition_id)} className={`cursor-pointer flex items-center font-semibold bg-yellow-400 py-1 px-3 rounded-md duration-300 hover:bg-yellow-500 hover:duration-300 ${teamData == comp.competition_id ? 'text-red-500' : 'text-white'}`}>
+                      <button onClick={() => isWishlisted ? handleRemoveWishlist(comp.competition_id) : handleWishlist(comp.competition_id)} className={`cursor-pointer flex items-center font-semibold bg-red-400 py-1 px-3 rounded-md duration-300 hover:bg-red-500 hover:duration-300 ${teamData == comp.competition_id ? 'text-red-500 bg-white border-2 hover:bg-white' : 'text-white'}`}>
                         <IoIosHeart className="text-lg"/>
                       </button>
                     </div>
