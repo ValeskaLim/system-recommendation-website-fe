@@ -148,8 +148,8 @@ const RecommendationPage = () => {
 
   const handleRejectInvitation = async (user_id) => {
     try {
-      const response = await axios.post(CommonConstant.RejectInvites, {user_id: user_id});
-      if(response.data.success) {
+      const response = await axios.post(CommonConstant.RejectInvites, { user_id: user_id });
+      if (response.data.success) {
         console.log(response.data.messages);
         setTimeout(() => {
           window.location.reload();
@@ -159,6 +159,8 @@ const RecommendationPage = () => {
       console.log(error);
     }
   }
+
+  console.log(recommendUsers);
 
   return (
     <div className="flex flex-col">
@@ -208,9 +210,26 @@ const RecommendationPage = () => {
           <>
             <div>
               <h3 className="mt-5 text-2xl font-semibold">Top 3 users that matches with you</h3>
-              <div className="grid grid-cols-3">
-                { }
-              </div>
+              <ul className="grid grid-cols-3 gap-4">
+                {recommendUsers.map((user: any) => (
+                  <li key={user.user_id} className="flex flex-col p-3 rounded-2xl flex justify-between bg-neutral-100 shadow-lg">
+                    <p>{user.fullname}</p>
+                    <p>{user.username}</p>
+                    <p>{user.gender}</p>
+                    <p>{user.semester}</p>
+                    <div className="mt-5 grid grid-flow-col grid-rows-3 w-fit gap-1.5 overflow-hidden">
+                      {getFieldLabels(user.field_of_preference).map((label, idx) => (
+                        <span
+                          key={idx}
+                          className="cursor-default bg-blue-100 text-blue-700 px-2 py-2.5 rounded text-xs font-bold duration-300 hover:bg-blue-500 hover:duration-300 hover:text-white"
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </>
         ) : (
