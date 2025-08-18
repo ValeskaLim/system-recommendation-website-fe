@@ -54,9 +54,14 @@ const AddCompetitionPage = () => {
       });
       navigate(ROUTE_PATHS.COMPETITION);
       successToast("Competition successfully added");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      errorToast("Error adding competition");
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "An unexpected error occurred";
+
+      errorToast(errorMessage);
     }
   };
 

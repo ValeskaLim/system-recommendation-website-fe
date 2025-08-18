@@ -5,6 +5,7 @@ import { useToast } from "../../hooks/useToast";
 import { useAuth } from "../../hooks/AuthProvider";
 import { MdDelete } from "react-icons/md";
 import Swal from 'sweetalert2';
+import { IoIosHeart } from "react-icons/io";
 
 const FIELD_OF_PREFERENCE = [
   { label: "Data Science", value: "DS" },
@@ -118,6 +119,10 @@ const TeammatesMainPage = () => {
     }
   }
 
+  const removeWishlist = async (comeptition_id) => {
+    console.log(comeptition_id);
+  } 
+
   return (
     <div className="flex flex-col">
       <h1 className="text-4xl mb-4">Teammates List</h1>
@@ -189,19 +194,20 @@ const TeammatesMainPage = () => {
                     <>
                       <div className="flex justify-between">
                         <div className="w-1/2">
-                          <p className="font-semibold text-xl">{teamCompetition.title}</p>
-                          <p className="text-md">Date</p>
+                          <p className="font-semibold text-2xl h-[44px] items-center flex">{teamCompetition.title}</p>
+                          <p className="text-md mt-2">Date</p>
                           <p>Slots</p>
                           <p>Status</p>
                           <p>Description</p>
                         </div>
                         <div className="w-3/4">
                           <div className="w-full flex justify-end">
-                            <button className="w-fit">
-                              Deez
+                            <button onClick={() => removeWishlist(teamCompetition.competition_id)} className={`cursor-pointer w-fit p-3 bg-red-400 rounded-lg text-white duration-300 
+                                                                                                                hover:bg-red-500 hover:duration-300 ${!isLeader ? 'disabled:bg-red-300 disabled:cursor-not-allowed' : ''}`} disabled={!isLeader}>
+                              <IoIosHeart className="text-xl"/>
                             </button>
                           </div>
-                          <p className="text-md">: {new Date(teamCompetition.date).toLocaleDateString('en-US', {
+                          <p className="text-md mt-2">: {new Date(teamCompetition.date).toLocaleDateString('en-US', {
                             day: 'numeric', month: 'long', year: 'numeric'
                           })}</p>
                           <p>: {teamCompetition.slot}
