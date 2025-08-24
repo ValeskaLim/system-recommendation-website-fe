@@ -1,5 +1,5 @@
 // URL
-const BASE = 'http://127.0.0.1:5000';
+const BASE = 'http://127.0.0.1:5002';
 const VALIDATE_USER = 'api/auth/validate-user';
 const SUBMIT_REGISTER = 'api/user/submit-register-data';
 const GET_EXISTING_USER = 'api/user/get-existing-user';
