@@ -104,7 +104,8 @@ const RecommendationPage = () => {
         setIsRunRecommend(true);
       } catch (error: any) {
         console.log(error);
-        errorToast(error);
+        const errorMsg = error.response.data.message;
+        errorToast(errorMsg);
       }
     } else {
       errorToast("Current user is not found");
