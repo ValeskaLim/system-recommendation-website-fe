@@ -21,10 +21,12 @@ const RECOMMENDATION = 'api/recommend';
 const GET_INVITEES_USER = 'api/user/get-invitees-user';
 const REMOVE_USER_INVITATION = 'api/user/remove-user-invitation';
 const GET_INVITES_USER = 'api/user/get-invites-user';
+const INVITE_USER = 'api/user/invite-user';
 const ACCEPT_INVITES = 'api/user/accept-invites';
 const REJECT_INVITES = 'api/user/reject-invites';
 const CHECK_IS_HAVE_TEAM = 'api/user/check-is-have-team';
 const CREATE_TEAM = 'api/team/create-team';
+const EDIT_TEAM = 'api/team/edit-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
 
 // NAVIGATION CONSTANT
@@ -46,6 +48,7 @@ const EditCompetition = BASE + '/' + EDIT_COMPETITION;
 const AddWishlistCompetition = BASE + '/' + ADD_WISHLIST_COMPETITION;
 const RemoveWishlistCompetition = BASE + '/' + REMOVE_WISHLIST_COMPETITION;
 const Recommendation = BASE + '/' + RECOMMENDATION;
+const InviteUser = BASE + '/' + INVITE_USER;
 const GetInviteesUser = BASE + '/' + GET_INVITEES_USER;
 const RemoveUserInvitation = BASE + '/' + REMOVE_USER_INVITATION;
 const GetInvitesUser = BASE + '/' + GET_INVITES_USER;
@@ -53,6 +56,7 @@ const AcceptInvites = BASE + '/' + ACCEPT_INVITES;
 const RejectInvites = BASE + '/' + REJECT_INVITES;
 const CheckIsHaveTeam = BASE + '/' + CHECK_IS_HAVE_TEAM;
 const CreateTeam = BASE + '/' + CREATE_TEAM;
+const EditTeam = BASE + '/' + EDIT_TEAM;
 const CheckIsLeader = BASE + '/' + CHECK_IS_LEADER;
 
 const CommonConstant = {
@@ -81,7 +85,9 @@ const CommonConstant = {
     CheckIsHaveTeam,
     CreateTeam,
     GetUserById,
-    CheckIsLeader
+    CheckIsLeader,
+    InviteUser,
+    EditTeam
 };
 
 export default CommonConstant;

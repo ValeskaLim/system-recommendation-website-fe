@@ -4,7 +4,7 @@ import CommonConstant from "../../constant/CommonConstant";
 import { useToast } from "../../hooks/useToast";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useAuth } from "../../hooks/AuthProvider";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 const FIELD_OF_PREFERENCE = [
   { label: "Data Science", value: "DS" },
@@ -27,6 +27,8 @@ const RecommendationPage = () => {
   const { successToast, errorToast } = useToast();
 
   const { users } = useAuth();
+
+  const inviteeIds = inviteesUser.map((invitee) => invitee.invitee_id);
 
   useEffect(() => {
     const fetchinviteesUser = async () => {
@@ -51,9 +53,9 @@ const RecommendationPage = () => {
         }
       } catch (error: any) {
         console.log(error);
-        errorToast(error)
+        errorToast(error);
       }
-    }
+    };
 
     const fetchTeammates = async () => {
       const response = await axios.post(CommonConstant.TeammatesList, {});
@@ -64,9 +66,9 @@ const RecommendationPage = () => {
         setMemberLength(member_length);
       } catch (error: any) {
         console.log(error);
-        errorToast(error)
+        errorToast(error);
       }
-    }
+    };
 
     fetchTeammates();
     fetchinviteesUser();
@@ -92,13 +94,17 @@ const RecommendationPage = () => {
     }
 
     return false;
-  }
+  };
 
   const processRecommend = async (e) => {
     e.preventDefault();
     if (users !== null) {
       try {
-        const response = await axios.post(CommonConstant.Recommendation, { user_id: users.user_id, ignore_gender: isIgnoreGender, ignore_semester: isIgnoreSemester });
+        const response = await axios.post(CommonConstant.Recommendation, {
+          user_id: users.user_id,
+          ignore_gender: isIgnoreGender,
+          ignore_semester: isIgnoreSemester,
+        });
         console.log(response.data);
         setRecommendUsers(response.data.results);
         setIsRunRecommend(true);
@@ -120,7 +126,9 @@ const RecommendationPage = () => {
 
   const removeUser = async (user_id) => {
     try {
-      const response = await axios.post(CommonConstant.RemoveUserInvitation, { user_id: user_id });
+      const response = await axios.post(CommonConstant.RemoveUserInvitation, {
+        user_id: user_id,
+      });
       if (response.data.success) {
         setTimeout(() => {
           window.location.reload();
@@ -131,11 +139,33 @@ const RecommendationPage = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const handleInviteUser = async (user_id) => {
+    try {
+      const response = await axios.post(CommonConstant.InviteUser, {
+        user_id: user_id,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      } else {
+        errorToast("Error inviting user");
+      }
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
 
   const handleAcceptInvitation = async (user_id) => {
     try {
-      const response = await axios.post(CommonConstant.AcceptInvites, { user_id: user_id });
+      const response = await axios.post(CommonConstant.AcceptInvites, {
+        user_id: user_id,
+      });
       if (response.data.success) {
         successToast(response.data.messages);
         setTimeout(() => {
@@ -145,11 +175,13 @@ const RecommendationPage = () => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleRejectInvitation = async (user_id) => {
     try {
-      const response = await axios.post(CommonConstant.RejectInvites, { user_id: user_id });
+      const response = await axios.post(CommonConstant.RejectInvites, {
+        user_id: user_id,
+      });
       if (response.data.success) {
         console.log(response.data.messages);
         setTimeout(() => {
@@ -159,9 +191,7 @@ const RecommendationPage = () => {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  console.log(recommendUsers);
+  };
 
   return (
     <div className="flex flex-col">
@@ -210,23 +240,83 @@ const RecommendationPage = () => {
         {isRunRecommend ? (
           <>
             <div>
-              <h3 className="mt-5 text-2xl font-semibold">Top 3 users that matches with you</h3>
+              <h3 className="mt-5 text-2xl font-semibold">
+                Top 3 users that matches with you
+              </h3>
               <ul className="grid grid-cols-3 gap-4">
                 {recommendUsers.map((user: any) => (
-                  <li key={user.user_id} className="flex flex-col p-3 rounded-2xl flex justify-between bg-neutral-100 shadow-lg">
-                    <p>{user.fullname}</p>
-                    <p>{user.username}</p>
-                    <p>{user.gender}</p>
-                    <p>{user.semester}</p>
-                    <div className="mt-5 grid grid-flow-col grid-rows-3 w-fit gap-1.5 overflow-hidden">
-                      {getFieldLabels(user.field_of_preference).map((label, idx) => (
-                        <span
-                          key={idx}
-                          className="cursor-default bg-blue-100 text-blue-700 px-2 py-2.5 rounded text-xs font-bold duration-300 hover:bg-blue-500 hover:duration-300 hover:text-white"
+                  <li
+                    key={user.user_id}
+                    className="flex flex-col justify-between p-3 rounded-2xl bg-neutral-100 shadow-lg"
+                  >
+                    <div>
+                      <div className="flex justify-between">
+                        <div className="">
+                          <p>Fullname</p>
+                          <p>Username</p>
+                          <p>Gender</p>
+                          <p>Semester</p>
+                        </div>
+                        <div className="w-3/4">
+                          <p>: {user.fullname}</p>
+                          <p>: {user.username}</p>
+                          <p>
+                            : {user.gender == "L" ? "Laki-laki" : "Perempuan"}
+                          </p>
+                          <p>: {user.semester}</p>
+                        </div>
+                      </div>
+                      <div className="mt-5 grid grid-cols-3 w-full gap-4 overflow-hidden">
+                        {getFieldLabels(user.field_of_preference).map(
+                          (label, idx) => (
+                            <span
+                              key={idx}
+                              className="text-center cursor-default bg-blue-100 text-blue-700 px-2 py-2.5 rounded text-xs font-bold duration-300 hover:bg-blue-500 hover:duration-300 hover:text-white"
+                            >
+                              {label}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-1 mt-2">
+                      <button
+                        onClick={() => handleInviteUser(user.user_id)}
+                        className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-blue-300 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                        enabled:bg-blue-500 disabled:cursor-not-allowed enabled:hover:bg-blue-600 hover:duration-300"
+                        disabled={inviteeIds.includes(user.user_id)}
+                      >
+                        Invite
+                      </button>
+                      {inviteeIds.includes(user.user_id) && (
+                        <button
+                          onClick={async () => {
+                            const result = await Swal.fire({
+                              title: "Are you sure?",
+                              text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Remove",
+                            });
+
+                            if (result.isConfirmed) {
+                              await removeUser(user.user_id);
+
+                              await Swal.fire({
+                                title: "Invitation Deleted!",
+                                text: `${user.username} has been removed.`,
+                                icon: "success",
+                              });
+                            }
+                          }}
+                          className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                        hover:bg-red-600 hover:duration-300"
                         >
-                          {label}
-                        </span>
-                      ))}
+                          Cancel
+                        </button>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -259,29 +349,22 @@ const RecommendationPage = () => {
                         {user.invitee.username}
                       </h3>
                       <p className="flex justify-between">
-                        <span>
-                          Gender:
-                        </span>
+                        <span>Gender:</span>
                         <span className="w-3/5">
                           {" "}
-                          {user.invitee.gender == "L" ? "Laki-laki" : "Perempuan"}
+                          {user.invitee.gender == "L"
+                            ? "Laki-laki"
+                            : "Perempuan"}
                         </span>
                       </p>
                       <p className="flex justify-between">
-                        <span>
-                          Email:
-                        </span>
-                        <span className="w-3/5">
-                          {user.invitee.email}
-                        </span>
+                        <span>Email:</span>
+                        <span className="w-3/5">{user.invitee.email}</span>
                       </p>
                       <p className="flex justify-between">
-                        <span>
-                          Semester:
-                        </span>
-                        <span className="w-3/5">
-                          {user.invitee.semester}
-                        </span></p>
+                        <span>Semester:</span>
+                        <span className="w-3/5">{user.invitee.semester}</span>
+                      </p>
                       <p className="mt-2">Field of interest: </p>
                     </div>
 
@@ -301,28 +384,33 @@ const RecommendationPage = () => {
                       )
                     )}
                   </div>
-                  <button onClick={async () => {
-                    const result = await Swal.fire({
-                      title: "Are you sure?",
-                      text: "You won't be able to revert this!",
-                      icon: "warning",
-                      showCancelButton: true,
-                      confirmButtonColor: "#3085d6",
-                      cancelButtonColor: "#d33",
-                      confirmButtonText: "Remove",
-                    });
-
-                    if (result.isConfirmed) {
-                      await removeUser(user.invitee_id);
-
-                      await Swal.fire({
-                        title: "Teammates Deleted!",
-                        text: `${user.invitee.username} has been removed.`,
-                        icon: "success",
+                  <button
+                    onClick={async () => {
+                      const result = await Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Remove",
                       });
-                    }
-                  }} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-red-600 hover:duration-300">Remove</button>
+
+                      if (result.isConfirmed) {
+                        await removeUser(user.invitee_id);
+
+                        await Swal.fire({
+                          title: "Teammates Deleted!",
+                          text: `${user.invitee.username} has been removed.`,
+                          icon: "success",
+                        });
+                      }
+                    }}
+                    className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                        hover:bg-red-600 hover:duration-300"
+                  >
+                    Remove
+                  </button>
                 </li>
               ))}
             </div>
@@ -340,29 +428,22 @@ const RecommendationPage = () => {
                         {user.invites.username}
                       </h3>
                       <p className="flex justify-between">
-                        <span>
-                          Gender:
-                        </span>
+                        <span>Gender:</span>
                         <span className="w-3/5">
                           {" "}
-                          {user.invites.gender == "L" ? "Laki-laki" : "Perempuan"}
+                          {user.invites.gender == "L"
+                            ? "Laki-laki"
+                            : "Perempuan"}
                         </span>
                       </p>
                       <p className="flex justify-between">
-                        <span>
-                          Email:
-                        </span>
-                        <span className="w-3/5">
-                          {user.invites.email}
-                        </span>
+                        <span>Email:</span>
+                        <span className="w-3/5">{user.invites.email}</span>
                       </p>
                       <p className="flex justify-between">
-                        <span>
-                          Semester:
-                        </span>
-                        <span className="w-3/5">
-                          {user.invites.semester}
-                        </span></p>
+                        <span>Semester:</span>
+                        <span className="w-3/5">{user.invites.semester}</span>
+                      </p>
                       <p className="mt-2">Field of interest: </p>
                     </div>
 
@@ -383,30 +464,42 @@ const RecommendationPage = () => {
                     )}
                   </div>
                   <div className="flex">
-                    <button onClick={() => handleAcceptInvitation(user.invites.user_id)} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-green-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-green-600 hover:duration-300">Accept</button>
-                    <button onClick={async () => {
-                      const result = await Swal.fire({
-                        title: "Are you sure?",
-                        text: "You won't be able to revert this!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Remove",
-                      });
-
-                      if (result.isConfirmed) {
-                        await handleRejectInvitation(user.invites.user_id);
-
-                        await Swal.fire({
-                          title: "Invitation Deleted!",
-                          text: "Invitation has been removed.",
-                          icon: "success",
-                        });
+                    <button
+                      onClick={() =>
+                        handleAcceptInvitation(user.invites.user_id)
                       }
-                    }} className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-red-600 hover:duration-300">Reject</button>
+                      className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-green-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                        hover:bg-green-600 hover:duration-300"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const result = await Swal.fire({
+                          title: "Are you sure?",
+                          text: "You won't be able to revert this!",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#3085d6",
+                          cancelButtonColor: "#d33",
+                          confirmButtonText: "Remove",
+                        });
+
+                        if (result.isConfirmed) {
+                          await handleRejectInvitation(user.invites.user_id);
+
+                          await Swal.fire({
+                            title: "Invitation Deleted!",
+                            text: "Invitation has been removed.",
+                            icon: "success",
+                          });
+                        }
+                      }}
+                      className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                        hover:bg-red-600 hover:duration-300"
+                    >
+                      Reject
+                    </button>
                   </div>
                 </li>
               ))}
