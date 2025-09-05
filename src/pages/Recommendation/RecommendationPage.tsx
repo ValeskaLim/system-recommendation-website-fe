@@ -5,6 +5,10 @@ import { useToast } from "../../hooks/useToast";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useAuth } from "../../hooks/AuthProvider";
 import Swal from "sweetalert2";
+import BlueButton from "../../components/BlueButton";
+import GreenButton from "../../components/GreenButton";
+import RedButton from "../../components/RedButton";
+import ProgressCircle from "../../components/ProgressCircle";
 
 const FIELD_OF_PREFERENCE = [
   { label: "Data Science", value: "DS" },
@@ -106,7 +110,7 @@ const RecommendationPage = () => {
           ignore_semester: isIgnoreSemester,
         });
         console.log(response.data);
-        setRecommendUsers(response.data.results);
+        setRecommendUsers(response.data.data);
         setIsRunRecommend(true);
       } catch (error: any) {
         console.log(error);
@@ -226,15 +230,13 @@ const RecommendationPage = () => {
               Recommend
               <IoSettingsSharp className="text-2xl duration-300 group-hover:rotate-90 group-hover:duration-300 group-disabled:rotate-0" />
             </button>
-            <button
-              type="button"
+            <RedButton
+              label="Reset"
               onClick={handleReset}
               className="cursor-pointer flex gap-2 group text-lg items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
                         hover:bg-red-600 hover:duration-300 disabled:cursor-not-allowed disabled:bg-red-300"
               disabled={isRunRecommend == false}
-            >
-              Reset
-            </button>
+            />
           </div>
         </form>
         {isRunRecommend ? (
@@ -257,7 +259,7 @@ const RecommendationPage = () => {
                           <p>Gender</p>
                           <p>Semester</p>
                         </div>
-                        <div className="w-3/4">
+                        <div className="w-1/3">
                           <p>: {user.fullname}</p>
                           <p>: {user.username}</p>
                           <p>
@@ -265,6 +267,11 @@ const RecommendationPage = () => {
                           </p>
                           <p>: {user.semester}</p>
                         </div>
+                        <ProgressCircle
+                          percentage={Number(
+                            (user.similarity * 100).toFixed(1)
+                          )}
+                        />
                       </div>
                       <div className="mt-5 grid grid-cols-3 w-full gap-4 overflow-hidden">
                         {getFieldLabels(user.field_of_preference).map(
@@ -280,14 +287,13 @@ const RecommendationPage = () => {
                       </div>
                     </div>
                     <div className="flex gap-1 mt-2">
-                      <button
+                      <BlueButton
+                        label="Invite"
                         onClick={() => handleInviteUser(user.user_id)}
                         className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-blue-300 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
                         enabled:bg-blue-500 disabled:cursor-not-allowed enabled:hover:bg-blue-600 hover:duration-300"
                         disabled={inviteeIds.includes(user.user_id)}
-                      >
-                        Invite
-                      </button>
+                      />
                       {inviteeIds.includes(user.user_id) && (
                         <button
                           onClick={async () => {
@@ -384,33 +390,33 @@ const RecommendationPage = () => {
                       )
                     )}
                   </div>
-                  <button
-                    onClick={async () => {
-                      const result = await Swal.fire({
-                        title: "Are you sure?",
-                        text: "You won't be able to revert this!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Remove",
-                      });
-
-                      if (result.isConfirmed) {
-                        await removeUser(user.invitee_id);
-
-                        await Swal.fire({
-                          title: "Teammates Deleted!",
-                          text: `${user.invitee.username} has been removed.`,
-                          icon: "success",
+                  <div>
+                    <RedButton
+                      label="Remove"
+                      onClick={async () => {
+                        const result = await Swal.fire({
+                          title: "Are you sure?",
+                          text: "You won't be able to revert this!",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#3085d6",
+                          cancelButtonColor: "#d33",
+                          confirmButtonText: "Remove",
                         });
-                      }
-                    }}
-                    className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-red-600 hover:duration-300"
-                  >
-                    Remove
-                  </button>
+
+                        if (result.isConfirmed) {
+                          await removeUser(user.invitee_id);
+
+                          await Swal.fire({
+                            title: "Teammates Deleted!",
+                            text: `${user.invitee.username} has been removed.`,
+                            icon: "success",
+                          });
+                        }
+                      }}
+                      extendedClassName="mt-3"
+                    />
+                  </div>
                 </li>
               ))}
             </div>
@@ -463,17 +469,15 @@ const RecommendationPage = () => {
                       )
                     )}
                   </div>
-                  <div className="flex">
-                    <button
+                  <div className="flex mt-3 gap-2">
+                    <GreenButton
+                      label="Accept"
                       onClick={() =>
                         handleAcceptInvitation(user.invites.user_id)
                       }
-                      className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-green-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-green-600 hover:duration-300"
-                    >
-                      Accept
-                    </button>
-                    <button
+                    />
+                    <RedButton
+                      label="Reject"
                       onClick={async () => {
                         const result = await Swal.fire({
                           title: "Are you sure?",
@@ -495,11 +499,7 @@ const RecommendationPage = () => {
                           });
                         }
                       }}
-                      className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-red-600 hover:duration-300"
-                    >
-                      Reject
-                    </button>
+                    />
                   </div>
                 </li>
               ))}

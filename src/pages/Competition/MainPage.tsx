@@ -1,10 +1,4 @@
-import {
-  Link,
-  Navigate,
-  NavLink,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthProvider";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import axios from "axios";
@@ -13,6 +7,8 @@ import { useEffect, useState } from "react";
 import { useToast } from "../../hooks/useToast";
 import { IoIosHeart } from "react-icons/io";
 import Swal from "sweetalert2";
+import RedButton from "../../components/RedButton";
+import BlueButton from "../../components/BlueButton";
 
 const STATUS_LIST = [
   { label: "Active", value: "ACT" },
@@ -20,7 +16,6 @@ const STATUS_LIST = [
 ];
 
 const MainPage = () => {
-
   const [competitions, setCompetitions] = useState([]);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistedTeam, setWishlistedTeam] = useState(undefined);
@@ -47,7 +42,7 @@ const MainPage = () => {
 
     const fetchTeamData = async () => {
       try {
-        const response = await axios.post(CommonConstant.TeammatesList)
+        const response = await axios.post(CommonConstant.TeammatesList);
         if (response.data.success) {
           setTeamData(response.data.data.competition_id);
           if (response.data.data.competition_id !== null) {
@@ -59,19 +54,19 @@ const MainPage = () => {
         console.error(error);
         errorToast(error);
       }
-    }
+    };
 
     const fetchIsLeader = async () => {
       try {
         const response = await axios.post(CommonConstant.CheckIsLeader);
-        if (response.data.isLeader) {
+        if (response.data.data.isLeader) {
           setIsLeader(true);
         }
       } catch (error: any) {
         console.log(error);
         errorToast(error);
       }
-    }
+    };
 
     fetchTeamData();
     fetchData();
@@ -104,7 +99,9 @@ const MainPage = () => {
 
   const handleWishlist = async (competition_id) => {
     try {
-      const response = await axios.post(CommonConstant.AddWishlistCompetition, { competition_id: competition_id })
+      const response = await axios.post(CommonConstant.AddWishlistCompetition, {
+        competition_id: competition_id,
+      });
       if (response.data.success) {
         setTimeout(() => {
           window.location.reload();
@@ -121,11 +118,14 @@ const MainPage = () => {
 
       errorToast(errorMessage);
     }
-  }
+  };
 
   const handleRemoveWishlist = async (competition_id) => {
     try {
-      const response = await axios.post(CommonConstant.RemoveWishlistCompetition, { competition_id: competition_id })
+      const response = await axios.post(
+        CommonConstant.RemoveWishlistCompetition,
+        { competition_id: competition_id }
+      );
       if (response.data.success) {
         setTimeout(() => {
           window.location.reload();
@@ -135,20 +135,21 @@ const MainPage = () => {
       }
     } catch (error: any) {
       console.log(error);
-      errorToast(error)
+      errorToast(error);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col">
       <h1 className="text-4xl mb-4">Competition List</h1>
       {users?.role === "admin" && (
-        <NavLink
-          to={ROUTE_PATHS.ADD_COMPETITION}
-          className="block w-fit bg-blue-600 text-white p-3 rounded-lg duration-300 font-semibold hover:bg-blue-700 hover:duration-300"
-        >
-          Add competition
-        </NavLink>
+        <div>
+          <BlueButton
+            label="Add Competition"
+            onClick={() => navigate(ROUTE_PATHS.ADD_COMPETITION)}
+            extendedClassName="text-lg"
+          />
+        </div>
       )}
       <div className="mt-10">
         {competitions.length === 0 ? (
@@ -158,7 +159,10 @@ const MainPage = () => {
             {competitions.map((comp: any, idx) => (
               <>
                 <div>
-                  <li key={idx} className="border p-3 rounded-xl shadow-sm h-full flex flex-col">
+                  <li
+                    key={idx}
+                    className="border p-3 rounded-xl shadow-sm h-full flex flex-col"
+                  >
                     <div className="flex justify-between">
                       <div>
                         <h3 className="font-semibold text-xl">{comp.title}</h3>
@@ -168,14 +172,19 @@ const MainPage = () => {
                           })}
                         </p>
                         <p>Slot: {comp.slot}</p>
-                        <p className="mt-3">{comp.description.length > 170 ? `${comp.description.substring(0, 100)}...` : comp.description}</p>
+                        <p className="mt-3 break-all">
+                          {comp.description.length > 170
+                            ? `${comp.description.substring(0, 100)}...`
+                            : comp.description}
+                        </p>
                       </div>
                       <div>
                         <div
-                          className={`cursor-default px-2 py-1 rounded-md font-semibold border-2 ${comp.status === "ACT"
-                            ? " text-green-600 border-green-600"
-                            : "text-gray-500 border-gray-500"
-                            }`}
+                          className={`cursor-default px-2 py-1 rounded-md font-semibold border-2 ${
+                            comp.status === "ACT"
+                              ? " text-green-600 border-green-600"
+                              : "text-gray-500 border-gray-500"
+                          }`}
                         >
                           {getStatusLabel(comp.status)}
                         </div>
@@ -184,11 +193,17 @@ const MainPage = () => {
                     <div className="flex gap-1 mt-2 h-full">
                       {users?.role === "admin" && (
                         <>
-
-                          <button onClick={() => navigate(`${ROUTE_PATHS.EDIT_COMPETITION}/${comp.competition_id}`)} className="self-end h-fit cursor-pointer font-semibold bg-blue-500 text-white py-2 px-3 rounded-md duration-300 hover:bg-blue-600 hover:duration-300">
-                            Edit
-                          </button>
-                          <button
+                          <BlueButton
+                            label="Edit"
+                            onClick={() =>
+                              navigate(
+                                `${ROUTE_PATHS.EDIT_COMPETITION}/${comp.competition_id}`
+                              )
+                            }
+                            extendedClassName="self-end h-fit"
+                          />
+                          <RedButton
+                            label="Delete"
                             onClick={async () => {
                               const result = await Swal.fire({
                                 title: "Are you sure?",
@@ -210,19 +225,24 @@ const MainPage = () => {
                                 });
                               }
                             }}
-                            className="self-end cursor-pointer font-semibold bg-red-500 text-white py-2 h-fit px-3 rounded-md duration-300 hover:bg-red-600 hover:duration-300"
-                          >
-                            Delete
-                          </button>
+                          />
                         </>
                       )}
-                      <button onClick={() => wishlistedTeam == comp.competition_id ? handleRemoveWishlist(comp.competition_id) : handleWishlist(comp.competition_id)}
+                      <button
+                        onClick={() =>
+                          wishlistedTeam == comp.competition_id
+                            ? handleRemoveWishlist(comp.competition_id)
+                            : handleWishlist(comp.competition_id)
+                        }
                         className={`self-end cursor-pointer h-[40px] items-center font-semibold border-2 py-2 px-3 rounded-md duration-300 hover:duration-300 
-                                    ${teamData == comp.competition_id 
-                                      ? 'text-white bg-red-400 enabled:hover:bg-red-500 border-none disabled:bg-red-300 disabled:text-white'
-                                      : 'text-red-500 bg-white border-red-500'} 
+                                    ${
+                                      teamData == comp.competition_id
+                                        ? "text-white bg-red-400 enabled:hover:bg-red-500 border-none disabled:bg-red-300 disabled:text-white"
+                                        : "text-red-500 bg-white border-red-500"
+                                    } 
                                     disabled:cursor-not-allowed disabled:bg-inherit disabled:text-red-300 disabled:border-red-300`}
-                        disabled={!isLeader}>
+                        disabled={!isLeader}
+                      >
                         <IoIosHeart className="text-lg" />
                       </button>
                     </div>

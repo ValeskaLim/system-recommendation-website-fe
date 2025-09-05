@@ -7,6 +7,7 @@ import { MdDelete, MdCancelPresentation, MdSave } from "react-icons/md";
 import Swal from "sweetalert2";
 import { IoIosHeart } from "react-icons/io";
 import { HiPencilAlt } from "react-icons/hi";
+import RedButton from "../../components/RedButton";
 
 const FIELD_OF_PREFERENCE = [
   { label: "Data Science", value: "DS" },
@@ -70,7 +71,7 @@ const TeammatesMainPage = () => {
           setTeammates(users);
 
           const response3 = await axios.post(CommonConstant.CheckIsLeader);
-          setIsLeader(response3.data.isLeader);
+          setIsLeader(response3.data.data.isLeader);
 
           const response4 = await axios.post(
             CommonConstant.GetCompetitionById,
@@ -149,18 +150,54 @@ const TeammatesMainPage = () => {
     setTeamName(originalTeamName);
   };
 
-  const saveTeamChanges = async () => {
+  const disbandTeam = async (user_id) => {
     try {
-      const response = await axios.post(CommonConstant.EditTeam, { 
-        team_id: teamId, 
-        team_name: teamName 
+      const response = await axios.post(CommonConstant.DeleteTeam, {
+        user_id: user_id,
       });
 
-      if(response.data.success) {
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      } else {
+        errorToast("Error disbanding team");
+      }
+    } catch (error) {
+      console.log(error);
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
+  const saveTeamChanges = async () => {
+    try {
+      const response = await axios.post(CommonConstant.EditTeam, {
+        team_id: teamId,
+        team_name: teamName,
+      });
+
+      if (response.data.success) {
         setIsEditMode(false);
         successToast(response.data.message);
       }
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
 
+  const leaveTeam = async () => {
+    try {
+      const response = await axios.post(CommonConstant.LeaveTeam);
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
     } catch (error: any) {
       console.log(error);
       const errorMessage = error.response.data.message;
@@ -175,44 +212,99 @@ const TeammatesMainPage = () => {
       <div className="mt-7">
         {isJoinedTeam ? (
           <>
-            <div className="flex items-center">
-              <h2 className="text-3xl">Team Name: </h2>
-              <input
-                type="text"
-                name="teamName"
-                id="teamName"
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
-                className="mx-3 w-fit text-2xl p-2 border border-[#e6e6e6] rounded-lg disabled:border-none"
-                disabled={!isEditMode}
-                size={teamName.length - 2}
-              />
-              {isLeader &&
-                (isEditMode ? (
-                  <div className="flex gap-2">
-                    <div>
+            <div className="flex justify-between">
+              <div className="flex items-center">
+                <h2 className="text-3xl">Team Name: </h2>
+                <input
+                  type="text"
+                  name="teamName"
+                  id="teamName"
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
+                  className="mx-3 w-fit text-2xl p-2 border border-[#e6e6e6] rounded-lg disabled:border-none"
+                  disabled={!isEditMode}
+                  size={teamName.length - 2}
+                />
+                {isLeader &&
+                  (isEditMode ? (
+                    <div className="flex gap-2">
+                      <div>
+                        <div
+                          onClick={saveTeamChanges}
+                          className="flex items-center cursor-pointer border-2 border-green-500 p-1.5 bg-green-500 text-white rounded-lg duration-300 hover:text-green-500 hover:duration-300 hover:bg-white hover:border-2"
+                        >
+                          <MdSave className="text-2xl" />
+                        </div>
+                      </div>
                       <div
-                        onClick={saveTeamChanges}
-                        className="flex items-center cursor-pointer border-2 border-green-500 p-1.5 bg-green-500 text-white rounded-lg duration-300 hover:text-green-500 hover:duration-300 hover:bg-white hover:border-2"
+                        onClick={cancelEdit}
+                        className="flex items-center cursor-pointer border-2 border-red-500 p-1.5 bg-red-500 text-white rounded-lg duration-300 hover:text-red-500 hover:duration-300 hover:bg-white hover:border-2"
                       >
-                        <MdSave  className="text-2xl" />
+                        <MdCancelPresentation className="text-2xl" />
                       </div>
                     </div>
+                  ) : (
                     <div
-                      onClick={cancelEdit}
-                      className="flex items-center cursor-pointer border-2 border-red-500 p-1.5 bg-red-500 text-white rounded-lg duration-300 hover:text-red-500 hover:duration-300 hover:bg-white hover:border-2"
+                      onClick={startEdit}
+                      className="flex items-center cursor-pointer border-2 border-blue-500 p-1.5 bg-blue-500 text-white rounded-lg duration-300 hover:text-blue-500 hover:duration-300 hover:bg-white hover:border-2"
                     >
-                      <MdCancelPresentation className="text-2xl" />
+                      <HiPencilAlt className="text-2xl" />
                     </div>
-                  </div>
+                  ))}
+              </div>
+              <div>
+                {isLeader ? (
+                  <RedButton
+                    label="Disband Team"
+                    onClick={async () => {
+                      const result = await Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Remove",
+                      });
+
+                      if (result.isConfirmed) {
+                        await disbandTeam(users?.user_id);
+
+                        await Swal.fire({
+                          title: "Team Disbanded!",
+                          text: "The team has been disbanded.",
+                          icon: "success",
+                        });
+                      }
+                    }}
+                  />
                 ) : (
-                  <div
-                    onClick={startEdit}
-                    className="flex items-center cursor-pointer border-2 border-blue-500 p-1.5 bg-blue-500 text-white rounded-lg duration-300 hover:text-blue-500 hover:duration-300 hover:bg-white hover:border-2"
-                  >
-                    <HiPencilAlt className="text-2xl" />
-                  </div>
-                ))}
+                  <RedButton
+                    label="Leave Team"
+                    onClick={async () => {
+                      const result = await Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Remove",
+                      });
+
+                      if (result.isConfirmed) {
+                        await leaveTeam();
+
+                        await Swal.fire({
+                          title: "Leave Team",
+                          text: "You have left the team.",
+                          icon: "success",
+                        });
+                      }
+                    }}
+                  />
+                )}
+              </div>
             </div>
             <div className="flex justify-between gap-5 mt-5">
               <ul className="list-none space-y-4 w-full">

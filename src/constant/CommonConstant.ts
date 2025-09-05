@@ -1,9 +1,9 @@
 // URL
 const BASE = 'http://127.0.0.1:5002';
-const VALIDATE_USER = 'api/auth/validate-user';
+const VALIDATE_USER = 'api/user/validate-user';
 const SUBMIT_REGISTER = 'api/user/submit-register-data';
 const GET_EXISTING_USER = 'api/user/get-existing-user';
-const LOGOUT = 'api/auth/logout';
+const LOGOUT = 'api/user/logout';
 const GET_CURRENT_USER = 'api/user/get-current-user';
 const GET_USER_BY_ID = 'api/user/get-user-by-id';
 const ADD_COMPETITION = 'api/competition/add';
@@ -27,6 +27,8 @@ const REJECT_INVITES = 'api/user/reject-invites';
 const CHECK_IS_HAVE_TEAM = 'api/user/check-is-have-team';
 const CREATE_TEAM = 'api/team/create-team';
 const EDIT_TEAM = 'api/team/edit-team';
+const DELETE_TEAM = 'api/team/delete-team';
+const LEAVE_TEAM = 'api/team/leave-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
 
 // NAVIGATION CONSTANT
@@ -57,6 +59,8 @@ const RejectInvites = BASE + '/' + REJECT_INVITES;
 const CheckIsHaveTeam = BASE + '/' + CHECK_IS_HAVE_TEAM;
 const CreateTeam = BASE + '/' + CREATE_TEAM;
 const EditTeam = BASE + '/' + EDIT_TEAM;
+const DeleteTeam = BASE + '/' + DELETE_TEAM;
+const LeaveTeam = BASE + '/' + LEAVE_TEAM;
 const CheckIsLeader = BASE + '/' + CHECK_IS_LEADER;
 
 const CommonConstant = {
@@ -87,7 +91,9 @@ const CommonConstant = {
     GetUserById,
     CheckIsLeader,
     InviteUser,
-    EditTeam
+    EditTeam,
+    DeleteTeam,
+    LeaveTeam,
 };
 
 export default CommonConstant;

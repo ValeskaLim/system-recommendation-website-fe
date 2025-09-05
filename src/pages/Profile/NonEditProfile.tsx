@@ -1,4 +1,5 @@
 import Select from "react-select";
+import BlueButton from "../../components/BlueButton";
 
 const FIELD_OF_PREFERENCE = [
   { label: "Data Science", value: "DS" },
@@ -83,12 +84,7 @@ const NonEditProfile = ({ users, setIsEdit }) => {
               isDisabled
             />
           </div>
-          <div
-            onClick={() => setIsEdit(true)}
-            className="mt-5 cursor-pointer block w-fit bg-blue-600 text-white p-3 rounded-lg duration-300 font-bold hover:bg-blue-700 hover:duration-300"
-          >
-            Edit Profile
-          </div>
+          <BlueButton label="Edit Profile" onClick={() => setIsEdit(true)} extendedClassName="mt-5"/>
         </form>
       </div>
     </div>

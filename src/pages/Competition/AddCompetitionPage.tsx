@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CommonConstant from "../../constant/CommonConstant";
 import { useState } from "react";
+import GreenButton from "../../components/GreenButton";
+import RedButton from "../../components/RedButton";
 
 const COMPETITION_TYPES = [
   { label: "Artificial Intelligence", value: "AI" },
@@ -31,18 +33,13 @@ const AddCompetitionPage = () => {
         return;
       }
 
-      const existing_data = await axios.post(
+      await axios.post(
         CommonConstant.GetExistingCompetition,
         {
           title,
           date,
         }
       );
-
-      if (existing_data.data.isExist === true) {
-        errorToast(`Competition ${title} is already exist!`);
-        return;
-      }
 
       await axios.post(CommonConstant.AddCompetition, {
         title,
@@ -162,20 +159,9 @@ const AddCompetitionPage = () => {
               required
             ></textarea>
           </div>
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              className="cursor-pointer w-fit bg-blue-500 text-white mt-5 py-2 px-4 rounded-md duration-300 font-semibold hover:bg-blue-600 hover:duration-300"
-            >
-              Submit
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="cursor-pointer w-fit text-blue-500 border-2 mt-5 py-2 px-4 rounded-md duration-300 font-semibold hover:text-blue-600 hover:duration-300"
-            >
-              Back
-            </button>
+          <div className="flex gap-2">
+            <GreenButton label="Submit" />
+            <RedButton label="Cancel" onClick={() => navigate(-1)} />
           </div>
         </form>
       </div>
