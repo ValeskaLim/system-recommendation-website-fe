@@ -169,7 +169,7 @@ const TeammatesMainPage = () => {
       const errorMessage = error.response.data.message;
       errorToast(errorMessage);
     }
-  }
+  };
 
   const saveTeamChanges = async () => {
     try {
@@ -188,6 +188,22 @@ const TeammatesMainPage = () => {
       errorToast(errorMessage);
     }
   };
+
+  const leaveTeam = async () => {
+    try {
+      const response = await axios.post(CommonConstant.LeaveTeam);
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+      }
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -237,28 +253,56 @@ const TeammatesMainPage = () => {
                   ))}
               </div>
               <div>
-                {isLeader && (
-                  <RedButton label="Disband Team" onClick={async () => {
-                    const result = await Swal.fire({
-                      title: "Are you sure?",
-                      text: "You won't be able to revert this!",
-                      icon: "warning",
-                      showCancelButton: true,
-                      confirmButtonColor: "#3085d6",
-                      cancelButtonColor: "#d33",
-                      confirmButtonText: "Remove",
-                    });
-
-                    if (result.isConfirmed) {
-                      await disbandTeam(users?.user_id);
-
-                      await Swal.fire({
-                        title: "Team Disbanded!",
-                        text: "The team has been disbanded.",
-                        icon: "success",
+                {isLeader ? (
+                  <RedButton
+                    label="Disband Team"
+                    onClick={async () => {
+                      const result = await Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Remove",
                       });
-                    }
-                  }}/>
+
+                      if (result.isConfirmed) {
+                        await disbandTeam(users?.user_id);
+
+                        await Swal.fire({
+                          title: "Team Disbanded!",
+                          text: "The team has been disbanded.",
+                          icon: "success",
+                        });
+                      }
+                    }}
+                  />
+                ) : (
+                  <RedButton
+                    label="Leave Team"
+                    onClick={async () => {
+                      const result = await Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Remove",
+                      });
+
+                      if (result.isConfirmed) {
+                        await leaveTeam();
+
+                        await Swal.fire({
+                          title: "Leave Team",
+                          text: "You have left the team.",
+                          icon: "success",
+                        });
+                      }
+                    }}
+                  />
                 )}
               </div>
             </div>

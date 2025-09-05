@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import BlueButton from "../../components/BlueButton";
 import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
+import ProgressCircle from "../../components/ProgressCircle";
 
 const FIELD_OF_PREFERENCE = [
   { label: "Data Science", value: "DS" },
@@ -258,7 +259,7 @@ const RecommendationPage = () => {
                           <p>Gender</p>
                           <p>Semester</p>
                         </div>
-                        <div className="w-3/4">
+                        <div className="w-1/3">
                           <p>: {user.fullname}</p>
                           <p>: {user.username}</p>
                           <p>
@@ -266,6 +267,11 @@ const RecommendationPage = () => {
                           </p>
                           <p>: {user.semester}</p>
                         </div>
+                        <ProgressCircle
+                          percentage={Number(
+                            (user.similarity * 100).toFixed(1)
+                          )}
+                        />
                       </div>
                       <div className="mt-5 grid grid-cols-3 w-full gap-4 overflow-hidden">
                         {getFieldLabels(user.field_of_preference).map(

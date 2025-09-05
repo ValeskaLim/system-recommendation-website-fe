@@ -28,6 +28,7 @@ const CHECK_IS_HAVE_TEAM = 'api/user/check-is-have-team';
 const CREATE_TEAM = 'api/team/create-team';
 const EDIT_TEAM = 'api/team/edit-team';
 const DELETE_TEAM = 'api/team/delete-team';
+const LEAVE_TEAM = 'api/team/leave-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
 
 // NAVIGATION CONSTANT
@@ -59,6 +60,7 @@ const CheckIsHaveTeam = BASE + '/' + CHECK_IS_HAVE_TEAM;
 const CreateTeam = BASE + '/' + CREATE_TEAM;
 const EditTeam = BASE + '/' + EDIT_TEAM;
 const DeleteTeam = BASE + '/' + DELETE_TEAM;
+const LeaveTeam = BASE + '/' + LEAVE_TEAM;
 const CheckIsLeader = BASE + '/' + CHECK_IS_LEADER;
 
 const CommonConstant = {
@@ -90,7 +92,8 @@ const CommonConstant = {
     CheckIsLeader,
     InviteUser,
     EditTeam,
-    DeleteTeam
+    DeleteTeam,
+    LeaveTeam,
 };
 
 export default CommonConstant;
