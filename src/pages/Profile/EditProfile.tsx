@@ -3,6 +3,8 @@ import Select from "react-select";
 import CommonConstant from "../../constant/CommonConstant";
 import { useEffect, useState } from "react";
 import { useToast } from "../../hooks/useToast";
+import RedButton from "../../components/RedButton";
+import GreenButton from "../../components/GreenButton";
 
 type OptionType = {
   label: string;
@@ -185,19 +187,9 @@ const EditProfile = ({ users, setIsEdit }) => {
               }
             />
           </div>
-          <div className="flex space-x-2">
-            <button
-              type="submit"
-              className="mt-5 cursor-pointer block w-fit bg-blue-600 text-white p-3 rounded-lg duration-300 font-bold hover:bg-blue-700 hover:duration-300"
-            >
-              Save Changes
-            </button>
-            <button
-              onClick={() => setIsEdit(false)}
-              className="mt-5 cursor-pointer block w-fit p-3 text-blue-600 rounded-lg border-2 border-blue-600 duration-300 font-bold"
-            >
-              Cancel
-            </button>
+          <div className="flex space-x-2 mt-5">
+            <GreenButton label="Save Changes" type="submit"/>
+            <RedButton label="Cancel" onClick={() => setIsEdit(false)} />
           </div>
         </form>
       </div>
