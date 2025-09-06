@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ROUTE_PATHS } from "../router/routePaths";
 import { useToast } from "../hooks/useToast";
 import RedButton from "./RedButton";
+import WelcomeMessage from "./WelcomeMessage";
 
 const TopHeader = () => {
   const { users, logout } = useAuth();
@@ -34,7 +35,7 @@ const TopHeader = () => {
   return (
     <header className="bg-gray-100 p-4 flex justify-between items-center shadow">
       <div>
-        Hello, <span className="font-semibold">{users?.fullname}</span>
+         <WelcomeMessage user={users?.fullname} />
       </div>
       <div className="flex items-center gap-4">
         <span>{currentTime}</span>
