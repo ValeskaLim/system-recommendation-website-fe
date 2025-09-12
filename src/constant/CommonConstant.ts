@@ -11,6 +11,7 @@ const ADD_COMPETITION = 'api/competition/add';
 const GET_EXISTING_COMPETITION = 'api/competition/get-existing-competition';
 const GET_ALL_COMPETITION = 'api/competition/get-all-competition';
 const EDIT_USER = 'api/user/edit-user';
+const CHANGE_PASSWORD = 'api/user/change-password';
 const TEAMMATES_LIST = 'api/user/get-all-teammates';
 const REMOVE_USER = 'api/user/remove-user-teammates';
 const REMOVE_COMPETITION = 'api/competition/remove-competition';
@@ -44,6 +45,7 @@ const AddCompetition = BASE + '/' + ADD_COMPETITION;
 const GetExistingCompetition = BASE + '/' + GET_EXISTING_COMPETITION;
 const GetAllCompetition = BASE + '/' + GET_ALL_COMPETITION;
 const EditUser = BASE + '/' + EDIT_USER;
+const ChangePassword = BASE + '/' + CHANGE_PASSWORD;
 const TeammatesList = BASE + '/' + TEAMMATES_LIST;
 const RemoveUser = BASE + '/' + REMOVE_USER;
 const RemoveCompetition = BASE + '/' + REMOVE_COMPETITION;
@@ -97,6 +99,7 @@ const CommonConstant = {
     EditTeam,
     DeleteTeam,
     LeaveTeam,
+    ChangePassword
 };
 
 export default CommonConstant;

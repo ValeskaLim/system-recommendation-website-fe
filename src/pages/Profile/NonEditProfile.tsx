@@ -35,6 +35,16 @@ const NonEditProfile = ({ users, setIsEdit }) => {
             />
           </div>
           <div className="flex justify-between mt-4">
+            <h3 className="flex items-center text-lg w-60">Password</h3>
+            <div className="w-full">
+              <BlueButton
+                label="Change"
+                disabled
+                extendedClassName="disabled:opacity-50 disabled:hover:cursor-not-allowed disabled:hover:bg-blue-500"
+              />
+            </div>
+          </div>
+          <div className="flex justify-between mt-4">
             <h3 className="flex items-center text-lg w-60">Email</h3>
             <input
               type="email"
@@ -71,7 +81,9 @@ const NonEditProfile = ({ users, setIsEdit }) => {
             />
           </div>
           <div className="flex justify-between mt-4">
-            <h3 className="flex items-center text-lg w-60">Field of preference</h3>
+            <h3 className="flex items-center text-lg w-60">
+              Field of preference
+            </h3>
             <Select
               isMulti
               name="field_of_preference"
@@ -84,7 +96,11 @@ const NonEditProfile = ({ users, setIsEdit }) => {
               isDisabled
             />
           </div>
-          <BlueButton label="Edit Profile" onClick={() => setIsEdit(true)} extendedClassName="mt-5"/>
+          <BlueButton
+            label="Edit Profile"
+            onClick={() => setIsEdit(true)}
+            extendedClassName="mt-5"
+          />
         </form>
       </div>
     </div>
