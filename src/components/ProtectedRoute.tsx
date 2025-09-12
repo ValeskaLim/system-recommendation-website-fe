@@ -2,14 +2,14 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider"
 import { ROUTE_PATHS } from "../router/routePaths";
 
-const ProtectedRoute = ({ children, requiredRole = 'normal' }) => {
+const ProtectedRoute = ({ children, requiredRole = 'normal', isVerified = true }) => {
     const { isAuthenticated, users } = useAuth();
 
-    if(!users && !isAuthenticated) {
+    if(!users && !isAuthenticated && !isVerified) {
         return <Navigate to={ROUTE_PATHS.LOGIN} replace/>
     }
 
-    if(requiredRole === 'admin' && users?.role !== 'admin') {
+    if(requiredRole === 'admin' && users?.role !== 'admin' || !isVerified) {
         return <Navigate to={ROUTE_PATHS.HOME} replace/>
     }
 

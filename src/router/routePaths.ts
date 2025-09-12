@@ -7,7 +7,9 @@ export const ROUTE_PATHS = {
     EDIT_COMPETITION: '/competitions/edit',
     PROFILE: '/profile',
     TEAMMATES_LIST: '/teammates',
-    RECOMMENDATION: '/recommendation'
+    RECOMMENDATION: '/recommendation',
+    VERIFY_EMAIL: '/verify-email/:token',
+    VERIFY_PASSWORD : '/verify-password',
 };
 
 export const generatePath = (path, params) => {

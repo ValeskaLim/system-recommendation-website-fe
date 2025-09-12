@@ -12,6 +12,7 @@ interface Users {
     field_of_preference: string;
     major: string;
     role: string;
+    is_verified: boolean;
 }
 
 interface AuthContextType {
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }: AuthProviderProps)  => {
 
     const login = async (email: string, password: string) => {
         try {
-            const response = await axios.post(CommonConstant.ValidateUser, { email, password }, { withCredentials: true });
+            const response = await axios.post(CommonConstant.Login, { email, password }, { withCredentials: true });
             if (response.data.user) {
                 setUser(response.data.user);
             } 

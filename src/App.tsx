@@ -15,6 +15,7 @@ import AddCompetitionPage from "./pages/Competition/AddCompetitionPage";
 import TeammatesMainPage from "./pages/Teammates/TeammatesMainPage";
 import EditCompetitionPage from "./pages/Competition/EditCompetitionPage";
 import RecommendationPage from "./pages/Recommendation/RecommendationPage";
+import VerifyPage from "./pages/Auth/VerifyPage";
 
 function App() {
   return (
@@ -34,6 +35,16 @@ function App() {
                   <MasterLayout>
                     <HomePage />
                   </MasterLayout>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            {/* Verification region */}
+            <Route
+              path={ROUTE_PATHS.VERIFY_EMAIL}
+              element={
+                <ProtectedRoute>
+                  <VerifyPage />
                 </ProtectedRoute>
               }
             ></Route>
@@ -106,7 +117,10 @@ function App() {
               }
             ></Route>
 
-            <Route path="*" element={<NotFoundPage />} />
+            <Route 
+              path='*'
+              element={<NotFoundPage />}
+            />
           </Routes>
         </BrowserRouter>
         <ToastContainer />
