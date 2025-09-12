@@ -1,7 +1,8 @@
 // URL
 const BASE = 'http://127.0.0.1:5002';
-const VALIDATE_USER = 'api/user/validate-user';
+const LOGIN = 'api/user/login';
 const SUBMIT_REGISTER = 'api/user/submit-register-data';
+const VERIFY_USER_EMAIL = 'api/user/verify-email';
 const GET_EXISTING_USER = 'api/user/get-existing-user';
 const LOGOUT = 'api/user/logout';
 const GET_CURRENT_USER = 'api/user/get-current-user';
@@ -32,8 +33,9 @@ const LEAVE_TEAM = 'api/team/leave-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
 
 // NAVIGATION CONSTANT
-const ValidateUser = BASE + '/' + VALIDATE_USER;
+const Login = BASE + '/' + LOGIN;
 const SubmitRegister = BASE + '/' + SUBMIT_REGISTER;
+const VerifyUserEmail = BASE + '/' + VERIFY_USER_EMAIL;
 const GetExistingUser = BASE + '/' + GET_EXISTING_USER;
 const Logout = BASE + '/' + LOGOUT;
 const GetCurrentUser = BASE + '/' + GET_CURRENT_USER;
@@ -64,8 +66,9 @@ const LeaveTeam = BASE + '/' + LEAVE_TEAM;
 const CheckIsLeader = BASE + '/' + CHECK_IS_LEADER;
 
 const CommonConstant = {
-    ValidateUser,
+    Login,
     SubmitRegister,
+    VerifyUserEmail,
     GetExistingUser,
     Logout,
     GetCurrentUser,
