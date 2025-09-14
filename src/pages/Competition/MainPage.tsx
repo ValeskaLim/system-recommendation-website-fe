@@ -161,9 +161,14 @@ const MainPage = () => {
                 <div>
                   <li
                     key={idx}
-                    className="border p-3 rounded-xl shadow-sm h-full flex flex-col"
+                    className="border rounded-xl shadow-sm h-full flex flex-col"
                   >
-                    <div className="flex justify-between">
+                    <img
+                      src={`${CommonConstant.ImageSource}${comp.poster}`}
+                      alt={comp.title}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                    />
+                    <div className="flex justify-between p-3">
                       <div>
                         <h3 className="font-semibold text-xl">{comp.title}</h3>
                         <p className="text-gray-600">
@@ -190,7 +195,7 @@ const MainPage = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-1 mt-2 h-full">
+                    <div className="flex gap-1 mt-2 h-full px-3 pb-3">
                       {users?.role === "admin" && (
                         <>
                           <BlueButton

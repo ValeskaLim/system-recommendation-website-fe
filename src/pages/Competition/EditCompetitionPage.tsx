@@ -7,9 +7,9 @@ import { ROUTE_PATHS } from "../../router/routePaths";
 import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 
-const COMPETITION_TYPES = [
-  { label: "Artificial Intelligence", value: "AI" },
-  { label: "Software Development", value: "SD" },
+const COMPETITION_CATEGORIES = [
+  { label: "Security", value: "Sec" },
+  { label: "Machine Learning", value: "ML" },
   { label: "Mobile Development", value: "MD" },
 ];
 
@@ -17,21 +17,26 @@ type Competition = {
   title: string;
   date: string;
   status: string;
-  type: string;
-  slot: number;
+  category: string;
+  min_member: number;
+  max_member: number;
   description: string;
+  poster: string;
 };
 
 const EditCompetitionPage = () => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
-  const [type, setType] = useState("");
-  const [slot, setSlot] = useState<number | undefined>(undefined);
+  const [category, setCategory] = useState("");
+  const [minMember, setMinMember] = useState<number | undefined>(undefined);
+  const [maxMember, setMaxMember] = useState<number | undefined>(undefined);
   const [description, setDescription] = useState("");
   const [competititonData, setCompetititonData] = useState<
     Competition | undefined
   >(undefined);
+  const [poster, setPoster] = useState<string | null>("");
+  const [newPoster, setNewPoster] = useState<File | null>(null);
 
   const { errorToast, successToast } = useToast();
   const navigate = useNavigate();
@@ -67,23 +72,39 @@ const EditCompetitionPage = () => {
     setTitle(competititonData.title);
     setDate(competititonData.date);
     setStatus(competititonData.status);
-    setType(competititonData.type);
-    setSlot(competititonData.slot);
+    setCategory(competititonData.category);
+    setMinMember(competititonData.min_member);
+    setMaxMember(competititonData.max_member);
     setDescription(competititonData.description);
+    setPoster(competititonData.poster ?? "");
   }, [competititonData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("competition_id", id ?? "");
+    formData.append("title", title);
+    formData.append("date", date);
+    formData.append("status", status);
+    formData.append("category", category);
+    formData.append("min_member", minMember?.toString() || "");
+    formData.append("max_member", maxMember?.toString() || "");
+    formData.append("description", description);
+    if (newPoster)
+      formData.append("poster", newPoster);
+
     try {
-      const request = await axios.post(CommonConstant.EditCompetition, {
-        competition_id: Number(id),
-        title,
-        date,
-        status,
-        type,
-        slot,
-        description,
-      });
+      const request = await axios.post(
+        CommonConstant.EditCompetition,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log(request.data.success);
       if (request.data.success) {
         navigate(ROUTE_PATHS.COMPETITION);
@@ -112,6 +133,13 @@ const EditCompetitionPage = () => {
             <h1 className="text-3xl">Edit Competition Data</h1>
           </div>
           <form method="POST" onSubmit={handleSubmit} className="space-y-4">
+            <div className="w-full h-60 overflow-hidden rounded-t-lg">
+              <img
+                src={`${CommonConstant.ImageSource}${poster}`}
+                alt={title}
+                className="w-full h-full object-cover"
+              />
+            </div>
             <div className="flex justify-between">
               <label className="text-lg items-center flex w-64">Title</label>
               <input
@@ -154,19 +182,19 @@ const EditCompetitionPage = () => {
               </select>
             </div>
             <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Type</label>
+              <label className="text-lg items-center flex w-64">Category</label>
               <select
-                name="type"
-                id="type"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
+                name="category"
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                 required
               >
                 <option value="" hidden>
                   --Select one--
                 </option>
-                {COMPETITION_TYPES.map((t) => (
+                {COMPETITION_CATEGORIES.map((t) => (
                   <option key={t.value} value={t.value}>
                     {t.label}
                   </option>
@@ -174,16 +202,36 @@ const EditCompetitionPage = () => {
               </select>
             </div>
             <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Slot</label>
+              <label className="text-lg items-center flex w-64">
+                Min member
+              </label>
               <input
                 type="number"
-                id="slot"
+                id="min-member"
                 min="0"
-                placeholder="Input initial slot"
-                value={slot ?? ""}
+                placeholder="Input minimum member"
+                value={minMember ?? ""}
                 onChange={(e) => {
                   const value = parseInt(e.target.value, 10);
-                  setSlot(isNaN(value) ? undefined : value);
+                  setMinMember(isNaN(value) ? undefined : value);
+                }}
+                required
+                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              />
+            </div>
+            <div className="flex justify-between">
+              <label className="text-lg items-center flex w-64">
+                Max member
+              </label>
+              <input
+                type="number"
+                id="max-member"
+                min="0"
+                placeholder="Input maximum member"
+                value={maxMember ?? ""}
+                onChange={(e) => {
+                  const value = parseInt(e.target.value, 10);
+                  setMaxMember(isNaN(value) ? undefined : value);
                 }}
                 required
                 className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
@@ -201,6 +249,19 @@ const EditCompetitionPage = () => {
                 className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
                 required
               ></textarea>
+            </div>
+            <div className="flex justify-between">
+              <label className="text-lg items-center flex w-64">Poster</label>
+              <input
+                type="file"
+                accept="image/png, image/jpeg, image/jpg"
+                min="0"
+                placeholder="Input maximum member"
+                onChange={(e) =>
+                  setNewPoster(e.target.files ? e.target.files[0] : null)
+                }
+                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              />
             </div>
             <div className="flex gap-2">
               <GreenButton type="submit" label="Save" />
