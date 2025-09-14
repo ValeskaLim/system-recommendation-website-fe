@@ -5,7 +5,7 @@ import { ROUTE_PATHS } from "../router/routePaths";
 const ProtectedRoute = ({ children, requiredRole = 'normal', isVerified = true }) => {
     const { isAuthenticated, users } = useAuth();
 
-    if(!users && !isAuthenticated && !isVerified) {
+    if(!users && !isAuthenticated) {
         return <Navigate to={ROUTE_PATHS.LOGIN} replace/>
     }
 

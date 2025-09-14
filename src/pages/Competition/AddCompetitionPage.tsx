@@ -7,9 +7,9 @@ import { useState } from "react";
 import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 
-const COMPETITION_TYPES = [
-  { label: "Artificial Intelligence", value: "AI" },
-  { label: "Software Development", value: "SD" },
+const COMPETITION_CATEGORIES = [
+  { label: "Security", value: "Sec" },
+  { label: "Machine Learning", value: "ML" },
   { label: "Mobile Development", value: "MD" },
 ];
 
@@ -17,9 +17,11 @@ const AddCompetitionPage = () => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("");
-  const [type, setType] = useState("");
-  const [slot, setSlot] = useState<number | undefined>(undefined);
+  const [category, setCategory] = useState("");
+  const [minMember, setMinMember] = useState<number | undefined>(undefined);
+  const [maxMember, setMaxMember] = useState<number | undefined>(undefined);
   const [description, setDescription] = useState("");
+  const [poster, setPoster] = useState<File | null>(null);
 
   const { errorToast, successToast } = useToast();
 
@@ -28,26 +30,36 @@ const AddCompetitionPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (slot === undefined || slot < 0) {
-        errorToast("Slot must be a non-negative number");
+      if (minMember === undefined || minMember < 0) {
+        errorToast("Minimum number must be a non-negative number");
         return;
       }
 
-      await axios.post(
-        CommonConstant.GetExistingCompetition,
-        {
-          title,
-          date,
-        }
-      );
+      if (maxMember === undefined || maxMember < 0) {
+        errorToast("Maximum number must be a non-negative number");
+        return;
+      }
 
-      await axios.post(CommonConstant.AddCompetition, {
+      await axios.post(CommonConstant.GetExistingCompetition, {
         title,
         date,
-        status,
-        type,
-        slot,
-        description,
+      });
+
+      const formData = new FormData();
+
+      formData.append("title", title);
+      formData.append("date", date);
+      formData.append("status", status);
+      formData.append("category", category);
+      formData.append("min_member", minMember.toString());
+      formData.append("max_member", maxMember.toString());
+      formData.append("description", description);
+      formData.append("poster", poster ?? "");
+
+      await axios.post(CommonConstant.AddCompetition, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
       navigate(ROUTE_PATHS.COMPETITION);
       successToast("Competition successfully added");
@@ -111,19 +123,19 @@ const AddCompetitionPage = () => {
             </select>
           </div>
           <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Type</label>
+            <label className="text-lg items-center flex w-64">Category</label>
             <select
-              name="type"
-              id="type"
-              value={type}
-              onChange={(e) => setType(e.target.value)}
+              name="category"
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             >
               <option value="" hidden>
                 --Select one--
               </option>
-              {COMPETITION_TYPES.map((t) => (
+              {COMPETITION_CATEGORIES.map((t) => (
                 <option key={t.value} value={t.value}>
                   {t.label}
                 </option>
@@ -131,16 +143,32 @@ const AddCompetitionPage = () => {
             </select>
           </div>
           <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Slot</label>
+            <label className="text-lg items-center flex w-64">Min member</label>
             <input
               type="number"
-              id="slot"
+              id="min-member"
               min="0"
-              placeholder="Input initial slot"
-              value={slot ?? ""}
+              placeholder="Input minimum member"
+              value={minMember ?? ""}
               onChange={(e) => {
                 const value = parseInt(e.target.value, 10);
-                setSlot(isNaN(value) ? undefined : value);
+                setMinMember(isNaN(value) ? undefined : value);
+              }}
+              required
+              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+            />
+          </div>
+          <div className="flex justify-between">
+            <label className="text-lg items-center flex w-64">Max member</label>
+            <input
+              type="number"
+              id="max-member"
+              min="0"
+              placeholder="Input maximum member"
+              value={maxMember ?? ""}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                setMaxMember(isNaN(value) ? undefined : value);
               }}
               required
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
@@ -158,6 +186,20 @@ const AddCompetitionPage = () => {
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             ></textarea>
+          </div>
+          <div className="flex justify-between">
+            <label className="text-lg items-center flex w-64">Poster</label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              min="0"
+              placeholder="Input maximum member"
+              onChange={(e) =>
+                setPoster(e.target.files ? e.target.files[0] : null)
+              }
+              required
+              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+            />
           </div>
           <div className="flex gap-2">
             <GreenButton label="Submit" />

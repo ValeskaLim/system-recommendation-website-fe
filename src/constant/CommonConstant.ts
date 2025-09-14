@@ -32,6 +32,7 @@ const EDIT_TEAM = 'api/team/edit-team';
 const DELETE_TEAM = 'api/team/delete-team';
 const LEAVE_TEAM = 'api/team/leave-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
+const IMAGE_SOURCE = 'api/competition/uploads/';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -66,6 +67,7 @@ const EditTeam = BASE + '/' + EDIT_TEAM;
 const DeleteTeam = BASE + '/' + DELETE_TEAM;
 const LeaveTeam = BASE + '/' + LEAVE_TEAM;
 const CheckIsLeader = BASE + '/' + CHECK_IS_LEADER;
+const ImageSource = BASE + '/' + IMAGE_SOURCE;
 
 const CommonConstant = {
     Login,
@@ -99,7 +101,8 @@ const CommonConstant = {
     EditTeam,
     DeleteTeam,
     LeaveTeam,
-    ChangePassword
+    ChangePassword,
+    ImageSource
 };
 
 export default CommonConstant;
