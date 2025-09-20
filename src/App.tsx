@@ -43,9 +43,7 @@ function App() {
             <Route
               path={ROUTE_PATHS.VERIFY_EMAIL}
               element={
-                <ProtectedRoute>
                   <VerifyPage />
-                </ProtectedRoute>
               }
             ></Route>
 
