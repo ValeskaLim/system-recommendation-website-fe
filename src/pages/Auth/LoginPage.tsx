@@ -49,12 +49,20 @@ function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
             ></input>
-            <a
-              href={ROUTE_PATHS.REGISTER}
-              className="text-blue-400 duration-300 hover:duration:300 hover:text-blue-500"
-            >
-              Don't have account? Register here
-            </a>
+            <div className="flex justify-between">
+              <a
+                href={ROUTE_PATHS.REGISTER}
+                className="text-blue-400 duration-300 hover:duration:300 hover:text-blue-500 hover:underline"
+              >
+                Don't have account? Register here
+              </a>
+              <a
+                href={ROUTE_PATHS.RESET_PASSWORD}
+                className="text-blue-400 duration-300 hover:duration:300 hover:text-blue-500 hover:underline"
+              >
+                Forgot password?
+              </a>
+            </div>
           </div>
           <button
             type="submit"

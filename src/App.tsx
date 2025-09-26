@@ -16,6 +16,8 @@ import TeammatesMainPage from "./pages/Teammates/TeammatesMainPage";
 import EditCompetitionPage from "./pages/Competition/EditCompetitionPage";
 import RecommendationPage from "./pages/Recommendation/RecommendationPage";
 import VerifyPage from "./pages/Auth/VerifyPage";
+import ResetPassword from "./pages/Auth/ResetPassword";
+import ResetPasswordFinal from "./pages/Auth/ResetPasswordFinal";
 
 function App() {
   return (
@@ -44,6 +46,21 @@ function App() {
               path={ROUTE_PATHS.VERIFY_EMAIL}
               element={
                   <VerifyPage />
+              }
+            ></Route>
+
+            {/* Reset password region */}
+            <Route
+              path={ROUTE_PATHS.RESET_PASSWORD}
+              element={
+                  <ResetPassword />
+              }
+            ></Route>
+
+            <Route
+              path={ROUTE_PATHS.RESET_PASSWORD_FINAL}
+              element={
+                <ResetPasswordFinal />
               }
             ></Route>
 
