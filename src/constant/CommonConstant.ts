@@ -33,6 +33,11 @@ const DELETE_TEAM = 'api/team/delete-team';
 const LEAVE_TEAM = 'api/team/leave-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
 const IMAGE_SOURCE = 'api/competition/uploads/';
+const CHECK_ANY_COMPETITIONS_JOINED = 'api/team/check-any-competitions-joined';
+const RESET_PASSWORD = 'api/user/reset-password';
+const VALIDATE_TOKEN = 'api/user/validate-token';
+const RESET_PASSWORD_FINAL = 'api/user/reset-password-final';
+const CHECK_NUMBER_INVITATIONS = 'api/team/check-number-invitations';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -68,6 +73,12 @@ const DeleteTeam = BASE + '/' + DELETE_TEAM;
 const LeaveTeam = BASE + '/' + LEAVE_TEAM;
 const CheckIsLeader = BASE + '/' + CHECK_IS_LEADER;
 const ImageSource = BASE + '/' + IMAGE_SOURCE;
+const CheckAnyCompetitionsJoined = BASE + '/' + CHECK_ANY_COMPETITIONS_JOINED;
+const ResetPassword = BASE + '/' + RESET_PASSWORD;
+const ValidateToken = BASE + '/' + VALIDATE_TOKEN;
+const ResetPasswordFinal = BASE + '/' + RESET_PASSWORD_FINAL;
+const CheckNumberInvitations = BASE + '/' + CHECK_NUMBER_INVITATIONS;
+
 
 const CommonConstant = {
     Login,
@@ -102,7 +113,12 @@ const CommonConstant = {
     DeleteTeam,
     LeaveTeam,
     ChangePassword,
-    ImageSource
+    ImageSource,
+    CheckAnyCompetitionsJoined,
+    ResetPassword,
+    ValidateToken,
+    ResetPasswordFinal,
+    CheckNumberInvitations,
 };
 
 export default CommonConstant;

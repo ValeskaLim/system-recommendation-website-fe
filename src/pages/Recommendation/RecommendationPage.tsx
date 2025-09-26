@@ -28,7 +28,13 @@ const RecommendationPage = () => {
   const [isIgnoreGender, setisIgnoreGender] = useState(false);
   const [isRunRecommend, setIsRunRecommend] = useState(false);
   const [recommendUsers, setRecommendUsers] = useState([]);
+  const [isJoinCompetition, setIsJoinCompetition] = useState(false);
+  const [maxMember, setMaxMember] = useState(null);
+  const [invitationNumber, setInvitationNumber] = useState(null);
   const { successToast, errorToast } = useToast();
+
+  const invitationNumberLeft =
+    (maxMember ?? 0) - ((invitationNumber ?? 0) + (memberLength ?? 0));
 
   const { users } = useAuth();
 
@@ -62,11 +68,12 @@ const RecommendationPage = () => {
     };
 
     const fetchTeammates = async () => {
-      const response = await axios.post(CommonConstant.TeammatesList, {});
       try {
+        const response = await axios.post(CommonConstant.TeammatesList, {});
         const member_id = response.data.data.member_id;
         const memberIds = member_id.split(",");
         const member_length = memberIds.length;
+        fetchCompetitionData(response.data.data.competition_id);
         setMemberLength(member_length);
       } catch (error: any) {
         console.log(error);
@@ -74,9 +81,52 @@ const RecommendationPage = () => {
       }
     };
 
+    const fetchTeamData = async () => {
+      try {
+        const response = await axios.post(
+          CommonConstant.CheckAnyCompetitionsJoined
+        );
+        setIsJoinCompetition(response.data.data.hasJoined);
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error.response.data.message;
+        errorToast(errorMessage);
+      }
+    };
+
+    const fetchCompetitionData = async (id: number) => {
+      try {
+        const response = await axios.post(CommonConstant.GetCompetitionById, {
+          id: id,
+        });
+        setMaxMember(response.data.data.max_member);
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error.response.data.message;
+        errorToast(errorMessage);
+      }
+    };
+
+    const checkInvitationNumber = async () => {
+      try {
+        const response = await axios.post(
+          CommonConstant.CheckNumberInvitations
+        );
+        if (response.data.success) {
+          setInvitationNumber(response.data.data.count);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error.response.data.message;
+        errorToast(errorMessage);
+      }
+    };
+
     fetchTeammates();
     fetchinviteesUser();
     fetchinvitesUser();
+    fetchTeamData();
+    checkInvitationNumber();
   }, []);
 
   const getFieldLabels = (valueString) => {
@@ -102,6 +152,12 @@ const RecommendationPage = () => {
 
   const processRecommend = async (e) => {
     e.preventDefault();
+
+    if (!isJoinCompetition) {
+      errorToast("Cannot use recommendation, please join a competition first");
+      return;
+    }
+
     if (users !== null) {
       try {
         const response = await axios.post(CommonConstant.Recommendation, {
@@ -114,8 +170,8 @@ const RecommendationPage = () => {
         setIsRunRecommend(true);
       } catch (error: any) {
         console.log(error);
-        const errorMsg = error.response.data.message;
-        errorToast(errorMsg);
+        const errorMessage = error.response.data.message;
+        errorToast(errorMessage);
       }
     } else {
       errorToast("Current user is not found");
@@ -292,7 +348,10 @@ const RecommendationPage = () => {
                         onClick={() => handleInviteUser(user.user_id)}
                         className="mt-2 cursor-pointer flex gap-2 group text-sm items-center w-fit text-white bg-blue-300 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
                         enabled:bg-blue-500 disabled:cursor-not-allowed enabled:hover:bg-blue-600 hover:duration-300"
-                        disabled={inviteeIds.includes(user.user_id)}
+                        disabled={
+                          inviteeIds.includes(user.user_id) ||
+                          invitationNumberLeft === 0
+                        }
                       />
                       {inviteeIds.includes(user.user_id) && (
                         <button
@@ -336,10 +395,10 @@ const RecommendationPage = () => {
               **Currently you have{" "}
               <span
                 className={
-                  memberLength == 3 ? "text-red-500" : "text-green-500"
+                  invitationNumberLeft === 0 ? "text-red-500" : "text-green-500"
                 }
               >
-                {memberLength == 3 ? "0" : 3 - (memberLength || 0)}
+                {invitationNumberLeft === 0 ? "0" : invitationNumberLeft ?? 0}
               </span>{" "}
               invitations left**
             </p>

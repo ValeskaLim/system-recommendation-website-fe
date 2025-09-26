@@ -5,7 +5,7 @@ import axios from "axios";
 import CommonConstant from "../../constant/CommonConstant";
 import { useEffect, useState } from "react";
 import { useToast } from "../../hooks/useToast";
-import { IoIosHeart } from "react-icons/io";
+import { HiOutlinePlusCircle } from "react-icons/hi";
 import Swal from "sweetalert2";
 import RedButton from "../../components/RedButton";
 import BlueButton from "../../components/BlueButton";
@@ -21,6 +21,8 @@ const MainPage = () => {
   const [wishlistedTeam, setWishlistedTeam] = useState(undefined);
   const [isLeader, setIsLeader] = useState(false);
   const [teamData, setTeamData] = useState(undefined);
+  const [isAlreadyJoinedCompetition, setIsAlreadyJoinedCompetition] =
+    useState(false);
   const { users } = useAuth();
   const location = useLocation();
   const { pathname } = location;
@@ -68,9 +70,29 @@ const MainPage = () => {
       }
     };
 
+    const fetchIsAlreadyJoinedCompetition = async () => {
+      try {
+        const response = await axios.post(
+          CommonConstant.CheckAnyCompetitionsJoined
+        );
+        if (response.data.data.hasJoined) {
+          setIsAlreadyJoinedCompetition(true);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.message ||
+          "An unexpected error occurred";
+
+        errorToast(errorMessage);
+      }
+    };
+
     fetchTeamData();
     fetchData();
     fetchIsLeader();
+    fetchIsAlreadyJoinedCompetition();
   }, []);
 
   const getStatusLabel = (code) => {
@@ -233,23 +255,21 @@ const MainPage = () => {
                           />
                         </>
                       )}
-                      <button
-                        onClick={() =>
-                          wishlistedTeam == comp.competition_id
-                            ? handleRemoveWishlist(comp.competition_id)
-                            : handleWishlist(comp.competition_id)
-                        }
-                        className={`self-end cursor-pointer h-[40px] items-center font-semibold border-2 py-2 px-3 rounded-md duration-300 hover:duration-300 
-                                    ${
-                                      teamData == comp.competition_id
-                                        ? "text-white bg-red-400 enabled:hover:bg-red-500 border-none disabled:bg-red-300 disabled:text-white"
-                                        : "text-red-500 bg-white border-red-500"
-                                    } 
-                                    disabled:cursor-not-allowed disabled:bg-inherit disabled:text-red-300 disabled:border-red-300`}
-                        disabled={!isLeader}
-                      >
-                        <IoIosHeart className="text-lg" />
-                      </button>
+                      {!isAlreadyJoinedCompetition ? (
+                        <button
+                          onClick={() => handleWishlist(comp.competition_id)}
+                          className="self-end cursor-pointer h-[40px] items-center font-semibold border-2 py-2 px-3 rounded-md duration-300 text-red-500 bg-white border-red-500 hover:duration-300"
+                        >
+                          <HiOutlinePlusCircle className="text-2xl font-bold" />
+                        </button>
+                      ) : wishlistedTeam == comp.competition_id && (
+                        <button
+                          className="self-end cursor-not-allowed h-[40px] items-center font-semibold border-2 py-2 px-3 rounded-md duration-300 text-white bg-red-400 enabled:hover:bg-red-500 border-none disabled:bg-red-300 disabled:text-white hover:duration-300"
+                          disabled
+                        >
+                          <HiOutlinePlusCircle className="text-2xl font-bold" />
+                        </button>
+                      )}
                     </div>
                   </li>
                 </div>

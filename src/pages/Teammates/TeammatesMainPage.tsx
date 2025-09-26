@@ -30,7 +30,7 @@ const TeammatesMainPage = () => {
   const [isJoinedTeam, setIsJoinedTeam] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
 
-  const { errorToast, successToast } = useToast();
+  const { errorToast, successToast, warningToast } = useToast();
   const { users } = useAuth();
 
   const getFieldLabels = (valueString) => {
@@ -88,7 +88,6 @@ const TeammatesMainPage = () => {
         }
       } catch (error) {
         console.log(error);
-        errorToast("Error fetching teammates");
       }
     };
 
@@ -96,25 +95,6 @@ const TeammatesMainPage = () => {
       fetchData();
     }
   }, []);
-
-  const deleteUser = async (user_id) => {
-    try {
-      const response = await axios.post(CommonConstant.RemoveUser, {
-        user_id: user_id,
-      });
-
-      if (response.data.success) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      } else {
-        errorToast("Error deleting user");
-      }
-    } catch (error) {
-      console.log(error);
-      errorToast("Error deleting user");
-    }
-  };
 
   const handleSubmit = async () => {
     try {
@@ -136,75 +116,6 @@ const TeammatesMainPage = () => {
     }
   };
 
-  const removeWishlist = async (comeptition_id) => {
-    console.log(comeptition_id);
-  };
-
-  const startEdit = () => {
-    setIsEditMode(true);
-    setOriginalTeamName(teamName);
-  };
-
-  const cancelEdit = () => {
-    setIsEditMode(false);
-    setTeamName(originalTeamName);
-  };
-
-  const disbandTeam = async (user_id) => {
-    try {
-      const response = await axios.post(CommonConstant.DeleteTeam, {
-        user_id: user_id,
-      });
-
-      if (response.data.success) {
-        successToast(response.data.message);
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      } else {
-        errorToast("Error disbanding team");
-      }
-    } catch (error) {
-      console.log(error);
-      const errorMessage = error.response.data.message;
-      errorToast(errorMessage);
-    }
-  };
-
-  const saveTeamChanges = async () => {
-    try {
-      const response = await axios.post(CommonConstant.EditTeam, {
-        team_id: teamId,
-        team_name: teamName,
-      });
-
-      if (response.data.success) {
-        setIsEditMode(false);
-        successToast(response.data.message);
-      }
-    } catch (error: any) {
-      console.log(error);
-      const errorMessage = error.response.data.message;
-      errorToast(errorMessage);
-    }
-  };
-
-  const leaveTeam = async () => {
-    try {
-      const response = await axios.post(CommonConstant.LeaveTeam);
-      if (response.data.success) {
-        successToast(response.data.message);
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      }
-    } catch (error: any) {
-      console.log(error);
-      const errorMessage = error.response.data.message;
-      errorToast(errorMessage);
-    }
-  }
-
   return (
     <div className="flex flex-col">
       <h1 className="text-4xl mb-4">Teammates List</h1>
@@ -220,90 +131,10 @@ const TeammatesMainPage = () => {
                   name="teamName"
                   id="teamName"
                   value={teamName}
-                  onChange={(e) => setTeamName(e.target.value)}
                   className="mx-3 w-fit text-2xl p-2 border border-[#e6e6e6] rounded-lg disabled:border-none"
                   disabled={!isEditMode}
                   size={teamName.length - 2}
                 />
-                {isLeader &&
-                  (isEditMode ? (
-                    <div className="flex gap-2">
-                      <div>
-                        <div
-                          onClick={saveTeamChanges}
-                          className="flex items-center cursor-pointer border-2 border-green-500 p-1.5 bg-green-500 text-white rounded-lg duration-300 hover:text-green-500 hover:duration-300 hover:bg-white hover:border-2"
-                        >
-                          <MdSave className="text-2xl" />
-                        </div>
-                      </div>
-                      <div
-                        onClick={cancelEdit}
-                        className="flex items-center cursor-pointer border-2 border-red-500 p-1.5 bg-red-500 text-white rounded-lg duration-300 hover:text-red-500 hover:duration-300 hover:bg-white hover:border-2"
-                      >
-                        <MdCancelPresentation className="text-2xl" />
-                      </div>
-                    </div>
-                  ) : (
-                    <div
-                      onClick={startEdit}
-                      className="flex items-center cursor-pointer border-2 border-blue-500 p-1.5 bg-blue-500 text-white rounded-lg duration-300 hover:text-blue-500 hover:duration-300 hover:bg-white hover:border-2"
-                    >
-                      <HiPencilAlt className="text-2xl" />
-                    </div>
-                  ))}
-              </div>
-              <div>
-                {isLeader ? (
-                  <RedButton
-                    label="Disband Team"
-                    onClick={async () => {
-                      const result = await Swal.fire({
-                        title: "Are you sure?",
-                        text: "You won't be able to revert this!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Remove",
-                      });
-
-                      if (result.isConfirmed) {
-                        await disbandTeam(users?.user_id);
-
-                        await Swal.fire({
-                          title: "Team Disbanded!",
-                          text: "The team has been disbanded.",
-                          icon: "success",
-                        });
-                      }
-                    }}
-                  />
-                ) : (
-                  <RedButton
-                    label="Leave Team"
-                    onClick={async () => {
-                      const result = await Swal.fire({
-                        title: "Are you sure?",
-                        text: "You won't be able to revert this!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Remove",
-                      });
-
-                      if (result.isConfirmed) {
-                        await leaveTeam();
-
-                        await Swal.fire({
-                          title: "Leave Team",
-                          text: "You have left the team.",
-                          icon: "success",
-                        });
-                      }
-                    }}
-                  />
-                )}
               </div>
             </div>
             <div className="flex justify-between gap-5 mt-5">
@@ -333,36 +164,6 @@ const TeammatesMainPage = () => {
                         )}
                       </div>
                     </div>
-                    {user.user_id !== users?.user_id && isLeader && (
-                      <div>
-                        <div
-                          onClick={async () => {
-                            const result = await Swal.fire({
-                              title: "Are you sure?",
-                              text: "You won't be able to revert this!",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonColor: "#3085d6",
-                              cancelButtonColor: "#d33",
-                              confirmButtonText: "Remove",
-                            });
-
-                            if (result.isConfirmed) {
-                              await deleteUser(user.user_id);
-
-                              await Swal.fire({
-                                title: "Teammates Deleted!",
-                                text: `${user.username} has been removed.`,
-                                icon: "success",
-                              });
-                            }
-                          }}
-                          className="cursor-pointer border-2 border-red-500 bg-red-500 text-white p-2 rounded-xl duration-300 hover:text-red-500 hover:duration-300 hover:bg-white hover:border-2"
-                        >
-                          <MdDelete className="text-2xl" />
-                        </div>
-                      </div>
-                    )}
                   </li>
                 ))}
               </ul>
@@ -370,33 +171,18 @@ const TeammatesMainPage = () => {
                 <li className="p-3 rounded-2xl flex flex-col bg-neutral-100 shadow-lg">
                   {teamCompetition !== undefined && teamCompetition !== null ? (
                     <>
+                      <p className="font-semibold text-2xl h-[44px] items-center flex">
+                        {teamCompetition.title}
+                      </p>
                       <div className="flex justify-between">
                         <div className="w-1/2">
-                          <p className="font-semibold text-2xl h-[44px] items-center flex">
-                            {teamCompetition.title}
-                          </p>
                           <p className="text-md mt-2">Date</p>
-                          <p>Slots</p>
+                          <p>Min member</p>
+                          <p>Max member</p>
                           <p>Status</p>
                           <p>Description</p>
                         </div>
                         <div className="w-3/4">
-                          <div className="w-full flex justify-end">
-                            <button
-                              onClick={() =>
-                                removeWishlist(teamCompetition.competition_id)
-                              }
-                              className={`cursor-pointer w-fit p-3 bg-red-400 rounded-lg text-white duration-300 
-                                                                                                                hover:bg-red-500 hover:duration-300 ${
-                                                                                                                  !isLeader
-                                                                                                                    ? "disabled:bg-red-300 disabled:cursor-not-allowed"
-                                                                                                                    : ""
-                                                                                                                }`}
-                              disabled={!isLeader}
-                            >
-                              <IoIosHeart className="text-xl" />
-                            </button>
-                          </div>
                           <p className="text-md mt-2">
                             :{" "}
                             {new Date(teamCompetition.date).toLocaleDateString(
@@ -408,7 +194,8 @@ const TeammatesMainPage = () => {
                               }
                             )}
                           </p>
-                          <p>: {teamCompetition.slot}</p>
+                          <p>: {teamCompetition.min_member}</p>
+                          <p>: {teamCompetition.max_member}</p>
                           <p
                             className={`${
                               teamCompetition.status == "INA"

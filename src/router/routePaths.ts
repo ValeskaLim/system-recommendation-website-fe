@@ -10,6 +10,8 @@ export const ROUTE_PATHS = {
     RECOMMENDATION: '/recommendation',
     VERIFY_EMAIL: '/verify-email/:token',
     VERIFY_PASSWORD : '/verify-password',
+    RESET_PASSWORD: '/reset-password',
+    RESET_PASSWORD_FINAL: '/reset-password-final/:token',
 };
 
 export const generatePath = (path, params) => {
