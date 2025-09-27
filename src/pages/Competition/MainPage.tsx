@@ -36,9 +36,13 @@ const MainPage = () => {
       try {
         const res = await axios.post(CommonConstant.GetAllCompetition);
         setCompetitions(res.data.data);
-      } catch (error) {
-        console.error("Error fetching competitions data");
-        errorToast("Error fetching competition data");
+      } catch (error: any) {
+        console.error(error);
+        const errorMessage =
+          error?.response?.data?.message ||
+          error?.message ||
+          "An unexpected error occurred";
+        errorToast(errorMessage);
       }
     };
 
@@ -142,23 +146,8 @@ const MainPage = () => {
     }
   };
 
-  const handleRemoveWishlist = async (competition_id) => {
-    try {
-      const response = await axios.post(
-        CommonConstant.RemoveWishlistCompetition,
-        { competition_id: competition_id }
-      );
-      if (response.data.success) {
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-        setWishlistedTeam("");
-        successToast(response.data.message);
-      }
-    } catch (error: any) {
-      console.log(error);
-      errorToast(error);
-    }
+  const viewCompetitionDetail = (competitionData: any , competition_id: number) => {
+    navigate(`${ROUTE_PATHS.COMPETITION}/${competition_id}`, { state: { competition: competitionData } });
   };
 
   return (
@@ -255,6 +244,12 @@ const MainPage = () => {
                           />
                         </>
                       )}
+                      <BlueButton
+                        label="View Details"
+                        onClick={() =>
+                          viewCompetitionDetail(comp, comp.competition_id)
+                        }
+                      />
                       {!isAlreadyJoinedCompetition ? (
                         <button
                           onClick={() => handleWishlist(comp.competition_id)}
@@ -262,13 +257,15 @@ const MainPage = () => {
                         >
                           <HiOutlinePlusCircle className="text-2xl font-bold" />
                         </button>
-                      ) : wishlistedTeam == comp.competition_id && (
-                        <button
-                          className="self-end cursor-not-allowed h-[40px] items-center font-semibold border-2 py-2 px-3 rounded-md duration-300 text-white bg-red-400 enabled:hover:bg-red-500 border-none disabled:bg-red-300 disabled:text-white hover:duration-300"
-                          disabled
-                        >
-                          <HiOutlinePlusCircle className="text-2xl font-bold" />
-                        </button>
+                      ) : (
+                        wishlistedTeam == comp.competition_id && (
+                          <button
+                            className="self-end cursor-not-allowed h-[40px] items-center font-semibold border-2 py-2 px-3 rounded-md duration-300 text-white bg-red-400 enabled:hover:bg-red-500 border-none disabled:bg-red-300 disabled:text-white hover:duration-300"
+                            disabled
+                          >
+                            <HiOutlinePlusCircle className="text-2xl font-bold" />
+                          </button>
+                        )
                       )}
                     </div>
                   </li>

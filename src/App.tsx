@@ -18,6 +18,7 @@ import RecommendationPage from "./pages/Recommendation/RecommendationPage";
 import VerifyPage from "./pages/Auth/VerifyPage";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import ResetPasswordFinal from "./pages/Auth/ResetPasswordFinal";
+import CompetitionDetail from "./pages/Competition/CompetitionDetail";
 
 function App() {
   return (
@@ -85,12 +86,24 @@ function App() {
                 </ProtectedRoute>
               }
             ></Route>
+
             <Route
               path={`${ROUTE_PATHS.EDIT_COMPETITION}/:id`}
               element={
                 <ProtectedRoute requiredRole="admin">
                   <MasterLayout>
                     <EditCompetitionPage />
+                  </MasterLayout>
+                </ProtectedRoute>
+              }
+            ></Route>
+            
+            <Route
+              path={`${ROUTE_PATHS.COMPETITION}/:id`}
+              element={
+                <ProtectedRoute>
+                  <MasterLayout>
+                    <CompetitionDetail />
                   </MasterLayout>
                 </ProtectedRoute>
               }

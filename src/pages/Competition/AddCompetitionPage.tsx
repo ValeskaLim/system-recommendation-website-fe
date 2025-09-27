@@ -8,7 +8,7 @@ import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 
 const COMPETITION_CATEGORIES = [
-  { label: "Security", value: "Sec" },
+  { label: "Security", value: "SEC" },
   { label: "Machine Learning", value: "ML" },
   { label: "Mobile Development", value: "MD" },
 ];
@@ -22,6 +22,7 @@ const AddCompetitionPage = () => {
   const [maxMember, setMaxMember] = useState<number | undefined>(undefined);
   const [description, setDescription] = useState("");
   const [poster, setPoster] = useState<File | null>(null);
+  const [originalUrl, setOriginalUrl] = useState("");
 
   const { errorToast, successToast } = useToast();
 
@@ -55,6 +56,7 @@ const AddCompetitionPage = () => {
       formData.append("max_member", maxMember.toString());
       formData.append("description", description);
       formData.append("poster", poster ?? "");
+      formData.append("original_url", originalUrl);
 
       await axios.post(CommonConstant.AddCompetition, formData, {
         headers: {
@@ -142,6 +144,17 @@ const AddCompetitionPage = () => {
               ))}
             </select>
           </div>
+          <div className="flex justify-between">
+              <label className="text-lg items-center flex w-64">Original Url</label>
+              <input
+                type="text"
+                id="originalUrl"
+                placeholder="Input original URL"
+                value={originalUrl}
+                onChange={(e) => setOriginalUrl(e.target.value)}
+                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              />
+            </div>
           <div className="flex justify-between">
             <label className="text-lg items-center flex w-64">Min member</label>
             <input
