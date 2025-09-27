@@ -8,7 +8,7 @@ import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 
 const COMPETITION_CATEGORIES = [
-  { label: "Security", value: "Sec" },
+  { label: "Security", value: "SEC" },
   { label: "Machine Learning", value: "ML" },
   { label: "Mobile Development", value: "MD" },
 ];
@@ -22,6 +22,7 @@ type Competition = {
   max_member: number;
   description: string;
   poster: string;
+  original_url: string;
 };
 
 const EditCompetitionPage = () => {
@@ -37,6 +38,7 @@ const EditCompetitionPage = () => {
   >(undefined);
   const [poster, setPoster] = useState<string | null>("");
   const [newPoster, setNewPoster] = useState<File | null>(null);
+  const [originalUrl, setOriginalUrl] = useState("");
 
   const { errorToast, successToast } = useToast();
   const navigate = useNavigate();
@@ -77,6 +79,7 @@ const EditCompetitionPage = () => {
     setMaxMember(competititonData.max_member);
     setDescription(competititonData.description);
     setPoster(competititonData.poster ?? "");
+    setOriginalUrl(competititonData.original_url ?? "");
   }, [competititonData]);
 
   const handleSubmit = async (e) => {
@@ -94,6 +97,7 @@ const EditCompetitionPage = () => {
     formData.append("description", description);
     if (newPoster)
       formData.append("poster", newPoster);
+    formData.append("original_url", originalUrl ?? "");
 
     try {
       const request = await axios.post(
@@ -200,6 +204,17 @@ const EditCompetitionPage = () => {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="flex justify-between">
+              <label className="text-lg items-center flex w-64">Original Url</label>
+              <input
+                type="text"
+                id="originalUrl"
+                placeholder="Input original URL"
+                value={originalUrl}
+                onChange={(e) => setOriginalUrl(e.target.value)}
+                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              />
             </div>
             <div className="flex justify-between">
               <label className="text-lg items-center flex w-64">

@@ -9,7 +9,7 @@ const Sidebar = () => {
     const { users } = useAuth();
 
     return (
-        <aside className="w-64 bg-gray-800 text-white py-4">
+        <aside className="w-64 bg-gray-800 text-white py-4 sticky top-0 h-screen">
             <h2 className="pl-4 text-2xl font-bold mb-6">SUNIB Hall</h2>
             <nav>
                 <ul>

@@ -38,6 +38,7 @@ const RESET_PASSWORD = 'api/user/reset-password';
 const VALIDATE_TOKEN = 'api/user/validate-token';
 const RESET_PASSWORD_FINAL = 'api/user/reset-password-final';
 const CHECK_NUMBER_INVITATIONS = 'api/team/check-number-invitations';
+const GET_PARTICIPANTS_BY_COMPETITION_ID = 'api/competition/get-participant-by-id';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -78,6 +79,7 @@ const ResetPassword = BASE + '/' + RESET_PASSWORD;
 const ValidateToken = BASE + '/' + VALIDATE_TOKEN;
 const ResetPasswordFinal = BASE + '/' + RESET_PASSWORD_FINAL;
 const CheckNumberInvitations = BASE + '/' + CHECK_NUMBER_INVITATIONS;
+const GetParticipantsByCompetitionId = BASE + '/' + GET_PARTICIPANTS_BY_COMPETITION_ID;
 
 
 const CommonConstant = {
@@ -119,6 +121,7 @@ const CommonConstant = {
     ValidateToken,
     ResetPasswordFinal,
     CheckNumberInvitations,
+    GetParticipantsByCompetitionId,
 };
 
 export default CommonConstant;

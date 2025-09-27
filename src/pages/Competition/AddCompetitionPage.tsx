@@ -8,7 +8,7 @@ import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 
 const COMPETITION_CATEGORIES = [
-  { label: "Security", value: "Sec" },
+  { label: "Security", value: "SEC" },
   { label: "Machine Learning", value: "ML" },
   { label: "Mobile Development", value: "MD" },
 ];
