@@ -28,9 +28,7 @@ const ACCEPT_INVITES = 'api/user/accept-invites';
 const REJECT_INVITES = 'api/user/reject-invites';
 const CHECK_IS_HAVE_TEAM = 'api/user/check-is-have-team';
 const CREATE_TEAM = 'api/team/create-team';
-const EDIT_TEAM = 'api/team/edit-team';
-const DELETE_TEAM = 'api/team/delete-team';
-const LEAVE_TEAM = 'api/team/leave-team';
+const FINALIZE_TEAM = 'api/team/finalize-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
 const IMAGE_SOURCE = 'api/competition/uploads/';
 const CHECK_ANY_COMPETITIONS_JOINED = 'api/team/check-any-competitions-joined';
@@ -39,6 +37,7 @@ const VALIDATE_TOKEN = 'api/user/validate-token';
 const RESET_PASSWORD_FINAL = 'api/user/reset-password-final';
 const CHECK_NUMBER_INVITATIONS = 'api/team/check-number-invitations';
 const GET_PARTICIPANTS_BY_COMPETITION_ID = 'api/competition/get-participant-by-id';
+const GET_ALL_SKILLSETS = 'api/user/get-list-skillset';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -69,9 +68,7 @@ const AcceptInvites = BASE + '/' + ACCEPT_INVITES;
 const RejectInvites = BASE + '/' + REJECT_INVITES;
 const CheckIsHaveTeam = BASE + '/' + CHECK_IS_HAVE_TEAM;
 const CreateTeam = BASE + '/' + CREATE_TEAM;
-const EditTeam = BASE + '/' + EDIT_TEAM;
-const DeleteTeam = BASE + '/' + DELETE_TEAM;
-const LeaveTeam = BASE + '/' + LEAVE_TEAM;
+const FinalizeTeam = BASE + '/' + FINALIZE_TEAM;
 const CheckIsLeader = BASE + '/' + CHECK_IS_LEADER;
 const ImageSource = BASE + '/' + IMAGE_SOURCE;
 const CheckAnyCompetitionsJoined = BASE + '/' + CHECK_ANY_COMPETITIONS_JOINED;
@@ -80,7 +77,7 @@ const ValidateToken = BASE + '/' + VALIDATE_TOKEN;
 const ResetPasswordFinal = BASE + '/' + RESET_PASSWORD_FINAL;
 const CheckNumberInvitations = BASE + '/' + CHECK_NUMBER_INVITATIONS;
 const GetParticipantsByCompetitionId = BASE + '/' + GET_PARTICIPANTS_BY_COMPETITION_ID;
-
+const GetAllSkillsets = BASE + '/' + GET_ALL_SKILLSETS;
 
 const CommonConstant = {
     Login,
@@ -111,9 +108,6 @@ const CommonConstant = {
     GetUserById,
     CheckIsLeader,
     InviteUser,
-    EditTeam,
-    DeleteTeam,
-    LeaveTeam,
     ChangePassword,
     ImageSource,
     CheckAnyCompetitionsJoined,
@@ -122,6 +116,8 @@ const CommonConstant = {
     ResetPasswordFinal,
     CheckNumberInvitations,
     GetParticipantsByCompetitionId,
+    FinalizeTeam,
+    GetAllSkillsets,
 };
 
 export default CommonConstant;

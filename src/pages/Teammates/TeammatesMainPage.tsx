@@ -3,21 +3,8 @@ import { useEffect, useState } from "react";
 import CommonConstant from "../../constant/CommonConstant";
 import { useToast } from "../../hooks/useToast";
 import { useAuth } from "../../hooks/AuthProvider";
-import { MdDelete, MdCancelPresentation, MdSave } from "react-icons/md";
-import Swal from "sweetalert2";
-import { IoIosHeart } from "react-icons/io";
-import { HiPencilAlt } from "react-icons/hi";
-import RedButton from "../../components/RedButton";
-
-const FIELD_OF_PREFERENCE = [
-  { label: "Data Science", value: "DS" },
-  { label: "Web Development", value: "WD" },
-  { label: "Mobile Development", value: "MD" },
-  { label: "Game Development", value: "GD" },
-  { label: "Cyber Security", value: "CS" },
-  { label: "Artificial Intelligence", value: "AI" },
-  { label: "Machine Learning", value: "ML" },
-];
+import BlueButton from "../../components/BlueButton";
+import GreenButton from "../../components/GreenButton";
 
 const TeammatesMainPage = () => {
   const [teammates, setTeammates] = useState([]);
@@ -25,10 +12,12 @@ const TeammatesMainPage = () => {
   const [isLeader, setIsLeader] = useState(false);
   const [teamName, setTeamName] = useState("");
   const [teamId, setTeamId] = useState("");
-  const [originalTeamName, setOriginalTeamName] = useState("");
   const [error, setError] = useState(null);
   const [isJoinedTeam, setIsJoinedTeam] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [isTeamFinalized, setIsTeamFinalized] = useState(false);
+  const [skillOptions, setSkillOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   const { errorToast, successToast, warningToast } = useToast();
   const { users } = useAuth();
@@ -38,7 +27,7 @@ const TeammatesMainPage = () => {
     const codes = valueString.split(",");
     return codes
       .map((code) => {
-        const match = FIELD_OF_PREFERENCE.find(
+        const match = skillOptions.find(
           (item) => item.value === code.trim()
         );
         return match ? match.label : code;
@@ -51,7 +40,7 @@ const TeammatesMainPage = () => {
       try {
         const response1 = await axios.post(CommonConstant.CheckIsHaveTeam);
         const hasTeam = response1.data.success;
-        setIsJoinedTeam(hasTeam);
+        setIsJoinedTeam(response1.data.success);
 
         if (hasTeam) {
           const response2 = await axios.post(CommonConstant.TeammatesList, {});
@@ -59,6 +48,7 @@ const TeammatesMainPage = () => {
           const result_teammates = response2.data.data;
           const member_id = result_teammates.member_id;
           const memberIds = member_id.split(",").map((id) => id.trim());
+          setIsTeamFinalized(response2.data.data.is_finalized);
 
           const userPromises = memberIds.map(async (id) => {
             const response = await axios.post(CommonConstant.GetUserById, {
@@ -91,8 +81,30 @@ const TeammatesMainPage = () => {
       }
     };
 
+    const fetchSkillsets = async () => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllSkillsets);
+        if (response.data.success) {
+          const skillsets = response.data.data || [];
+
+          const options = skillsets.map((item: any) => ({
+            label: item.skill_name,
+            value: item.skill_code,
+          }));
+
+          setSkillOptions(options);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage =
+          error?.response?.data?.message || "Failed to fetch skillsets";
+        errorToast(errorMessage);
+      }
+    };
+
     if (users) {
       fetchData();
+      fetchSkillsets();
     }
   }, []);
 
@@ -116,6 +128,23 @@ const TeammatesMainPage = () => {
     }
   };
 
+  const handleFinalizeTeam = async () => {
+    try {
+      const response = await axios.post(CommonConstant.FinalizeTeam, {
+        team_id: teamId,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+        setIsTeamFinalized(true);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <h1 className="text-4xl mb-4">Teammates List</h1>
@@ -124,17 +153,30 @@ const TeammatesMainPage = () => {
         {isJoinedTeam ? (
           <>
             <div className="flex justify-between">
-              <div className="flex items-center">
-                <h2 className="text-3xl">Team Name: </h2>
-                <input
-                  type="text"
-                  name="teamName"
-                  id="teamName"
-                  value={teamName}
-                  className="mx-3 w-fit text-2xl p-2 border border-[#e6e6e6] rounded-lg disabled:border-none"
-                  disabled={!isEditMode}
-                  size={teamName.length - 2}
-                />
+              <div className="flex items-center justify-between w-full">
+                <div>
+                  <h2 className="text-3xl">
+                    Team Name: <span className="font-semibold">{teamName}</span>
+                  </h2>
+                </div>
+                <div>
+                  {isLeader && (
+                    <>
+                      {isTeamFinalized ? (
+                        <GreenButton
+                          label="Team Finalized!"
+                          extendedClassName="disabled:hover:bg-green-500"
+                          disabled
+                        />
+                      ) : (
+                        <BlueButton
+                          label="Finalize Team"
+                          onClick={handleFinalizeTeam}
+                        />
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex justify-between gap-5 mt-5">
