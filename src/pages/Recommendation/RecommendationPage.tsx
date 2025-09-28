@@ -10,16 +10,6 @@ import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 import ProgressCircle from "../../components/ProgressCircle";
 
-const FIELD_OF_PREFERENCE = [
-  { label: "Data Science", value: "DS" },
-  { label: "Web Development", value: "WD" },
-  { label: "Mobile Development", value: "MD" },
-  { label: "Game Development", value: "GD" },
-  { label: "Cyber Security", value: "CS" },
-  { label: "Artificial Intelligence", value: "AI" },
-  { label: "Machine Learning", value: "ML" },
-];
-
 const RecommendationPage = () => {
   const [inviteesUser, setinviteesUser] = useState([]);
   const [invitesUser, setinvitesUser] = useState([]);
@@ -31,6 +21,10 @@ const RecommendationPage = () => {
   const [isJoinCompetition, setIsJoinCompetition] = useState(false);
   const [maxMember, setMaxMember] = useState(null);
   const [invitationNumber, setInvitationNumber] = useState(null);
+  const [specificPreference, setSpecificPreference] = useState("");
+  const [skillOptions, setSkillOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
   const { successToast, errorToast } = useToast();
 
   const invitationNumberLeft =
@@ -51,6 +45,27 @@ const RecommendationPage = () => {
       } catch (error: any) {
         console.log(error);
         errorToast(error);
+      }
+    };
+
+    const fetchSkillsets = async () => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllSkillsets);
+        if (response.data.success) {
+          const skillsets = response.data.data || [];
+
+          const options = skillsets.map((item: any) => ({
+            label: item.skill_name,
+            value: item.skill_code,
+          }));
+
+          setSkillOptions(options);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage =
+          error?.response?.data?.message || "Failed to fetch skillsets";
+        errorToast(errorMessage);
       }
     };
 
@@ -127,6 +142,7 @@ const RecommendationPage = () => {
     fetchinvitesUser();
     fetchTeamData();
     checkInvitationNumber();
+    fetchSkillsets();
   }, []);
 
   const getFieldLabels = (valueString) => {
@@ -134,9 +150,7 @@ const RecommendationPage = () => {
     const codes = valueString.split(",");
     return codes
       .map((code) => {
-        const match = FIELD_OF_PREFERENCE.find(
-          (item) => item.value === code.trim()
-        );
+        const match = skillOptions.find((item) => item.value === code.trim());
         return match ? match.label : code;
       })
       .filter(Boolean);
@@ -276,6 +290,21 @@ const RecommendationPage = () => {
                 disabled={memberLength == 3}
               />
               <p>Ignore semester</p>
+            </div>
+            <div>
+              <select
+                name="gender"
+                id="gender"
+                value={specificPreference}
+                onChange={(e) => setSpecificPreference(e.target.value)}
+                className="p-1 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              >
+                <option value="" hidden>
+                  Specific Skillset (optional)
+                </option>
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+              </select>
             </div>
             <button
               type="submit"
@@ -517,7 +546,7 @@ const RecommendationPage = () => {
                     </div>
                   </div>
                   <div className="grid grid-cols-3 mt-1 gap-1.5 overflow-hidden">
-                    {getFieldLabels(user.invites.field_of_preference).map(
+                    {skillOptions.length > 0 && getFieldLabels(user.invites.field_of_preference).map(
                       (label, idx) => (
                         <span
                           key={idx}
@@ -545,15 +574,15 @@ const RecommendationPage = () => {
                           showCancelButton: true,
                           confirmButtonColor: "#3085d6",
                           cancelButtonColor: "#d33",
-                          confirmButtonText: "Remove",
+                          confirmButtonText: "Reject",
                         });
 
                         if (result.isConfirmed) {
                           await handleRejectInvitation(user.invites.user_id);
 
                           await Swal.fire({
-                            title: "Invitation Deleted!",
-                            text: "Invitation has been removed.",
+                            title: "Invitation Rejected!",
+                            text: "Invitation has been rejected.",
                             icon: "success",
                           });
                         }

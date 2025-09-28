@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
@@ -11,16 +11,6 @@ type OptionType = {
   value: string;
 };
 
-const FIELD_OF_PREFERENCE = [
-  { label: "Data Science", value: "DS" },
-  { label: "Web Development", value: "WD" },
-  { label: "Mobile Development", value: "MD" },
-  { label: "Game Development", value: "GD" },
-  { label: "Cyber Security", value: "CS" },
-  { label: "Artificial Intelligence", value: "AI" },
-  { label: "Machine Learning", value: "ML" },
-];
-
 function RegisterPage() {
   const [fullname, setFullname] = useState("");
   const [username, setUsername] = useState("");
@@ -29,14 +19,41 @@ function RegisterPage() {
   const [gender, setGender] = useState("");
   const [semester, setSemester] = useState("");
   const [fieldOfPreference, setFieldOfPreference] = useState<string[]>([]);
+  const [skillOptions, setSkillOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   const { successToast, warningToast, errorToast } = useToast();
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchSkillsets = async () => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllSkillsets);
+        if (response.data.success) {
+          const skillsets = response.data.data || [];
+
+          const options = skillsets.map((item: any) => ({
+            label: item.skill_name,
+            value: item.skill_code,
+          }));
+
+          setSkillOptions(options);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage =
+          error?.response?.data?.message || "Failed to fetch skillsets";
+        errorToast(errorMessage);
+      }
+    };
+    fetchSkillsets();
+  }, []);
+
   const handleSubmit = async (e) => {
     const lowerEmail = email.toLowerCase();
-    const cleanFieldOfPreference = fieldOfPreference.join(',');
+    const cleanFieldOfPreference = fieldOfPreference.join(",");
     console.log(cleanFieldOfPreference);
     e.preventDefault();
     try {
@@ -175,7 +192,7 @@ function RegisterPage() {
             <Select
               isMulti
               name="field_of_preference"
-              options={FIELD_OF_PREFERENCE}
+              options={skillOptions}
               className="basic-multi-select w-full"
               classNamePrefix="select"
               // value={fieldOfPreference}

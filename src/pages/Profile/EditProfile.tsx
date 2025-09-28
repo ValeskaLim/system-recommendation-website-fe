@@ -12,16 +12,6 @@ type OptionType = {
   value: string;
 };
 
-const FIELD_OF_PREFERENCE = [
-  { label: "Data Science", value: "DS" },
-  { label: "Web Development", value: "WD" },
-  { label: "Mobile Development", value: "MD" },
-  { label: "Game Development", value: "GD" },
-  { label: "Cyber Security", value: "CS" },
-  { label: "Artificial Intelligence", value: "AI" },
-  { label: "Machine Learning", value: "ML" },
-];
-
 const EditProfile = ({ users, setIsEdit }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -29,14 +19,13 @@ const EditProfile = ({ users, setIsEdit }) => {
   const [semester, setSemester] = useState("");
   const [major, setMajor] = useState("");
   const [fieldOfPreference, setFieldOfPreference] = useState<string[]>([]);
+  const [skillOptions, setSkillOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
   const [isChangePwMode, setIsChangePwMode] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-
-  const selectedFields = FIELD_OF_PREFERENCE.filter((option) =>
-    users?.field_of_preference?.includes(option.value)
-  );
 
   const { successToast, warningToast, errorToast } = useToast();
 
@@ -96,6 +85,27 @@ const EditProfile = ({ users, setIsEdit }) => {
   };
 
   useEffect(() => {
+    const fetchSkillsets = async () => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllSkillsets);
+        if (response.data.success) {
+          const skillsets = response.data.data || [];
+
+          const options = skillsets.map((item: any) => ({
+            label: item.skill_name,
+            value: item.skill_code,
+          }));
+
+          setSkillOptions(options);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage =
+          error?.response?.data?.message || "Failed to fetch skillsets";
+        errorToast(errorMessage);
+      }
+    };
+
     if (users) {
       setUsername(users.username || "");
       setEmail(users.email || "");
@@ -106,22 +116,27 @@ const EditProfile = ({ users, setIsEdit }) => {
         users.field_of_preference ? users.field_of_preference.split(",") : []
       );
     }
+    fetchSkillsets();
   }, [users]);
 
   const handleChangePasswordSubmit = async (e) => {
     e.preventDefault();
 
-    if(oldPassword.trim() === "" || newPassword.trim() === "" || confirmNewPassword.trim() === "") {
+    if (
+      oldPassword.trim() === "" ||
+      newPassword.trim() === "" ||
+      confirmNewPassword.trim() === ""
+    ) {
       warningToast("All fields are required");
       return;
     }
 
-    if(newPassword.length < 4) {
+    if (newPassword.length < 4) {
       warningToast("Password must be at least 4 characters");
       return;
     }
 
-    if(newPassword !== confirmNewPassword) {
+    if (newPassword !== confirmNewPassword) {
       warningToast("Password confirmation does not match");
       return;
     }
@@ -132,7 +147,7 @@ const EditProfile = ({ users, setIsEdit }) => {
         new_password: newPassword,
       });
 
-      if(response.data.success) {
+      if (response.data.success) {
         successToast(response.data.message);
         setIsChangePwMode(false);
         setOldPassword("");
@@ -141,10 +156,11 @@ const EditProfile = ({ users, setIsEdit }) => {
       }
     } catch (error: any) {
       console.log(error);
-      const errorMessage = error.response?.data?.message || "Change password failed";
+      const errorMessage =
+        error.response?.data?.message || "Change password failed";
       errorToast(errorMessage);
     }
-  }
+  };
 
   return (
     <div>
@@ -234,8 +250,10 @@ const EditProfile = ({ users, setIsEdit }) => {
               <Select
                 isMulti
                 name="field_of_preference"
-                options={FIELD_OF_PREFERENCE}
-                defaultValue={selectedFields}
+                options={skillOptions}
+                value={skillOptions.filter((option) =>
+                  fieldOfPreference.includes(option.value)
+                )}
                 className="basic-multi-select w-full"
                 classNamePrefix="select"
                 closeMenuOnSelect={false}
@@ -252,7 +270,11 @@ const EditProfile = ({ users, setIsEdit }) => {
             </div>
           </form>
         ) : (
-          <form className="mt-10" onSubmit={handleChangePasswordSubmit} method="POST">
+          <form
+            className="mt-10"
+            onSubmit={handleChangePasswordSubmit}
+            method="POST"
+          >
             <div className="flex justify-between">
               <h3 className="flex items-center text-lg w-60">Old Password</h3>
               <input
@@ -272,7 +294,9 @@ const EditProfile = ({ users, setIsEdit }) => {
               />
             </div>
             <div className="flex justify-between mt-4">
-              <h3 className="flex items-center text-lg w-60">Confirm Password</h3>
+              <h3 className="flex items-center text-lg w-60">
+                Confirm Password
+              </h3>
               <input
                 type="password"
                 value={confirmNewPassword}
@@ -280,10 +304,13 @@ const EditProfile = ({ users, setIsEdit }) => {
                 className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
               />
             </div>
-            
+
             <div className="flex space-x-2 mt-5">
               <GreenButton label="Save Changes" type="submit" />
-              <RedButton label="Cancel" onClick={() => setIsChangePwMode(false)} />
+              <RedButton
+                label="Cancel"
+                onClick={() => setIsChangePwMode(false)}
+              />
             </div>
           </form>
         )}

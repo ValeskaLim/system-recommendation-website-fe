@@ -1,23 +1,39 @@
 import Select from "react-select";
 import BlueButton from "../../components/BlueButton";
-
-const FIELD_OF_PREFERENCE = [
-  { label: "Data Science", value: "DS" },
-  { label: "Web Development", value: "WD" },
-  { label: "Mobile Development", value: "MD" },
-  { label: "Game Development", value: "GD" },
-  { label: "Cyber Security", value: "CS" },
-  { label: "Artificial Intelligence", value: "AI" },
-  { label: "Machine Learning", value: "ML" },
-];
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useToast } from "../../hooks/useToast";
+import CommonConstant from "../../constant/CommonConstant";
 
 const NonEditProfile = ({ users, setIsEdit }) => {
-  const selectedFields = FIELD_OF_PREFERENCE.filter((option) =>
-    users?.field_of_preference?.includes(option.value)
-  );
+  const [skillOptions, setSkillOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const { errorToast } = useToast();
 
-  console.log(selectedFields);
+  useEffect(() => {
+    const fetchSkillsets = async () => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllSkillsets);
+        if (response.data.success) {
+          const skillsets = response.data.data || [];
 
+          const options = skillsets.map((item: any) => ({
+            label: item.skill_name,
+            value: item.skill_code,
+          }));
+
+          setSkillOptions(options);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage =
+          error?.response?.data?.message || "Failed to fetch skillsets";
+        errorToast(errorMessage);
+      }
+    };
+    fetchSkillsets();
+  }, []);
   return (
     <div>
       <h1 className="font-bold text-4xl">
@@ -87,8 +103,10 @@ const NonEditProfile = ({ users, setIsEdit }) => {
             <Select
               isMulti
               name="field_of_preference"
-              options={FIELD_OF_PREFERENCE}
-              defaultValue={selectedFields}
+              options={skillOptions}
+              value={skillOptions.filter((option) =>
+                users?.field_of_preference?.includes(option.value)
+              )}
               className="basic-multi-select w-full"
               classNamePrefix="select"
               closeMenuOnSelect={false}
