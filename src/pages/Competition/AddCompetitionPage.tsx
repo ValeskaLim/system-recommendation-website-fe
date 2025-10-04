@@ -77,44 +77,44 @@ const AddCompetitionPage = () => {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="">
+    <div className="main-container">
+      <div className="main-col-container">
         <div className="flex w-fit mb-5">
           <h1 className="text-3xl">Add Competition Data</h1>
         </div>
         <form method="POST" onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Title</label>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Title</label>
             <input
               type="text"
               id="title"
               placeholder="Input competition title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               required
             />
           </div>
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Date</label>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Date</label>
             <input
               type="date"
               id="date"
               placeholder="Input competition title"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               required
             />
           </div>
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Status</label>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Status</label>
             <select
               name="status"
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               required
             >
               <option value="" hidden>
@@ -124,14 +124,14 @@ const AddCompetitionPage = () => {
               <option value="INA">Inactive</option>
             </select>
           </div>
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Category</label>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Category</label>
             <select
               name="category"
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               required
             >
               <option value="" hidden>
@@ -144,19 +144,19 @@ const AddCompetitionPage = () => {
               ))}
             </select>
           </div>
-          <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Original Url</label>
+          <div className="flex flex-col">
+              <label className="text-lg items-center flex w-fit">Original Url</label>
               <input
                 type="text"
                 id="originalUrl"
                 placeholder="Input original URL"
                 value={originalUrl}
                 onChange={(e) => setOriginalUrl(e.target.value)}
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               />
             </div>
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Min member</label>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Min member</label>
             <input
               type="number"
               id="min-member"
@@ -168,11 +168,11 @@ const AddCompetitionPage = () => {
                 setMinMember(isNaN(value) ? undefined : value);
               }}
               required
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Max member</label>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Max member</label>
             <input
               type="number"
               id="max-member"
@@ -184,11 +184,11 @@ const AddCompetitionPage = () => {
                 setMaxMember(isNaN(value) ? undefined : value);
               }}
               required
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">
               Description
             </label>
             <textarea
@@ -196,12 +196,12 @@ const AddCompetitionPage = () => {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
               required
             ></textarea>
           </div>
-          <div className="flex justify-between">
-            <label className="text-lg items-center flex w-64">Poster</label>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Poster</label>
             <input
               type="file"
               accept="image/png, image/jpeg, image/jpg"
@@ -211,7 +211,7 @@ const AddCompetitionPage = () => {
                 setPoster(e.target.files ? e.target.files[0] : null)
               }
               required
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
             />
           </div>
           <div className="flex gap-2">

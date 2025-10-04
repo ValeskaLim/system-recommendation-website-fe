@@ -343,14 +343,16 @@ const RecommendationPage = () => {
                           <p>Username</p>
                           <p>Gender</p>
                           <p>Semester</p>
+                          <p>Portfolio</p>
                         </div>
-                        <div className="w-1/3">
+                        <div className="w-1/2">
                           <p>: {user.fullname}</p>
                           <p>: {user.username}</p>
                           <p>
                             : {user.gender == "L" ? "Laki-laki" : "Perempuan"}
                           </p>
                           <p>: {user.semester}</p>
+                          <a href={user.portfolio} target="_blank" rel="noopener noreferrer" className="break-all">: <span className="text-blue-500 hover:text-blue-700">{user.portfolio == null ? "-" : user.portfolio.substring(0, 40) + "..."}</span></a>
                         </div>
                         <ProgressCircle
                           percentage={Number(

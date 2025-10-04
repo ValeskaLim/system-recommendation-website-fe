@@ -95,8 +95,7 @@ const EditCompetitionPage = () => {
     formData.append("min_member", minMember?.toString() || "");
     formData.append("max_member", maxMember?.toString() || "");
     formData.append("description", description);
-    if (newPoster)
-      formData.append("poster", newPoster);
+    if (newPoster) formData.append("poster", newPoster);
     formData.append("original_url", originalUrl ?? "");
 
     try {
@@ -129,161 +128,156 @@ const EditCompetitionPage = () => {
   };
 
   return (
-    <div>
-      <div className="flex flex-col">
-        <div className="">
-          <div className="flex w-fit mb-5">
-            {/* <button onClick={() => navigate(-1)}><MdOutlineArrowBackIosNew className="cursor-pointer flex items-center text-2xl mr-2 font-semibold" /></button> */}
-            <h1 className="text-3xl">Edit Competition Data</h1>
-          </div>
-          <form method="POST" onSubmit={handleSubmit} className="space-y-4">
-            <div className="w-full h-60 overflow-hidden rounded-t-lg">
-              <img
-                src={`${CommonConstant.ImageSource}${poster}`}
-                alt={title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Title</label>
-              <input
-                type="text"
-                id="title"
-                placeholder="Input competition title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-                required
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Date</label>
-              <input
-                type="date"
-                id="date"
-                placeholder="Input competition title"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-                required
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Status</label>
-              <select
-                name="status"
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-                required
-              >
-                <option value="" hidden>
-                  --Select one--
-                </option>
-                <option value="ACT">Active</option>
-                <option value="INA">Inactive</option>
-              </select>
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Category</label>
-              <select
-                name="category"
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-                required
-              >
-                <option value="" hidden>
-                  --Select one--
-                </option>
-                {COMPETITION_CATEGORIES.map((t) => (
-                  <option key={t.value} value={t.value}>
-                    {t.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Original Url</label>
-              <input
-                type="text"
-                id="originalUrl"
-                placeholder="Input original URL"
-                value={originalUrl}
-                onChange={(e) => setOriginalUrl(e.target.value)}
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">
-                Min member
-              </label>
-              <input
-                type="number"
-                id="min-member"
-                min="0"
-                placeholder="Input minimum member"
-                value={minMember ?? ""}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value, 10);
-                  setMinMember(isNaN(value) ? undefined : value);
-                }}
-                required
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">
-                Max member
-              </label>
-              <input
-                type="number"
-                id="max-member"
-                min="0"
-                placeholder="Input maximum member"
-                value={maxMember ?? ""}
-                onChange={(e) => {
-                  const value = parseInt(e.target.value, 10);
-                  setMaxMember(isNaN(value) ? undefined : value);
-                }}
-                required
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              />
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">
-                Description
-              </label>
-              <textarea
-                name="description"
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-                required
-              ></textarea>
-            </div>
-            <div className="flex justify-between">
-              <label className="text-lg items-center flex w-64">Poster</label>
-              <input
-                type="file"
-                accept="image/png, image/jpeg, image/jpg"
-                min="0"
-                placeholder="Input maximum member"
-                onChange={(e) =>
-                  setNewPoster(e.target.files ? e.target.files[0] : null)
-                }
-                className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              />
-            </div>
-            <div className="flex gap-2">
-              <GreenButton type="submit" label="Save" />
-              <RedButton label="Cancel" onClick={() => navigate(-1)} />
-            </div>
-          </form>
+    <div className="main-container">
+      <div className="main-col-container">
+        <div className="flex w-fit mb-5">
+          <h1 className="text-3xl w-full">Edit Competition Data</h1>
         </div>
+        <form method="POST" onSubmit={handleSubmit} className="space-y-4">
+          <div className="w-full h-fit overflow-hidden rounded-t-lg">
+            <img
+              src={`${CommonConstant.ImageSource}${poster}`}
+              alt={title}
+              className="w-full max-h-[500px] object-none"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Title</label>
+            <input
+              type="text"
+              id="title"
+              placeholder="Input competition title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Date</label>
+            <input
+              type="date"
+              id="date"
+              placeholder="Input competition title"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              required
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Status</label>
+            <select
+              name="status"
+              id="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              required
+            >
+              <option value="" hidden>
+                --Select one--
+              </option>
+              <option value="ACT">Active</option>
+              <option value="INA">Inactive</option>
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Category</label>
+            <select
+              name="category"
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              required
+            >
+              <option value="" hidden>
+                --Select one--
+              </option>
+              {COMPETITION_CATEGORIES.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">
+              Original Url
+            </label>
+            <input
+              type="text"
+              id="originalUrl"
+              placeholder="Input original URL"
+              value={originalUrl}
+              onChange={(e) => setOriginalUrl(e.target.value)}
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Min member</label>
+            <input
+              type="number"
+              id="min-member"
+              min="0"
+              placeholder="Input minimum member"
+              value={minMember ?? ""}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                setMinMember(isNaN(value) ? undefined : value);
+              }}
+              required
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">Max member</label>
+            <input
+              type="number"
+              id="max-member"
+              min="0"
+              placeholder="Input maximum member"
+              value={maxMember ?? ""}
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                setMaxMember(isNaN(value) ? undefined : value);
+              }}
+              required
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-fit">
+              Description
+            </label>
+            <textarea
+              name="description"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
+              required
+            ></textarea>
+          </div>
+          <div className="flex flex-col">
+            <label className="text-lg items-center flex w-64">Poster</label>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              min="0"
+              placeholder="Input maximum member"
+              onChange={(e) =>
+                setNewPoster(e.target.files ? e.target.files[0] : null)
+              }
+              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+            />
+          </div>
+          <div className="flex gap-2">
+            <GreenButton type="submit" label="Save" />
+            <RedButton label="Cancel" onClick={() => navigate(-1)} />
+          </div>
+        </form>
       </div>
     </div>
   );

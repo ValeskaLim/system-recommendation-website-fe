@@ -1,25 +1,14 @@
 import { useAuth } from "../hooks/AuthProvider";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { ROUTE_PATHS } from "../router/routePaths";
 import { useToast } from "../hooks/useToast";
 import RedButton from "./RedButton";
-import WelcomeMessage from "./WelcomeMessage";
 
 const TopHeader = () => {
   const { users, logout } = useAuth();
   const navigate = useNavigate();
-  const [currentTime, setCurrentTime] = useState<string>("");
   const { successToast, errorToast } = useToast();
-
-  useEffect(() => {
-    const updateClock = () => {
-      setCurrentTime(new Date().toLocaleTimeString());
-    };
-    updateClock();
-    const timer = setInterval(updateClock, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const handleLogout = async () => {
     try {
@@ -33,13 +22,61 @@ const TopHeader = () => {
   };
 
   return (
-    <header className="bg-gray-100 p-4 flex justify-between items-center shadow">
-      <div>
-         <WelcomeMessage user={users?.fullname} />
-      </div>
-      <div className="flex items-center gap-4">
-        <span>{currentTime}</span>
-        <RedButton label="Logout" onClick={handleLogout} />
+    <header className="p-3 flex justify-between items-center shadow">
+      <div className="w-[77%] mx-auto flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="Logo" className="w-[50px] h-[50px]" />
+          <h2 className="text-2xl font-bold">SUNIB Hall</h2>
+        </div>
+        <div>
+          <nav>
+            <ul className="flex gap-5">
+              <li className="items-center flex">
+                <NavLink
+                  to={ROUTE_PATHS.HOME}
+                  className="font-semibold h-full items-center flex px-2 duration-300 hover:text-gray-600 hover:duration-300"
+                >
+                  Home
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/teammates"
+                  className="font-semibold h-full items-center flex px-2 duration-300 hover:text-gray-600 hover:duration-300"
+                >
+                  Teammates List
+                </NavLink>
+              </li>
+              <li className="items-center flex">
+                <NavLink
+                  to={ROUTE_PATHS.COMPETITION}
+                  className="font-semibold h-full items-center flex px-2 duration-300 hover:text-gray-600 hover:duration-300"
+                >
+                  Competitions
+                </NavLink>
+              </li>
+              <li className="items-center flex">
+                <NavLink
+                  to={ROUTE_PATHS.RECOMMENDATION}
+                  className="font-semibold h-full items-center flex px-2 duration-300 hover:text-gray-600 hover:duration-300"
+                >
+                  Find
+                </NavLink>
+              </li>
+              <li className="items-center flex">
+                <NavLink
+                  to={`${ROUTE_PATHS.PROFILE}?id=${users?.user_id}`}
+                  className="font-semibold h-full items-center flex px-2 duration-300 hover:text-gray-600 hover:duration-300"
+                >
+                  Your Profile
+                </NavLink>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div>
+          <RedButton label="Logout" onClick={handleLogout} />
+        </div>
       </div>
     </header>
   );

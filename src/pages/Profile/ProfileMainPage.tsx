@@ -8,7 +8,7 @@ const ProfileMainPage = () => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   return (
-    <div className="flex flex-col">
+    <div className="main-container">
       {isEdit ? (
         <EditProfile users={users} setIsEdit={setIsEdit}/>
       ) : (
