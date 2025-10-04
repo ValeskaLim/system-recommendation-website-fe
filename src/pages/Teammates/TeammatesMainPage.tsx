@@ -5,6 +5,9 @@ import { useToast } from "../../hooks/useToast";
 import { useAuth } from "../../hooks/AuthProvider";
 import BlueButton from "../../components/BlueButton";
 import GreenButton from "../../components/GreenButton";
+import { ROUTE_PATHS } from "../../router/routePaths";
+import { useNavigate } from "react-router-dom";
+import BlueLabel from "../../components/BlueLabel";
 
 const TeammatesMainPage = () => {
   const [teammates, setTeammates] = useState([]);
@@ -21,15 +24,14 @@ const TeammatesMainPage = () => {
 
   const { errorToast, successToast, warningToast } = useToast();
   const { users } = useAuth();
+  const navigate = useNavigate();
 
   const getFieldLabels = (valueString) => {
     if (!valueString) return [];
     const codes = valueString.split(",");
     return codes
       .map((code) => {
-        const match = skillOptions.find(
-          (item) => item.value === code.trim()
-        );
+        const match = skillOptions.find((item) => item.value === code.trim());
         return match ? match.label : code;
       })
       .filter(Boolean);
@@ -145,157 +147,187 @@ const TeammatesMainPage = () => {
     }
   };
 
+  const viewCompetitionDetail = (
+    competitionData: any,
+    competition_id: number
+  ) => {
+    navigate(`${ROUTE_PATHS.COMPETITION}/${competition_id}`, {
+      state: { competition: competitionData },
+    });
+  };
+
   return (
-    <div className="flex flex-col">
-      <h1 className="text-4xl mb-4">Teammates List</h1>
-      <hr className="text-gray-300" />
-      <div className="mt-7">
-        {isJoinedTeam ? (
-          <>
-            <div className="flex justify-between">
-              <div className="flex items-center justify-between w-full">
-                <div>
-                  <h2 className="text-3xl">
-                    Team Name: <span className="font-semibold">{teamName}</span>
-                  </h2>
-                </div>
-                <div>
-                  {isLeader && (
-                    <>
-                      {isTeamFinalized ? (
-                        <GreenButton
-                          label="Team Finalized!"
-                          extendedClassName="disabled:hover:bg-green-500"
-                          disabled
-                        />
-                      ) : (
-                        <BlueButton
-                          label="Finalize Team"
-                          onClick={handleFinalizeTeam}
-                        />
-                      )}
-                    </>
-                  )}
+    <div className="main-container">
+      <div className="main-col-container">
+        <hr className="text-gray-300" />
+        <div className="w-full">
+          {isJoinedTeam ? (
+            <>
+              <div className="flex justify-between">
+                <div className="flex items-center justify-between w-full">
+                  <div>
+                    <h2 className="text-3xl">
+                      Team Name:{" "}
+                      <span className="font-semibold">{teamName}</span>
+                    </h2>
+                  </div>
+                  <div>
+                    {isLeader && (
+                      <>
+                        {isTeamFinalized ? (
+                          <GreenButton
+                            label="Team Finalized!"
+                            extendedClassName="disabled:hover:bg-green-500"
+                            disabled
+                          />
+                        ) : (
+                          <BlueButton
+                            label="Finalize Team"
+                            onClick={handleFinalizeTeam}
+                          />
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex justify-between gap-5 mt-5">
-              <ul className="list-none space-y-4 w-full">
-                {teammates.map((user: any) => (
-                  <li
-                    key={user.user_id}
-                    className="p-3 rounded-2xl flex justify-between bg-neutral-100 shadow-lg"
-                  >
-                    <div>
-                      <strong>{user.username}</strong> ({user.fullname})
-                      {user.user_id === users?.user_id && (
-                        <span className="text-blue-500"> (You)</span>
-                      )}
-                      <p>{user.email}</p>
-                      <p>Semester: {user.semester}</p>
-                      <div className="mt-5 grid grid-flow-col grid-rows-3 w-fit gap-1.5 overflow-hidden">
-                        {getFieldLabels(user.field_of_preference).map(
-                          (label, idx) => (
-                            <span
-                              key={idx}
-                              className="cursor-default bg-blue-100 text-blue-700 px-2 py-2.5 rounded text-xs font-bold duration-300 hover:bg-blue-500 hover:duration-300 hover:text-white"
-                            >
-                              {label}
-                            </span>
-                          )
+              <div className="flex justify-between gap-5 mt-5">
+                <ul className="list-none space-y-4 w-full">
+                  {teammates.map((user: any) => (
+                    <li
+                      key={user.user_id}
+                      className="card-container"
+                    >
+                      <div>
+                        <strong>{user.username}</strong> ({user.fullname})
+                        {user.user_id === users?.user_id && (
+                          <span className="text-blue-500"> (You)</span>
                         )}
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <ul className="w-full">
-                <li className="p-3 rounded-2xl flex flex-col bg-neutral-100 shadow-lg">
-                  {teamCompetition !== undefined && teamCompetition !== null ? (
-                    <>
-                      <p className="font-semibold text-2xl h-[44px] items-center flex">
-                        {teamCompetition.title}
-                      </p>
-                      <div className="flex justify-between">
-                        <div className="w-1/2">
-                          <p className="text-md mt-2">Date</p>
-                          <p>Min member</p>
-                          <p>Max member</p>
-                          <p>Status</p>
-                          <p>Description</p>
+                        <p>{user.email}</p>
+                        <p>Semester: {user.semester}</p>
+                        <a
+                          href={user.portfolio}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 hover:text-blue-700 break-all"
+                        >
+                          {user.portfolio == null
+                            ? "-"
+                            : user.portfolio.substring(0, 50)}
+                        </a>
+                        <div className="mt-5 w-fit gap-2 flex">
+                          {getFieldLabels(user.field_of_preference).map(
+                            (label, idx) => (
+                              <BlueLabel text={label} key={idx} />
+                            )
+                          )}
                         </div>
-                        <div className="w-3/4">
-                          <p className="text-md mt-2">
-                            :{" "}
-                            {new Date(teamCompetition.date).toLocaleDateString(
-                              "en-US",
-                              {
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="w-full">
+                  <li className="card-container">
+                    {teamCompetition !== undefined &&
+                    teamCompetition !== null ? (
+                      <>
+                        <div className="w-full h-full">
+                          <img
+                            src={`${CommonConstant.ImageSource}${teamCompetition.poster}`}
+                            alt={teamCompetition.title}
+                            className="w-full max-h-[300px] object-cover rounded-t-2xl"
+                          />
+                        </div>
+                        <p className="font-semibold text-3xl h-[44px] items-center flex mt-5">
+                          {teamCompetition.title}
+                        </p>
+                        <div className="flex justify-between">
+                          <div className="w-1/2">
+                            <p className="text-md mt-2">Date</p>
+                            <p>Min member</p>
+                            <p>Max member</p>
+                            <p>Status</p>
+                          </div>
+                          <div className="w-3/4">
+                            <p className="text-md mt-2">
+                              :{" "}
+                              {new Date(
+                                teamCompetition.date
+                              ).toLocaleDateString("en-US", {
                                 day: "numeric",
                                 month: "long",
                                 year: "numeric",
-                              }
-                            )}
-                          </p>
-                          <p>: {teamCompetition.min_member}</p>
-                          <p>: {teamCompetition.max_member}</p>
-                          <p
-                            className={`${
-                              teamCompetition.status == "INA"
-                                ? "text-red-500"
-                                : "text-green-500"
-                            } font-semibold`}
-                          >
-                            <span className="text-black">: </span>
-                            {teamCompetition.status == "INA"
-                              ? "Inactive"
-                              : "Active"}
-                          </p>
-                          <p>
-                            : {teamCompetition.description.substring(0, 200)}...
-                          </p>
+                              })}
+                            </p>
+                            <p>: {teamCompetition.min_member}</p>
+                            <p>: {teamCompetition.max_member}</p>
+                            <p
+                              className={`${
+                                teamCompetition.status == "INA"
+                                  ? "text-red-500"
+                                  : "text-green-500"
+                              } font-semibold`}
+                            >
+                              <span className="text-black">: </span>
+                              {teamCompetition.status == "INA"
+                                ? "Inactive"
+                                : "Active"}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  ) : (
-                    <p>No competition found</p>
-                  )}
-                </li>
-              </ul>
-            </div>
-            {error && <p className="text-red-500">{error}</p>}
-            {teammates.length === 0 && !error && <p>No teammates found.</p>}
-          </>
-        ) : (
-          <>
-            <form onSubmit={handleSubmit}>
-              <div className="mt-3 w-1/2">
-                <h3 className="text-xl">
-                  You don't have team yet, want to create one?
-                </h3>
-                <div className="flex flex-col bg-gray-100 shadow-md p-3 mt-5 rounded-lg gap-3">
-                  <div className="flex justify-between items-center">
-                    <p>Team Name:</p>
-                    <input
-                      type="text"
-                      value={teamName}
-                      onChange={(e) => setTeamName(e.target.value)}
-                      name="teamName"
-                      id="teamName"
-                      className="w-3/4 text-md p-2 border border-[#e6e6e6] bg-white rounded-lg"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="cursor-pointer flex gap-2 group text-md items-center w-fit text-white bg-blue-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                                      hover:bg-blue-600 hover:duration-300"
-                  >
-                    Submit
-                  </button>
-                </div>
+                        <div className="mt-5">
+                          <BlueButton
+                            label="View details"
+                            onClick={() =>
+                              viewCompetitionDetail(
+                                teamCompetition,
+                                teamCompetition.id
+                              )
+                            }
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <p>No competition found</p>
+                    )}
+                  </li>
+                </ul>
               </div>
-            </form>
-          </>
-        )}
+              {error && <p className="text-red-500">{error}</p>}
+              {teammates.length === 0 && !error && <p>No teammates found.</p>}
+            </>
+          ) : (
+            <>
+              <form onSubmit={handleSubmit}>
+                <div className="mt-3 w-1/2">
+                  <h3 className="text-xl">
+                    You don't have team yet, want to create one?
+                  </h3>
+                  <div className="flex flex-col bg-gray-100 shadow-md p-3 mt-5 rounded-lg gap-3">
+                    <div className="flex justify-between items-center">
+                      <p>Team Name:</p>
+                      <input
+                        type="text"
+                        value={teamName}
+                        onChange={(e) => setTeamName(e.target.value)}
+                        name="teamName"
+                        id="teamName"
+                        className="w-3/4 text-md p-2 border border-[#e6e6e6] bg-white rounded-lg"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="cursor-pointer flex gap-2 group text-md items-center w-fit text-white bg-blue-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
+                                      hover:bg-blue-600 hover:duration-300"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

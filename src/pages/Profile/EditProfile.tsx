@@ -19,6 +19,7 @@ const EditProfile = ({ users, setIsEdit }) => {
   const [semester, setSemester] = useState("");
   const [major, setMajor] = useState("");
   const [fieldOfPreference, setFieldOfPreference] = useState<string[]>([]);
+  const [portfolioLink, setPortfolioLink] = useState("");
   const [skillOptions, setSkillOptions] = useState<
     { label: string; value: string }[]
   >([]);
@@ -43,6 +44,7 @@ const EditProfile = ({ users, setIsEdit }) => {
           semester,
           major,
           field_of_preference: cleanFieldOfPreference,
+          portfolio: portfolioLink,
         });
         console.log(response.data);
         successToast(response.data.message);
@@ -115,6 +117,7 @@ const EditProfile = ({ users, setIsEdit }) => {
       setFieldOfPreference(
         users.field_of_preference ? users.field_of_preference.split(",") : []
       );
+      setPortfolioLink(users.portfolio || "");
     }
     fetchSkillsets();
   }, [users]);
@@ -163,48 +166,51 @@ const EditProfile = ({ users, setIsEdit }) => {
   };
 
   return (
-    <div>
+    <div className="mx-50">
       <h1 className="font-bold text-4xl">
         {users?.fullname}'s <span className="font-normal">Profile</span>
       </h1>
       <div className="w-full">
         {!isChangePwMode ? (
           <form className="mt-10" onSubmit={handleSubmit} method="POST">
-            <div className="flex justify-between">
-              <h3 className="flex items-center text-lg w-60">Username</h3>
+            <div className="flex flex-col justify-between">
+              <h3 className="required flex items-center text-lg w-fit">
+                Username
+              </h3>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
+                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               />
             </div>
-            <div className="flex justify-between mt-4">
-              <h3 className="flex items-center text-lg w-60">Password</h3>
+            <div className="flex flex-col justify-between mt-4">
+              <h3 className="flex items-center text-lg w-fit">Password</h3>
               <div className="w-full">
                 <BlueButton
                   label="Change"
                   onClick={() => setIsChangePwMode(true)}
+                  extendedClassName="mt-3"
                 />
               </div>
             </div>
-            <div className="flex justify-between mt-4">
-              <h3 className="flex items-center text-lg w-60">Email</h3>
+            <div className="flex flex-col justify-between mt-4">
+              <h3 className="required flex items-center text-lg w-fit">Email</h3>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
+                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               />
             </div>
-            <div className="flex justify-between mt-4">
-              <h3 className="flex items-center text-lg w-60">Gender</h3>
+            <div className="flex flex-col justify-between mt-4">
+              <h3 className="flex items-center text-lg w-fit">Gender</h3>
               <select
                 name="gender"
                 id="gender"
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
-                className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
+                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               >
                 <option value="" hidden>
                   --Select one--
@@ -213,14 +219,14 @@ const EditProfile = ({ users, setIsEdit }) => {
                 <option value="P">Perempuan</option>
               </select>
             </div>
-            <div className="flex justify-between mt-4">
-              <h3 className="flex items-center text-lg w-60">Semester</h3>
+            <div className="flex flex-col justify-between mt-4">
+              <h3 className="flex items-center text-lg w-fit">Semester</h3>
               <select
                 name="semester"
                 id="semester"
                 value={semester}
                 onChange={(e) => setSemester(e.target.value)}
-                className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
+                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               >
                 <option value="" hidden>
                   --Select one--
@@ -232,19 +238,19 @@ const EditProfile = ({ users, setIsEdit }) => {
                 ))}
               </select>
             </div>
-            <div className="flex justify-between mt-4">
-              <h3 className="flex items-center text-lg w-60">Major</h3>
+            <div className="flex flex-col justify-between mt-4">
+              <h3 className="required flex items-center text-lg w-fit">Major</h3>
               <input
                 name="major"
                 id="major"
                 type="text"
                 value={major}
                 onChange={(e) => setMajor(e.target.value)}
-                className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
+                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               />
             </div>
-            <div className="flex justify-between mt-4">
-              <h3 className="flex items-center text-lg w-60">
+            <div className="flex flex-col justify-between mt-4">
+              <h3 className="required flex items-center text-lg w-fit">
                 Field of preference
               </h3>
               <Select
@@ -262,6 +268,15 @@ const EditProfile = ({ users, setIsEdit }) => {
                     (selectedOptions as OptionType[]).map((opt) => opt.value)
                   )
                 }
+              />
+            </div>
+            <div className="flex flex-col justify-between mt-4">
+              <h3 className="flex items-center text-lg w-60">Portfolio link</h3>
+              <input
+                type="text"
+                value={portfolioLink}
+                onChange={(e) => setPortfolioLink(e.target.value)}
+                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
               />
             </div>
             <div className="flex space-x-2 mt-5">
@@ -304,7 +319,6 @@ const EditProfile = ({ users, setIsEdit }) => {
                 className="text-md p-2 border border-[#e6e6e6] rounded-lg w-full"
               />
             </div>
-
             <div className="flex space-x-2 mt-5">
               <GreenButton label="Save Changes" type="submit" />
               <RedButton

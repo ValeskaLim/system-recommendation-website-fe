@@ -13,6 +13,7 @@ interface Users {
     major: string;
     role: string;
     is_verified: boolean;
+    portfolio: string;
 }
 
 interface AuthContextType {
