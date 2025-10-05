@@ -7,7 +7,7 @@ export const ROUTE_PATHS = {
     EDIT_COMPETITION: '/competitions/edit',
     PROFILE: '/profile',
     TEAMMATES_LIST: '/teammates',
-    RECOMMENDATION: '/recommendation',
+    FIND: '/find',
     VERIFY_EMAIL: '/verify-email/:token',
     VERIFY_PASSWORD : '/verify-password',
     RESET_PASSWORD: '/reset-password',

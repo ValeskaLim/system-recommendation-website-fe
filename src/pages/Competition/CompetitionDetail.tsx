@@ -20,6 +20,7 @@ const CompetitionDetail = () => {
   const [countdown, setCountdown] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
+  const [isAlreadyRequested, setIsAlreadyRequested] = useState([]);
 
   useEffect(() => {
     if (!competition) return;
@@ -55,6 +56,26 @@ const CompetitionDetail = () => {
       }
     };
 
+    const fetchListTeamUserRequest = async () => {
+      try {
+        const response = await axios.post(
+          CommonConstant.GetListTeamUserRequest
+        );
+        if(response.data.success){
+          const requestedTeamIds = response.data.data.map(
+            (request: any) => request.team_id
+          );
+          setIsAlreadyRequested(requestedTeamIds);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage =
+          error.response?.data?.message || "Failed to fetch team user requests";
+        errorToast(errorMessage);
+      }
+    };
+
+    fetchListTeamUserRequest();
     fetchCheckAlreadyJoined();
     fetchParticipants();
   }, [competition]);
@@ -93,8 +114,25 @@ const CompetitionDetail = () => {
     return () => clearInterval(interval);
   }, [competition.date]);
 
-  const handleRequestJoin = (teamId: number) => {
-
+  const handleRequestJoin = async (teamId: number) => {
+    try {
+      const response = await axios.post(CommonConstant.RequestJoinTeam, {
+        team_id: teamId,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message || "Failed to request join team";
+      errorToast(errorMessage);
+    }
   };
 
   return (
@@ -199,7 +237,14 @@ const CompetitionDetail = () => {
                       </ul>
                     ))}
                   </div>
-                  {!isJoined && <BlueButton label="Request join" onClick={() => handleRequestJoin(participant.team_id)} />}
+                  {!isJoined && (
+                    <BlueButton
+                      label="Request join"
+                      onClick={() => handleRequestJoin(participant.team_id)}
+                      extendedClassName="disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
+                      disabled={isAlreadyRequested.includes(participant.team_id)}
+                    />
+                  )}
                 </div>
               ))
             )}

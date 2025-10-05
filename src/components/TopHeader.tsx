@@ -22,7 +22,7 @@ const TopHeader = () => {
   };
 
   return (
-    <header className="p-3 flex justify-between items-center shadow">
+    <header className="p-3 flex justify-between items-center shadow bg-stone-50">
       <div className="w-[77%] mx-auto flex justify-between items-center">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="Logo" className="w-[50px] h-[50px]" />
@@ -57,7 +57,7 @@ const TopHeader = () => {
               </li>
               <li className="items-center flex">
                 <NavLink
-                  to={ROUTE_PATHS.RECOMMENDATION}
+                  to={ROUTE_PATHS.FIND}
                   className="font-semibold h-full items-center flex px-2 duration-300 hover:text-gray-600 hover:duration-300"
                 >
                   Find

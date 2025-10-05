@@ -117,7 +117,7 @@ const EditProfile = ({ users, setIsEdit }) => {
       setFieldOfPreference(
         users.field_of_preference ? users.field_of_preference.split(",") : []
       );
-      setPortfolioLink(users.portfolio || "");
+      setPortfolioLink(users.portfolio || null);
     }
     fetchSkillsets();
   }, [users]);

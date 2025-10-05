@@ -1,30 +1,36 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CommonConstant from "../../constant/CommonConstant";
 import { useToast } from "../../hooks/useToast";
-import { IoSettingsSharp } from "react-icons/io5";
+import { SlMagnifier } from "react-icons/sl";
+import { CiFilter } from "react-icons/ci";
 import { useAuth } from "../../hooks/AuthProvider";
 import Swal from "sweetalert2";
 import BlueButton from "../../components/BlueButton";
 import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
-import ProgressCircle from "../../components/ProgressCircle";
 
-const RecommendationPage = () => {
+const FindPage = () => {
   const [inviteesUser, setinviteesUser] = useState([]);
   const [invitesUser, setinvitesUser] = useState([]);
   const [memberLength, setMemberLength] = useState();
-  const [isIgnoreSemester, setisIgnoreSemester] = useState(false);
-  const [isIgnoreGender, setisIgnoreGender] = useState(false);
-  const [isRunRecommend, setIsRunRecommend] = useState(false);
-  const [recommendUsers, setRecommendUsers] = useState([]);
+  const [isRunFind, setIsRunFind] = useState(false);
   const [isJoinCompetition, setIsJoinCompetition] = useState(false);
   const [maxMember, setMaxMember] = useState(null);
   const [invitationNumber, setInvitationNumber] = useState(null);
-  const [specificPreference, setSpecificPreference] = useState("");
   const [skillOptions, setSkillOptions] = useState<
     { label: string; value: string }[]
   >([]);
+  const [showFilter, setShowFilter] = useState(false);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+  const [username, setUsername] = useState("");
+  const [isLeader, setIsLeader] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
   const { successToast, errorToast } = useToast();
 
   const invitationNumberLeft =
@@ -33,6 +39,11 @@ const RecommendationPage = () => {
   const { users } = useAuth();
 
   const inviteeIds = inviteesUser.map((invitee) => invitee.invitee_id);
+
+  const usersToShow = selectedSkills.length > 0 ? filteredUsers : allUsers;
+  const displayedUsers = (usersToShow || []).filter((user: any) =>
+    user.username?.toLowerCase().includes(username.toLowerCase())
+  );
 
   useEffect(() => {
     const fetchinviteesUser = async () => {
@@ -145,6 +156,56 @@ const RecommendationPage = () => {
     fetchSkillsets();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setShowFilter(false);
+      }
+    };
+    const checkIsLeader = async () => {
+      try {
+        const response = await axios.post(CommonConstant.CheckIsLeader);
+        if (response.data.success) {
+          setIsLeader(response.data.data.isLeader);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error.response.data.message;
+        errorToast(errorMessage);
+      }
+    };
+    checkIsLeader();
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (selectedSkills.length > 0) {
+      filterUsersBySkills(selectedSkills);
+    } else {
+      fetchAllUsers();
+    }
+  }, [selectedSkills]);
+
+  const fetchAllUsers = async () => {
+    try {
+      const response = await axios.post(CommonConstant.GetAllUsers);
+      if (response.data.success) {
+        setAllUsers(response.data.data);
+      }
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
   const getFieldLabels = (valueString) => {
     if (!valueString) return [];
     const codes = valueString.split(",");
@@ -156,46 +217,11 @@ const RecommendationPage = () => {
       .filter(Boolean);
   };
 
-  const isMaxInvite = () => {
-    if (inviteesUser.length === 2) {
-      return true;
-    }
-
-    return false;
-  };
-
-  const processRecommend = async (e) => {
-    e.preventDefault();
-
-    if (!isJoinCompetition) {
-      errorToast("Cannot use recommendation, please join a competition first");
-      return;
-    }
-
-    if (users !== null) {
-      try {
-        const response = await axios.post(CommonConstant.Recommendation, {
-          user_id: users.user_id,
-          ignore_gender: isIgnoreGender,
-          ignore_semester: isIgnoreSemester,
-        });
-        console.log(response.data);
-        setRecommendUsers(response.data.data);
-        setIsRunRecommend(true);
-      } catch (error: any) {
-        console.log(error);
-        const errorMessage = error.response.data.message;
-        errorToast(errorMessage);
-      }
-    } else {
-      errorToast("Current user is not found");
-    }
-  };
-
   const handleReset = () => {
-    setIsRunRecommend(false);
-    setisIgnoreGender(false);
-    setisIgnoreSemester(false);
+    setIsRunFind(false);
+    setSelectedSkills([]);
+    setFilteredUsers([]);
+    setUsername("");
   };
 
   const removeUser = async (user_id) => {
@@ -267,98 +293,146 @@ const RecommendationPage = () => {
     }
   };
 
+  const handleFilterClick = (skillCode: string) => {
+    setSelectedSkills((prev) =>
+      prev.includes(skillCode)
+        ? prev.filter((code) => code !== skillCode)
+        : [...prev, skillCode]
+    );
+  };
+
+  const filterUsersBySkills = async (skills: string[]) => {
+    try {
+      const response = await axios.post(CommonConstant.FilterUsers, {
+        skills: skills,
+      });
+      setFilteredUsers(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const toggleFilterDropdown = () => {
+    setShowFilter((prev) => !prev);
+  };
+
   return (
-    <div className="flex flex-col">
-      <div>
-        <h1 className="font-bold text-4xl">Recommendation</h1>
-        <form onSubmit={processRecommend}>
-          <div className="mt-4 flex items-center border rounded-md p-3 gap-10">
-            <div className="gap-2 flex">
-              <input
-                type="checkbox"
-                checked={isIgnoreGender}
-                onChange={(e) => setisIgnoreGender(e.target.checked)}
-                disabled={memberLength == 3}
-              />
-              <p>Ignore gender</p>
-            </div>
-            <div className="gap-2 flex">
-              <input
-                type="checkbox"
-                checked={isIgnoreSemester}
-                onChange={(e) => setisIgnoreSemester(e.target.checked)}
-                disabled={memberLength == 3}
-              />
-              <p>Ignore semester</p>
-            </div>
-            <div>
-              <select
-                name="gender"
-                id="gender"
-                value={specificPreference}
-                onChange={(e) => setSpecificPreference(e.target.value)}
-                className="p-1 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
-              >
-                <option value="" hidden>
-                  Specific Skillset (optional)
-                </option>
-                <option value="L">Laki-laki</option>
-                <option value="P">Perempuan</option>
-              </select>
-            </div>
-            <button
-              type="submit"
-              className="cursor-pointer flex gap-2 group text-lg items-center w-fit text-white bg-blue-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-blue-600 hover:duration-300 disabled:cursor-not-allowed disabled:bg-blue-300"
-              disabled={memberLength == 3}
-            >
-              Recommend
-              <IoSettingsSharp className="text-2xl duration-300 group-hover:rotate-90 group-hover:duration-300 group-disabled:rotate-0" />
-            </button>
-            <RedButton
-              label="Reset"
-              onClick={handleReset}
-              className="cursor-pointer flex gap-2 group text-lg items-center w-fit text-white bg-red-500 border-2 py-2 px-4 rounded-md duration-300 font-semibold 
-                        hover:bg-red-600 hover:duration-300 disabled:cursor-not-allowed disabled:bg-red-300"
-              disabled={isRunRecommend == false}
+    <div className="main-container">
+      <div className="main-col-container">
+        <div className="mt-4 flex items-center h-[50px] w-full justify-center gap-3">
+          <div className="flex items-center h-full w-1/2">
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Search users by username"
+              className="p-3 w-full bg-slate-50 border border-gray-300 h-full rounded-l-lg"
+              disabled={
+                memberLength === maxMember || !isJoinCompetition || !isLeader
+              }
             />
+            <button
+              type="button"
+              className="h-full cursor-pointer flex gap-2 group text-lg items-center w-fit text-white bg-blue-500 py-2 px-4 rounded-r-lg duration-300 font-semibold 
+                        hover:bg-blue-600 hover:duration-300 disabled:cursor-not-allowed disabled:bg-blue-300"
+              disabled={
+                memberLength === maxMember || !isJoinCompetition || !isLeader
+              }
+              onClick={async () => {
+                await fetchAllUsers();
+                setIsRunFind(true);
+              }}
+            >
+              <SlMagnifier className="font-bold" />
+            </button>
           </div>
-        </form>
-        {isRunRecommend ? (
+          <div className="relative">
+            <button
+              ref={buttonRef}
+              type="button"
+              onClick={toggleFilterDropdown}
+              className="h-full cursor-pointer flex group text-lg items-center w-fit text-blue-500 py-2 px-4 rounded-md duration-300 font-semibold border-2 border-blue-500 hover:bg-white hover:font-bold disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={
+                memberLength === maxMember || !isJoinCompetition || !isLeader
+              }
+            >
+              <CiFilter className="font-bold text-3xl" />
+            </button>
+
+            {showFilter && (
+              <div
+                ref={dropdownRef}
+                className="absolute top-full left-0 mt-2 p-3 bg-white shadow-md rounded-md w-70 z-50 max-h-60 overflow-y-auto flex flex-wrap gap-2"
+              >
+                {skillOptions.length === 0 ? (
+                  <div className="px-4 py-2 text-gray-500 text-sm">
+                    No skills available
+                  </div>
+                ) : (
+                  skillOptions.map((skill: any) => {
+                    const isSelected = selectedSkills.includes(skill.value);
+                    return (
+                      <button
+                        key={skill.value}
+                        onClick={() => handleFilterClick(skill.value)}
+                        className={`px-3 py-2.5 rounded-3xl text-xs font-bold border-2 duration-300
+              ${
+                isSelected
+                  ? "bg-blue-500 text-white border-blue-600"
+                  : "bg-white text-blue-500 border-blue-500 hover:bg-blue-500 hover:text-white"
+              }`}
+                      >
+                        {skill.label}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            )}
+          </div>
+          <RedButton
+            label="Reset"
+            onClick={handleReset}
+            className="h-full cursor-pointer flex gap-2 group text-lg items-center w-fit text-white bg-red-500 py-2 px-4 rounded-md duration-300 font-semibold 
+                        hover:bg-red-600 hover:duration-300 disabled:cursor-not-allowed disabled:bg-red-300"
+            disabled={isRunFind == false}
+          />
+        </div>
+        {isRunFind ? (
           <>
             <div>
-              <h3 className="mt-5 text-2xl font-semibold">
-                Top 3 users that matches with you
-              </h3>
               <ul className="grid grid-cols-3 gap-4">
-                {recommendUsers.map((user: any) => (
+                {displayedUsers.map((user: any) => (
                   <li
                     key={user.user_id}
-                    className="flex flex-col justify-between p-3 rounded-2xl bg-neutral-100 shadow-lg"
+                    className="flex flex-col justify-between p-3 rounded-2xl bg-neutral-100 shadow-lg mt-10"
                   >
                     <div>
-                      <div className="flex justify-between">
+                      <div className="flex gap-3 justify-between">
                         <div className="">
                           <p>Fullname</p>
                           <p>Username</p>
-                          <p>Gender</p>
                           <p>Semester</p>
                           <p>Portfolio</p>
                         </div>
-                        <div className="w-1/2">
+                        <div className="w-full">
                           <p>: {user.fullname}</p>
                           <p>: {user.username}</p>
-                          <p>
-                            : {user.gender == "L" ? "Laki-laki" : "Perempuan"}
-                          </p>
                           <p>: {user.semester}</p>
-                          <a href={user.portfolio} target="_blank" rel="noopener noreferrer" className="break-all">: <span className="text-blue-500 hover:text-blue-700">{user.portfolio == null ? "-" : user.portfolio.substring(0, 40) + "..."}</span></a>
+                          <a
+                            href={user.portfolio}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="break-all"
+                          >
+                            :{" "}
+                            <span className="text-blue-500 hover:text-blue-700">
+                              {user.portfolio == null
+                                ? "-"
+                                : user.portfolio.substring(0, 40) + "..."}
+                            </span>
+                          </a>
                         </div>
-                        <ProgressCircle
-                          percentage={Number(
-                            (user.similarity * 100).toFixed(1)
-                          )}
-                        />
                       </div>
                       <div className="mt-5 grid grid-cols-3 w-full gap-4 overflow-hidden">
                         {getFieldLabels(user.field_of_preference).map(
@@ -548,16 +622,17 @@ const RecommendationPage = () => {
                     </div>
                   </div>
                   <div className="grid grid-cols-3 mt-1 gap-1.5 overflow-hidden">
-                    {skillOptions.length > 0 && getFieldLabels(user.invites.field_of_preference).map(
-                      (label, idx) => (
-                        <span
-                          key={idx}
-                          className="flex w-full items-center cursor-default bg-blue-100 text-blue-700 px-2 py-2.5 rounded text-xs font-bold duration-300 hover:bg-blue-500 hover:duration-300 hover:text-white"
-                        >
-                          {label}
-                        </span>
-                      )
-                    )}
+                    {skillOptions.length > 0 &&
+                      getFieldLabels(user.invites.field_of_preference).map(
+                        (label, idx) => (
+                          <span
+                            key={idx}
+                            className="flex w-full items-center cursor-default bg-blue-100 text-blue-700 px-2 py-2.5 rounded text-xs font-bold duration-300 hover:bg-blue-500 hover:duration-300 hover:text-white"
+                          >
+                            {label}
+                          </span>
+                        )
+                      )}
                   </div>
                   <div className="flex mt-3 gap-2">
                     <GreenButton
@@ -601,4 +676,4 @@ const RecommendationPage = () => {
   );
 };
 
-export default RecommendationPage;
+export default FindPage;

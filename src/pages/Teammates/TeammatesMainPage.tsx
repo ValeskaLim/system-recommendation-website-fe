@@ -8,19 +8,21 @@ import GreenButton from "../../components/GreenButton";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import BlueLabel from "../../components/BlueLabel";
+import RedButton from "../../components/RedButton";
 
 const TeammatesMainPage = () => {
   const [teammates, setTeammates] = useState([]);
   const [teamCompetition, setTeamCompetition] = useState<any | undefined>();
   const [isLeader, setIsLeader] = useState(false);
   const [teamName, setTeamName] = useState("");
-  const [teamId, setTeamId] = useState("");
+  const [teamId, setTeamId] = useState<number | undefined>(undefined);
   const [error, setError] = useState(null);
   const [isJoinedTeam, setIsJoinedTeam] = useState(false);
   const [isTeamFinalized, setIsTeamFinalized] = useState(false);
   const [skillOptions, setSkillOptions] = useState<
     { label: string; value: string }[]
   >([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
 
   const { errorToast, successToast, warningToast } = useToast();
   const { users } = useAuth();
@@ -77,6 +79,8 @@ const TeammatesMainPage = () => {
 
           // Set the team ID for editing
           setTeamId(result_teammates.team_id);
+
+          await fetchListPendingRequest(result_teammates.team_id);
         }
       } catch (error) {
         console.log(error);
@@ -100,6 +104,25 @@ const TeammatesMainPage = () => {
         console.log(error);
         const errorMessage =
           error?.response?.data?.message || "Failed to fetch skillsets";
+        errorToast(errorMessage);
+      }
+    };
+
+    const fetchListPendingRequest = async (id: number) => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllPendingRequest, {
+          team_id: id,
+        });
+        if (response.data.success) {
+          const pendingRequests = response.data.data || [];
+          setPendingRequests(pendingRequests);
+        } else {
+          const errorMessage = response.data.message;
+          errorToast(errorMessage);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error?.response?.data?.message;
         errorToast(errorMessage);
       }
     };
@@ -156,11 +179,50 @@ const TeammatesMainPage = () => {
     });
   };
 
+  const handleAcceptRequest = async (user_id: number, team_id: number) => {
+    try {
+      const response = await axios.post(CommonConstant.AcceptJoinRequest, {
+        user_id,
+        team_id,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
+  const handleDeclineRequest = async (user_id: number, team_id: number) => {
+    try {
+      const response = await axios.post(CommonConstant.RejectJoinRequest, {
+        user_id,
+        team_id,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
   return (
     <div className="main-container">
       <div className="main-col-container">
-        <hr className="text-gray-300" />
-        <div className="w-full">
+        <div className="w-full mb-20">
           {isJoinedTeam ? (
             <>
               <div className="flex justify-between">
@@ -194,10 +256,7 @@ const TeammatesMainPage = () => {
               <div className="flex justify-between gap-5 mt-5">
                 <ul className="list-none space-y-4 w-full">
                   {teammates.map((user: any) => (
-                    <li
-                      key={user.user_id}
-                      className="card-container"
-                    >
+                    <li key={user.user_id} className="card-container">
                       <div>
                         <strong>{user.username}</strong> ({user.fullname})
                         {user.user_id === users?.user_id && (
@@ -328,6 +387,44 @@ const TeammatesMainPage = () => {
             </>
           )}
         </div>
+        {pendingRequests.length > 0 && isLeader && (
+          <>
+            <hr className="text-gray-300" />
+            <div className="mt-10">
+              <h3 className="text-3xl">Pending Requests</h3>
+              <div className="grid grid-cols-3 gap-5 mt-5">
+                {pendingRequests.map((request: any) => (
+                  <div key={request.user_id} className="card-container">
+                    <p className="font-semibold text-2xl">{request.fullname}</p>
+                    <p>{request.email}</p>
+                    <p>Semester: {request.semester}</p>
+                    <div className="mt-5 w-fit gap-2 flex">
+                      {getFieldLabels(request.field_of_preference).map(
+                        (label, idx) => (
+                          <BlueLabel text={label} key={idx} />
+                        )
+                      )}
+                    </div>
+                    <div className="flex gap-3 mt-5">
+                      <GreenButton
+                        label="Accept"
+                        onClick={() =>
+                          handleAcceptRequest(request.user_id, teamId)
+                        }
+                      />
+                      <RedButton
+                        label="Decline"
+                        onClick={() =>
+                          handleDeclineRequest(request.user_id, teamId)
+                        }
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

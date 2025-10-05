@@ -5,6 +5,11 @@
   font-weight: bold;
 }
 
+:root {
+  background-image: url("/main bg.jpg");
+  background-size: cover;
+}
+
 .center-container {
   width: 77%;
   margin: 0 auto;

@@ -38,6 +38,13 @@ const RESET_PASSWORD_FINAL = 'api/user/reset-password-final';
 const CHECK_NUMBER_INVITATIONS = 'api/team/check-number-invitations';
 const GET_PARTICIPANTS_BY_COMPETITION_ID = 'api/competition/get-participant-by-id';
 const GET_ALL_SKILLSETS = 'api/user/get-list-skillset';
+const REQUEST_JOIN_TEAM = 'api/team/request-join-team';
+const GET_LIST_TEAM_USER_REQUEST = 'api/team/get-list-team-user-request';
+const GET_ALL_PENDING_REQUEST = 'api/team/get-all-pending-request';
+const ACCEPT_JOIN_REQUEST = 'api/team/accept-join-request';
+const REJECT_JOIN_REQUEST = 'api/team/reject-join-request';
+const FILTER_USERS = 'api/find/filter-users-by-skill';
+const GET_ALL_USERS = 'api/find/get-all-users';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -78,6 +85,13 @@ const ResetPasswordFinal = BASE + '/' + RESET_PASSWORD_FINAL;
 const CheckNumberInvitations = BASE + '/' + CHECK_NUMBER_INVITATIONS;
 const GetParticipantsByCompetitionId = BASE + '/' + GET_PARTICIPANTS_BY_COMPETITION_ID;
 const GetAllSkillsets = BASE + '/' + GET_ALL_SKILLSETS;
+const RequestJoinTeam = BASE + '/' + REQUEST_JOIN_TEAM;
+const GetListTeamUserRequest = BASE + '/' + GET_LIST_TEAM_USER_REQUEST;
+const GetAllPendingRequest = BASE + '/' + GET_ALL_PENDING_REQUEST;
+const AcceptJoinRequest = BASE + '/' + ACCEPT_JOIN_REQUEST;
+const RejectJoinRequest = BASE + '/' + REJECT_JOIN_REQUEST;
+const FilterUsers = BASE + '/' + FILTER_USERS;
+const GetAllUsers = BASE + '/' + GET_ALL_USERS;
 
 const CommonConstant = {
     Login,
@@ -118,6 +132,13 @@ const CommonConstant = {
     GetParticipantsByCompetitionId,
     FinalizeTeam,
     GetAllSkillsets,
+    RequestJoinTeam,
+    GetListTeamUserRequest,
+    GetAllPendingRequest,
+    AcceptJoinRequest,
+    RejectJoinRequest,
+    FilterUsers,
+    GetAllUsers,
 };
 
 export default CommonConstant;
