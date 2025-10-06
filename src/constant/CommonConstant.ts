@@ -45,6 +45,7 @@ const ACCEPT_JOIN_REQUEST = 'api/team/accept-join-request';
 const REJECT_JOIN_REQUEST = 'api/team/reject-join-request';
 const FILTER_USERS = 'api/find/filter-users-by-skill';
 const GET_ALL_USERS = 'api/find/get-all-users';
+const EDIT_TEAM = 'api/team/edit-team';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -92,6 +93,7 @@ const AcceptJoinRequest = BASE + '/' + ACCEPT_JOIN_REQUEST;
 const RejectJoinRequest = BASE + '/' + REJECT_JOIN_REQUEST;
 const FilterUsers = BASE + '/' + FILTER_USERS;
 const GetAllUsers = BASE + '/' + GET_ALL_USERS;
+const EditTeam = BASE + '/' + EDIT_TEAM;
 
 const CommonConstant = {
     Login,
@@ -139,6 +141,7 @@ const CommonConstant = {
     RejectJoinRequest,
     FilterUsers,
     GetAllUsers,
+    EditTeam,
 };
 
 export default CommonConstant;

@@ -22,7 +22,11 @@ const TeammatesMainPage = () => {
   const [skillOptions, setSkillOptions] = useState<
     { label: string; value: string }[]
   >([]);
+  const [description, setDescription] = useState("");
+  const [notes, setNotes] = useState("");
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [showFinalizeModal, setShowFinalizeModal] = useState(false);
+  const [proofImage, setProofImage] = useState<File | null>(null);
 
   const { errorToast, successToast, warningToast } = useToast();
   const { users } = useAuth();
@@ -67,18 +71,29 @@ const TeammatesMainPage = () => {
           const response3 = await axios.post(CommonConstant.CheckIsLeader);
           setIsLeader(response3.data.data.isLeader);
 
-          const response4 = await axios.post(
-            CommonConstant.GetCompetitionById,
-            { id: result_teammates.competition_id }
-          );
-          const team_competition_result = response4.data.data;
-          setTeamCompetition(team_competition_result);
+          try {
+            const response = await axios.post(
+              CommonConstant.GetCompetitionById,
+              { id: result_teammates.competition_id }
+            );
+            if (response.data.success) {
+              const team_competition_result = response.data.data;
+              setTeamCompetition(team_competition_result);
+            }
+          } catch (error: any) {
+            console.log(error);
+            const errorMessage =
+              error.response?.data?.message || "Failed to fetch competition";
+            errorToast(errorMessage);
+          }
 
           // Set the team name for editing
           setTeamName(result_teammates.team_name);
 
           // Set the team ID for editing
           setTeamId(result_teammates.team_id);
+          setDescription(result_teammates.description || null);
+          setNotes(result_teammates.notes || null);
 
           await fetchListPendingRequest(result_teammates.team_id);
         }
@@ -219,6 +234,49 @@ const TeammatesMainPage = () => {
     }
   };
 
+  const handleEditTeam = async (id: number) => {
+    try {
+      const response = await axios.post(CommonConstant.EditTeam, {
+        team_id: id,
+        notes,
+        description,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
+  const handleFinalizeWithImage = async () => {
+    if (!proofImage)
+      return warningToast("Please upload transaction proof first!");
+
+    const formData = new FormData();
+    formData.append("team_id", String(teamId));
+    formData.append("proof_image", proofImage);
+
+    try {
+      const response = await axios.post(CommonConstant.FinalizeTeam, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.data.success) {
+        successToast(response.data.message);
+        setIsTeamFinalized(true);
+        setShowFinalizeModal(false);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Failed to finalize");
+    }
+  };
+
   return (
     <div className="main-container">
       <div className="main-col-container">
@@ -245,7 +303,7 @@ const TeammatesMainPage = () => {
                         ) : (
                           <BlueButton
                             label="Finalize Team"
-                            onClick={handleFinalizeTeam}
+                            onClick={() => setShowFinalizeModal(true)}
                           />
                         )}
                       </>
@@ -350,6 +408,48 @@ const TeammatesMainPage = () => {
                       <p>No competition found</p>
                     )}
                   </li>
+                  <div className="card-container mt-10">
+                    <h3 className="text-2xl font-semibold mb-3">Description</h3>
+                    <div className="flex flex-col">
+                      <textarea
+                        name="description"
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
+                        disabled={!isLeader}
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="card-container mt-10">
+                    <h3 className="text-2xl font-semibold mb-3">Notes</h3>
+                    <div className="flex flex-col">
+                      <textarea
+                        name="notes"
+                        id="notes"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
+                        disabled={!isLeader}
+                      ></textarea>
+                    </div>
+                  </div>
+                  {isLeader && (
+                    <div className="flex justify-end">
+                      <GreenButton
+                        label="Save Changes"
+                        extendedClassName="mt-5"
+                        onClick={() => {
+                          if (typeof teamId === "number") {
+                            handleEditTeam(teamId);
+                          } else {
+                            errorToast("Team ID is not available.");
+                          }
+                        }}
+                        disabled={!isLeader}
+                      />
+                    </div>
+                  )}
                 </ul>
               </div>
               {error && <p className="text-red-500">{error}</p>}
@@ -426,6 +526,40 @@ const TeammatesMainPage = () => {
           </>
         )}
       </div>
+      {showFinalizeModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="bg-white p-6 rounded-lg w-[500px]">
+            <h2 className="text-2xl font-bold mb-4">Finalize Team?</h2>
+
+            <p className="text-gray-600 mb-2">Leader: {users?.fullname}</p>
+            <p className="text-gray-600 mb-2">Members:</p>
+            <ul className="list-disc ml-5 mb-4">
+              {teammates.map((m: any) => (
+                <li key={m.user_id}>{m.fullname}</li>
+              ))}
+            </ul>
+
+            <label className="block">Upload Proof of Transaction</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setProofImage(e.target.files?.[0] || null)}
+              className="mb-4 border border-gray-200 rounded-lg mt-2 p-3"
+            />
+
+            <div className="flex justify-end gap-4">
+              <RedButton
+                label="Cancel"
+                onClick={() => setShowFinalizeModal(false)}
+              />
+              <GreenButton
+                label="Confirm Finalize"
+                onClick={handleFinalizeWithImage}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

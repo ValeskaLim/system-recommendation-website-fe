@@ -21,6 +21,8 @@ const CompetitionDetail = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
   const [isAlreadyRequested, setIsAlreadyRequested] = useState([]);
+  const [isFinalized, setIsFinalized] = useState("");
+  const [isMaxMember, setIsMaxMember] = useState("");
 
   useEffect(() => {
     if (!competition) return;
@@ -34,6 +36,7 @@ const CompetitionDetail = () => {
           }
         );
         setParticipants(response.data.data);
+        
       } catch (error: any) {
         console.log(error);
         const errorMessage =
@@ -61,7 +64,7 @@ const CompetitionDetail = () => {
         const response = await axios.post(
           CommonConstant.GetListTeamUserRequest
         );
-        if(response.data.success){
+        if (response.data.success) {
           const requestedTeamIds = response.data.data.map(
             (request: any) => request.team_id
           );
@@ -156,7 +159,7 @@ const CompetitionDetail = () => {
                 alt={competition.title}
                 className="object-contain"
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
-                onClick={(e) => e.stopPropagation()} // Prevent close when clicking image
+                onClick={(e) => e.stopPropagation()}
               />
             </div>
           )}
@@ -237,12 +240,20 @@ const CompetitionDetail = () => {
                       </ul>
                     ))}
                   </div>
-                  {!isJoined && (
+                  <p className="font-bold mt-10 text-lg">Notes for candidate</p>
+                  <div className="mt-3 bg-slate-200 p-3 rounded-xl">
+                    <p className="whitespace-pre-wrap font-semibold">
+                      {participant.notes || "-"}
+                    </p>
+                  </div>
+                  {!isJoined && !participant.is_finalized && !participant.is_full && (
                     <BlueButton
                       label="Request join"
                       onClick={() => handleRequestJoin(participant.team_id)}
-                      extendedClassName="disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500"
-                      disabled={isAlreadyRequested.includes(participant.team_id)}
+                      extendedClassName="disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-500 mt-5"
+                      disabled={isAlreadyRequested.includes(
+                        participant.team_id
+                      )}
                     />
                   )}
                 </div>
