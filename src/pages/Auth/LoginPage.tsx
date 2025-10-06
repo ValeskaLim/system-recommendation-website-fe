@@ -19,9 +19,11 @@ function LoginPage() {
       await login(email.toLowerCase(), password);
       navigate(ROUTE_PATHS.HOME);
       successToast("Success logged in!");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
-      errorToast("Invalid email or password");
+      const errorMessage =
+        error.response?.data?.message || "Login failed. Please try again.";
+      errorToast(errorMessage);
     }
   };
 

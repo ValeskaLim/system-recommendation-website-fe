@@ -3,15 +3,14 @@ import { useToast } from "../../hooks/useToast";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CommonConstant from "../../constant/CommonConstant";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 
-const COMPETITION_CATEGORIES = [
-  { label: "Security", value: "SEC" },
-  { label: "Machine Learning", value: "ML" },
-  { label: "Mobile Development", value: "MD" },
-];
+type OptionType = {
+  label: string;
+  value: string;
+};
 
 const AddCompetitionPage = () => {
   const [title, setTitle] = useState("");
@@ -23,10 +22,37 @@ const AddCompetitionPage = () => {
   const [description, setDescription] = useState("");
   const [poster, setPoster] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState("");
+  const [categoryOptions, setCategoryOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   const { errorToast, successToast } = useToast();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllCategories);
+        if(response.data.success) {
+          const categories = response.data.data || [];
+
+          const options = categories.map((item: any) => ({
+            label: item.category_name,
+            value: item.category_code,
+          }));
+
+          setCategoryOptions(options);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error.data.message;
+        errorToast(errorMessage);
+      }
+    }
+
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -137,7 +163,7 @@ const AddCompetitionPage = () => {
               <option value="" hidden>
                 --Select one--
               </option>
-              {COMPETITION_CATEGORIES.map((t) => (
+              {categoryOptions.map((t) => (
                 <option key={t.value} value={t.value}>
                   {t.label}
                 </option>

@@ -14,11 +14,11 @@ import ProfileMainPage from "./pages/Profile/ProfileMainPage" ;
 import AddCompetitionPage from "./pages/Competition/AddCompetitionPage";
 import TeammatesMainPage from "./pages/Teammates/TeammatesMainPage";
 import EditCompetitionPage from "./pages/Competition/EditCompetitionPage";
-import RecommendationPage from "./pages/Recommendation/RecommendationPage";
 import VerifyPage from "./pages/Auth/VerifyPage";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import ResetPasswordFinal from "./pages/Auth/ResetPasswordFinal";
 import CompetitionDetail from "./pages/Competition/CompetitionDetail";
+import FindPage from "./pages/Find/FindPage";
 
 function App() {
   return (
@@ -133,13 +133,13 @@ function App() {
               }
             ></Route>
 
-            {/* Recommendation Page */}
+            {/* Find Page */}
             <Route
-              path={ROUTE_PATHS.RECOMMENDATION}
+              path={ROUTE_PATHS.FIND}
               element={
                 <ProtectedRoute>
                   <MasterLayout>
-                    <RecommendationPage />
+                    <FindPage />
                   </MasterLayout>
                 </ProtectedRoute>
               }

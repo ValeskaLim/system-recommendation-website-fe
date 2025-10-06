@@ -8,19 +8,25 @@ import GreenButton from "../../components/GreenButton";
 import { ROUTE_PATHS } from "../../router/routePaths";
 import { useNavigate } from "react-router-dom";
 import BlueLabel from "../../components/BlueLabel";
+import RedButton from "../../components/RedButton";
 
 const TeammatesMainPage = () => {
   const [teammates, setTeammates] = useState([]);
   const [teamCompetition, setTeamCompetition] = useState<any | undefined>();
   const [isLeader, setIsLeader] = useState(false);
   const [teamName, setTeamName] = useState("");
-  const [teamId, setTeamId] = useState("");
+  const [teamId, setTeamId] = useState<number | undefined>(undefined);
   const [error, setError] = useState(null);
   const [isJoinedTeam, setIsJoinedTeam] = useState(false);
   const [isTeamFinalized, setIsTeamFinalized] = useState(false);
   const [skillOptions, setSkillOptions] = useState<
     { label: string; value: string }[]
   >([]);
+  const [description, setDescription] = useState("");
+  const [notes, setNotes] = useState("");
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [showFinalizeModal, setShowFinalizeModal] = useState(false);
+  const [proofImage, setProofImage] = useState<File | null>(null);
 
   const { errorToast, successToast, warningToast } = useToast();
   const { users } = useAuth();
@@ -65,18 +71,31 @@ const TeammatesMainPage = () => {
           const response3 = await axios.post(CommonConstant.CheckIsLeader);
           setIsLeader(response3.data.data.isLeader);
 
-          const response4 = await axios.post(
-            CommonConstant.GetCompetitionById,
-            { id: result_teammates.competition_id }
-          );
-          const team_competition_result = response4.data.data;
-          setTeamCompetition(team_competition_result);
+          try {
+            const response = await axios.post(
+              CommonConstant.GetCompetitionById,
+              { id: result_teammates.competition_id }
+            );
+            if (response.data.success) {
+              const team_competition_result = response.data.data;
+              setTeamCompetition(team_competition_result);
+            }
+          } catch (error: any) {
+            console.log(error);
+            const errorMessage =
+              error.response?.data?.message || "Failed to fetch competition";
+            errorToast(errorMessage);
+          }
 
           // Set the team name for editing
           setTeamName(result_teammates.team_name);
 
           // Set the team ID for editing
           setTeamId(result_teammates.team_id);
+          setDescription(result_teammates.description || null);
+          setNotes(result_teammates.notes || null);
+
+          await fetchListPendingRequest(result_teammates.team_id);
         }
       } catch (error) {
         console.log(error);
@@ -100,6 +119,25 @@ const TeammatesMainPage = () => {
         console.log(error);
         const errorMessage =
           error?.response?.data?.message || "Failed to fetch skillsets";
+        errorToast(errorMessage);
+      }
+    };
+
+    const fetchListPendingRequest = async (id: number) => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllPendingRequest, {
+          team_id: id,
+        });
+        if (response.data.success) {
+          const pendingRequests = response.data.data || [];
+          setPendingRequests(pendingRequests);
+        } else {
+          const errorMessage = response.data.message;
+          errorToast(errorMessage);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error?.response?.data?.message;
         errorToast(errorMessage);
       }
     };
@@ -156,11 +194,93 @@ const TeammatesMainPage = () => {
     });
   };
 
+  const handleAcceptRequest = async (user_id: number, team_id: number) => {
+    try {
+      const response = await axios.post(CommonConstant.AcceptJoinRequest, {
+        user_id,
+        team_id,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
+  const handleDeclineRequest = async (user_id: number, team_id: number) => {
+    try {
+      const response = await axios.post(CommonConstant.RejectJoinRequest, {
+        user_id,
+        team_id,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
+  const handleEditTeam = async (id: number) => {
+    try {
+      const response = await axios.post(CommonConstant.EditTeam, {
+        team_id: id,
+        notes,
+        description,
+      });
+      if (response.data.success) {
+        successToast(response.data.message);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      const errorMessage = error.response.data.message;
+      errorToast(errorMessage);
+    }
+  };
+
+  const handleFinalizeWithImage = async () => {
+    if (!proofImage)
+      return warningToast("Please upload transaction proof first!");
+
+    const formData = new FormData();
+    formData.append("team_id", String(teamId));
+    formData.append("proof_image", proofImage);
+
+    try {
+      const response = await axios.post(CommonConstant.FinalizeTeam, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.data.success) {
+        successToast(response.data.message);
+        setIsTeamFinalized(true);
+        setShowFinalizeModal(false);
+      } else {
+        errorToast(response.data.message);
+      }
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Failed to finalize");
+    }
+  };
+
   return (
     <div className="main-container">
       <div className="main-col-container">
-        <hr className="text-gray-300" />
-        <div className="w-full">
+        <div className="w-full mb-20">
           {isJoinedTeam ? (
             <>
               <div className="flex justify-between">
@@ -183,7 +303,7 @@ const TeammatesMainPage = () => {
                         ) : (
                           <BlueButton
                             label="Finalize Team"
-                            onClick={handleFinalizeTeam}
+                            onClick={() => setShowFinalizeModal(true)}
                           />
                         )}
                       </>
@@ -194,10 +314,7 @@ const TeammatesMainPage = () => {
               <div className="flex justify-between gap-5 mt-5">
                 <ul className="list-none space-y-4 w-full">
                   {teammates.map((user: any) => (
-                    <li
-                      key={user.user_id}
-                      className="card-container"
-                    >
+                    <li key={user.user_id} className="card-container">
                       <div>
                         <strong>{user.username}</strong> ({user.fullname})
                         {user.user_id === users?.user_id && (
@@ -291,6 +408,48 @@ const TeammatesMainPage = () => {
                       <p>No competition found</p>
                     )}
                   </li>
+                  <div className="card-container mt-10">
+                    <h3 className="text-2xl font-semibold mb-3">Description</h3>
+                    <div className="flex flex-col">
+                      <textarea
+                        name="description"
+                        id="description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
+                        disabled={!isLeader}
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div className="card-container mt-10">
+                    <h3 className="text-2xl font-semibold mb-3">Notes</h3>
+                    <div className="flex flex-col">
+                      <textarea
+                        name="notes"
+                        id="notes"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
+                        disabled={!isLeader}
+                      ></textarea>
+                    </div>
+                  </div>
+                  {isLeader && (
+                    <div className="flex justify-end">
+                      <GreenButton
+                        label="Save Changes"
+                        extendedClassName="mt-5"
+                        onClick={() => {
+                          if (typeof teamId === "number") {
+                            handleEditTeam(teamId);
+                          } else {
+                            errorToast("Team ID is not available.");
+                          }
+                        }}
+                        disabled={!isLeader}
+                      />
+                    </div>
+                  )}
                 </ul>
               </div>
               {error && <p className="text-red-500">{error}</p>}
@@ -328,7 +487,79 @@ const TeammatesMainPage = () => {
             </>
           )}
         </div>
+        {pendingRequests.length > 0 && isLeader && (
+          <>
+            <hr className="text-gray-300" />
+            <div className="mt-10">
+              <h3 className="text-3xl">Pending Requests</h3>
+              <div className="grid grid-cols-3 gap-5 mt-5">
+                {pendingRequests.map((request: any) => (
+                  <div key={request.user_id} className="card-container">
+                    <p className="font-semibold text-2xl">{request.fullname}</p>
+                    <p>{request.email}</p>
+                    <p>Semester: {request.semester}</p>
+                    <div className="mt-5 w-fit gap-2 flex">
+                      {getFieldLabels(request.field_of_preference).map(
+                        (label, idx) => (
+                          <BlueLabel text={label} key={idx} />
+                        )
+                      )}
+                    </div>
+                    <div className="flex gap-3 mt-5">
+                      <GreenButton
+                        label="Accept"
+                        onClick={() =>
+                          handleAcceptRequest(request.user_id, teamId)
+                        }
+                      />
+                      <RedButton
+                        label="Decline"
+                        onClick={() =>
+                          handleDeclineRequest(request.user_id, teamId)
+                        }
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
+      {showFinalizeModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="bg-white p-6 rounded-lg w-[500px]">
+            <h2 className="text-2xl font-bold mb-4">Finalize Team?</h2>
+
+            <p className="text-gray-600 mb-2">Leader: {users?.fullname}</p>
+            <p className="text-gray-600 mb-2">Members:</p>
+            <ul className="list-disc ml-5 mb-4">
+              {teammates.map((m: any) => (
+                <li key={m.user_id}>{m.fullname}</li>
+              ))}
+            </ul>
+
+            <label className="block">Upload Proof of Transaction</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setProofImage(e.target.files?.[0] || null)}
+              className="mb-4 border border-gray-200 rounded-lg mt-2 p-3"
+            />
+
+            <div className="flex justify-end gap-4">
+              <RedButton
+                label="Cancel"
+                onClick={() => setShowFinalizeModal(false)}
+              />
+              <GreenButton
+                label="Confirm Finalize"
+                onClick={handleFinalizeWithImage}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

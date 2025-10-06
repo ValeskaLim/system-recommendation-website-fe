@@ -7,11 +7,10 @@ import { ROUTE_PATHS } from "../../router/routePaths";
 import GreenButton from "../../components/GreenButton";
 import RedButton from "../../components/RedButton";
 
-const COMPETITION_CATEGORIES = [
-  { label: "Security", value: "SEC" },
-  { label: "Machine Learning", value: "ML" },
-  { label: "Mobile Development", value: "MD" },
-];
+type OptionType = {
+  label: string;
+  value: string;
+};
 
 type Competition = {
   title: string;
@@ -39,6 +38,9 @@ const EditCompetitionPage = () => {
   const [poster, setPoster] = useState<string | null>("");
   const [newPoster, setNewPoster] = useState<File | null>(null);
   const [originalUrl, setOriginalUrl] = useState("");
+  const [categoryOptions, setCategoryOptions] = useState<
+    { label: string; value: string }[]
+  >([]);
 
   const { errorToast, successToast } = useToast();
   const navigate = useNavigate();
@@ -68,6 +70,30 @@ const EditCompetitionPage = () => {
     };
     if (id) fetchCompetition();
   }, [id]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.post(CommonConstant.GetAllCategories);
+        if(response.data.success) {
+          const categories = response.data.data || [];
+
+          const options = categories.map((item: any) => ({
+            label: item.category_name,
+            value: item.category_code,
+          }));
+
+          setCategoryOptions(options);
+        }
+      } catch (error: any) {
+        console.log(error);
+        const errorMessage = error.data.message;
+        errorToast(errorMessage);
+      }
+    }
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (!competititonData) return;
@@ -195,7 +221,7 @@ const EditCompetitionPage = () => {
               <option value="" hidden>
                 --Select one--
               </option>
-              {COMPETITION_CATEGORIES.map((t) => (
+              {categoryOptions.map((t) => (
                 <option key={t.value} value={t.value}>
                   {t.label}
                 </option>

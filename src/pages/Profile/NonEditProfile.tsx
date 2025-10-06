@@ -10,6 +10,7 @@ const NonEditProfile = ({ users, setIsEdit }) => {
     { label: string; value: string }[]
   >([]);
   const { errorToast } = useToast();
+  const selectedValues = users?.field_of_preference?.split(",") || [];
 
   useEffect(() => {
     const fetchSkillsets = async () => {
@@ -42,7 +43,9 @@ const NonEditProfile = ({ users, setIsEdit }) => {
       <div className="w-full">
         <form className="mt-10">
           <div className="flex flex-col justify-between">
-            <h3 className="required flex items-center text-lg w-fit">Username</h3>
+            <h3 className="required flex items-center text-lg w-fit">
+              Username
+            </h3>
             <input
               type="text"
               disabled
@@ -105,7 +108,7 @@ const NonEditProfile = ({ users, setIsEdit }) => {
               name="field_of_preference"
               options={skillOptions}
               value={skillOptions.filter((option) =>
-                users?.field_of_preference?.includes(option.value)
+                selectedValues.includes(option.value)
               )}
               className="basic-multi-select w-full mt-3"
               classNamePrefix="select"
