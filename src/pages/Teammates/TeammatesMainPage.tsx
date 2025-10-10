@@ -238,8 +238,8 @@ const TeammatesMainPage = () => {
     try {
       const response = await axios.post(CommonConstant.EditTeam, {
         team_id: id,
-        notes,
-        description,
+        notes: notes || "",
+        description: description || "",
       });
       if (response.data.success) {
         successToast(response.data.message);
