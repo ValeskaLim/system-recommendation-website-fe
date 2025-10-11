@@ -12,6 +12,7 @@ export const ROUTE_PATHS = {
     VERIFY_PASSWORD : '/verify-password',
     RESET_PASSWORD: '/reset-password',
     RESET_PASSWORD_FINAL: '/reset-password-final/:token',
+    VIEW_FINALIZED: '/view-finalized',
 };
 
 export const generatePath = (path, params) => {

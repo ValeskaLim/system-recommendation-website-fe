@@ -1,5 +1,6 @@
 // URL
 const BASE = 'http://127.0.0.1:5002';
+const BASE_APPROVAL = 'http://127.0.0.1:5000';
 const LOGIN = 'api/user/login';
 const SUBMIT_REGISTER = 'api/user/submit-register-data';
 const VERIFY_USER_EMAIL = 'api/user/verify-email';
@@ -31,6 +32,7 @@ const CREATE_TEAM = 'api/team/create-team';
 const FINALIZE_TEAM = 'api/team/finalize-team';
 const CHECK_IS_LEADER = 'api/team/check-is-leader';
 const IMAGE_SOURCE = 'api/competition/uploads/';
+const IMAGE_PROOF_SOURCE = 'api/proof-transaction/uploads/';
 const CHECK_ANY_COMPETITIONS_JOINED = 'api/team/check-any-competitions-joined';
 const RESET_PASSWORD = 'api/user/reset-password';
 const VALIDATE_TOKEN = 'api/user/validate-token';
@@ -47,6 +49,8 @@ const FILTER_USERS = 'api/find/filter-users-by-skill';
 const GET_ALL_USERS = 'api/find/get-all-users';
 const EDIT_TEAM = 'api/team/edit-team';
 const GET_ALL_CATEGORIES = 'api/competition/get-all-categories';
+const GET_ALL_TRANSACTIONS = 'api/proof-transaction/get-all-transactions';
+const FINALIZATION_FILE_SOURCE = 'uploads/finalizations';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -96,6 +100,9 @@ const FilterUsers = BASE + '/' + FILTER_USERS;
 const GetAllUsers = BASE + '/' + GET_ALL_USERS;
 const EditTeam = BASE + '/' + EDIT_TEAM;
 const GetAllCategories = BASE + '/' + GET_ALL_CATEGORIES;
+const GetAllTransactions = BASE + '/' + GET_ALL_TRANSACTIONS;
+const ImageProofSource = BASE + '/' + IMAGE_PROOF_SOURCE;
+const FinalizationFileSource = BASE_APPROVAL + '/' + FINALIZATION_FILE_SOURCE;
 
 const CommonConstant = {
     Login,
@@ -145,6 +152,9 @@ const CommonConstant = {
     GetAllUsers,
     EditTeam,
     GetAllCategories,
+    GetAllTransactions,
+    ImageProofSource,
+    FinalizationFileSource
 };
 
 export default CommonConstant;

@@ -71,6 +71,16 @@ const TopHeader = () => {
                   Your Profile
                 </NavLink>
               </li>
+              {users?.role === "admin" && (
+                <li className="items-center flex">
+                <NavLink
+                  to={`${ROUTE_PATHS.VIEW_FINALIZED}`}
+                  className="font-semibold h-full items-center flex px-2 duration-300 hover:text-gray-600 hover:duration-300"
+                >
+                  View Finalized
+                </NavLink>
+              </li>
+              )}
             </ul>
           </nav>
         </div>

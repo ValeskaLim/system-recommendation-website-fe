@@ -10,6 +10,7 @@ import NotFoundPage from "./pages/Layout/NotFoundPage";
 import MasterLayout from "./components/MasterLayout";
 import { ToastContainer } from "react-toastify";
 import MainPage from "./pages/Competition/MainPage";
+import FinalizedMainPage from "./pages/Finalized/FinalizedMainPage";
 import ProfileMainPage from "./pages/Profile/ProfileMainPage" ;
 import AddCompetitionPage from "./pages/Competition/AddCompetitionPage";
 import TeammatesMainPage from "./pages/Teammates/TeammatesMainPage";
@@ -140,6 +141,18 @@ function App() {
                 <ProtectedRoute>
                   <MasterLayout>
                     <FindPage />
+                  </MasterLayout>
+                </ProtectedRoute>
+              }
+            ></Route>
+
+            {/* View finalized */}
+            <Route
+              path={ROUTE_PATHS.VIEW_FINALIZED}
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <MasterLayout>
+                    <FinalizedMainPage />
                   </MasterLayout>
                 </ProtectedRoute>
               }
