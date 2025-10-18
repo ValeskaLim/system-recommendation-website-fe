@@ -29,7 +29,7 @@ function LoginPage() {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center">
-      <div className="flex flex-col h-fit w-150 border p-5 rounded-2xl justify-center">
+      <div className="flex flex-col h-fit w-150 border border-[#BBB5B5] bg-white  p-5 rounded-2xl justify-center">
         <h2 className="text-4xl text-center">Login</h2>
         <form onSubmit={handleSubmit} method="POST">
           <div className="flex flex-col gap-2 mt-4">
@@ -40,7 +40,7 @@ function LoginPage() {
               placeholder="Your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="lowercase p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="lowercase p-2 w-full border border-[#BBB5B5] rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline"
             ></input>
             <label className="text-lg">Password</label>
             <input
@@ -49,7 +49,7 @@ function LoginPage() {
               placeholder="Your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="p-2 w-full border border-[#BBB5B5] rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline"
             ></input>
             <div className="flex justify-between">
               <a
@@ -66,12 +66,14 @@ function LoginPage() {
               </a>
             </div>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white mt-12 p-2 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"
-          >
-            Submit
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="w-1/2 font-semibold cursor-pointer bg-blue-500 text-white mt-12 p-2 rounded-xl duration-300 hover:bg-blue-600 hover:duration-300"
+            >
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </div>

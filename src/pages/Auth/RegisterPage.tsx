@@ -111,7 +111,7 @@ function RegisterPage() {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center">
-      <div className="flex flex-col h-fit w-150 border p-5 rounded-2xl justify-center">
+      <div className="flex flex-col h-fit w-150 border border-[#BBB5B5] bg-white p-5 rounded-2xl justify-center">
         <h2 className="text-4xl text-center">Register</h2>
         <form onSubmit={handleSubmit} method="POST">
           <div className="flex flex-col gap-2 mt-4">
@@ -122,27 +122,27 @@ function RegisterPage() {
               placeholder="Your full name"
               value={fullname}
               onChange={(e) => setFullname(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="p-2 w-full border border-[#BBB5B5] rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             ></input>
             <label className="text-lg">Username</label>
             <input
               type="text"
               id="username"
-              placeholder="Username"
+              placeholder="Your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="p-2 w-full border border-[#BBB5B5] rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             ></input>
             <label className="text-lg">Email</label>
             <input
               type="email"
               id="email"
-              placeholder="your@example.com"
+              placeholder="Your email (example@gmail.com)"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="lowercase p-1 w-full border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="lowercase p-2 w-full border border-[#BBB5B5] rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             ></input>
             <label className="text-lg">Password</label>
@@ -152,7 +152,7 @@ function RegisterPage() {
               placeholder="Password length must be more than 3"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="p-2 w- border border-[#BBB5B5] rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             ></input>
             <label className="text-lg">Gender</label>
@@ -161,11 +161,11 @@ function RegisterPage() {
               id="gender"
               value={gender}
               onChange={(e) => setGender(e.target.value)}
-              className="p-1 border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="p-2 border border-[#BBB5B5] rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             >
               <option value="" hidden>
-                --Select one--
+                --Select One--
               </option>
               <option value="L">Laki-laki</option>
               <option value="P">Perempuan</option>
@@ -176,11 +176,11 @@ function RegisterPage() {
               id="semester"
               value={semester}
               onChange={(e) => setSemester(e.target.value)}
-              className="p-1 w- border border-gray-500 rounded text-gray-900 placeholder:text-gray-400 focus:outline"
+              className="p-2 w- border border-[#BBB5B5] rounded-lg text-gray-900 placeholder:text-gray-400 focus:outline"
               required
             >
               <option value="" hidden>
-                --Select one--
+                --Select One--
               </option>
               {Array.from({ length: 8 }, (_, i) => (
                 <option value={i + 1} key={i + 1}>
@@ -205,12 +205,14 @@ function RegisterPage() {
               required
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white mt-12 p-2 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"
-          >
-            Submit
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="w-1/2 bg-blue-500 cursor-pointer text-white mt-12 p-2 rounded-md duration-300 hover:bg-blue-600 hover:duration-300"
+            >
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </div>
