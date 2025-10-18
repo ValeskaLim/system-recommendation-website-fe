@@ -36,7 +36,7 @@ const NonEditProfile = ({ users, setIsEdit }) => {
     fetchSkillsets();
   }, []);
   return (
-    <div className="mx-50">
+    <div className="mx-50 bg-white rounded-2xl shadow-xl p-5">
       <h1 className="font-bold text-4xl">
         {users?.fullname}'s <span className="font-normal">Profile</span>
       </h1>

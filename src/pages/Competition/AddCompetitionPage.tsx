@@ -104,9 +104,9 @@ const AddCompetitionPage = () => {
 
   return (
     <div className="main-container">
-      <div className="main-col-container">
+      <div className="main-col-container bg-white p-10 rounded-2xl shadow-md">
         <div className="flex w-fit mb-5">
-          <h1 className="text-3xl">Add Competition Data</h1>
+          <h1 className="text-4xl">Add Competition Data</h1>
         </div>
         <form method="POST" onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col">
@@ -117,7 +117,7 @@ const AddCompetitionPage = () => {
               placeholder="Input competition title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             />
           </div>
@@ -129,7 +129,7 @@ const AddCompetitionPage = () => {
               placeholder="Input competition title"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             />
           </div>
@@ -140,7 +140,7 @@ const AddCompetitionPage = () => {
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             >
               <option value="" hidden>
@@ -157,7 +157,7 @@ const AddCompetitionPage = () => {
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             >
               <option value="" hidden>
@@ -178,7 +178,7 @@ const AddCompetitionPage = () => {
                 placeholder="Input original URL"
                 value={originalUrl}
                 onChange={(e) => setOriginalUrl(e.target.value)}
-                className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+                className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               />
             </div>
           <div className="flex flex-col">
@@ -194,7 +194,7 @@ const AddCompetitionPage = () => {
                 setMinMember(isNaN(value) ? undefined : value);
               }}
               required
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
             />
           </div>
           <div className="flex flex-col">
@@ -210,7 +210,7 @@ const AddCompetitionPage = () => {
                 setMaxMember(isNaN(value) ? undefined : value);
               }}
               required
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
             />
           </div>
           <div className="flex flex-col">
@@ -222,7 +222,7 @@ const AddCompetitionPage = () => {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full h-[150px]"
               required
             ></textarea>
           </div>
@@ -237,7 +237,7 @@ const AddCompetitionPage = () => {
                 setPoster(e.target.files ? e.target.files[0] : null)
               }
               required
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
             />
           </div>
           <div className="flex gap-2">

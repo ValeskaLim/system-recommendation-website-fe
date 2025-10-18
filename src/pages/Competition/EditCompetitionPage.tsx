@@ -155,9 +155,9 @@ const EditCompetitionPage = () => {
 
   return (
     <div className="main-container">
-      <div className="main-col-container">
+      <div className="main-col-container bg-white p-10 rounded-2xl shadow-md">
         <div className="flex w-fit mb-5">
-          <h1 className="text-3xl w-full">Edit Competition Data</h1>
+          <h1 className="text-4xl w-full">Edit Competition Data</h1>
         </div>
         <form method="POST" onSubmit={handleSubmit} className="space-y-4">
           <div className="w-full h-fit overflow-hidden rounded-t-lg">
@@ -175,7 +175,7 @@ const EditCompetitionPage = () => {
               placeholder="Input competition title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             />
           </div>
@@ -187,7 +187,7 @@ const EditCompetitionPage = () => {
               placeholder="Input competition title"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             />
           </div>
@@ -198,7 +198,7 @@ const EditCompetitionPage = () => {
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             >
               <option value="" hidden>
@@ -215,7 +215,7 @@ const EditCompetitionPage = () => {
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
               required
             >
               <option value="" hidden>
@@ -238,7 +238,7 @@ const EditCompetitionPage = () => {
               placeholder="Input original URL"
               value={originalUrl}
               onChange={(e) => setOriginalUrl(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
             />
           </div>
           <div className="flex flex-col">
@@ -254,7 +254,7 @@ const EditCompetitionPage = () => {
                 setMinMember(isNaN(value) ? undefined : value);
               }}
               required
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
             />
           </div>
           <div className="flex flex-col">
@@ -270,7 +270,7 @@ const EditCompetitionPage = () => {
                 setMaxMember(isNaN(value) ? undefined : value);
               }}
               required
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
             />
           </div>
           <div className="flex flex-col">
@@ -282,7 +282,7 @@ const EditCompetitionPage = () => {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full h-[150px]"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full h-[150px]"
               required
             ></textarea>
           </div>
@@ -296,7 +296,7 @@ const EditCompetitionPage = () => {
               onChange={(e) =>
                 setNewPoster(e.target.files ? e.target.files[0] : null)
               }
-              className="text-md mt-3 p-2 border border-[#e6e6e6] rounded-lg w-full"
+              className="text-md mt-3 p-2 border border-[#BBB5B5] rounded-lg w-full"
             />
           </div>
           <div className="flex gap-2">

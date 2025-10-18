@@ -31,8 +31,8 @@ const VerifyPage = () => {
           error.response?.data?.message || "Email verification failed";
         setErrorMsg(errorMessage);
         if (
-          errorMessage !== "Invalid token" &&
-          errorMessage !== "Token expired"
+          errorMessage === "Invalid token" ||
+          errorMessage === "Token expired and has been invalidated"
         ) {
           errorToast(errorMessage);
         }
@@ -53,11 +53,11 @@ const VerifyPage = () => {
         </div>
       )}
 
-      {errorMsg === "Token expired" && (
+      {errorMsg === "Token expired and has been invalidated" && (
         <div className="w-full min-h-screen flex justify-center items-center flex-col">
-          <h1 className="text-2lg font-bold">{errorMsg}</h1>
+          <h1 className="text-2xl font-bold">Token expired</h1>
           <p className="text-lg mt-4">
-            Token has expired. Please request a new verification email.
+            Token has expired. Please register again to receive a new verification link.
           </p>
         </div>
       )}

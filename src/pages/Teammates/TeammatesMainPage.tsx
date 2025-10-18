@@ -462,7 +462,7 @@ const TeammatesMainPage = () => {
                   <h3 className="text-xl">
                     You don't have team yet, want to create one?
                   </h3>
-                  <div className="flex flex-col bg-gray-100 shadow-md p-3 mt-5 rounded-lg gap-3">
+                  <div className="flex flex-col bg-[#f0efef] shadow-md p-3 mt-5 rounded-lg gap-3">
                     <div className="flex justify-between items-center">
                       <p>Team Name:</p>
                       <input
@@ -498,6 +498,7 @@ const TeammatesMainPage = () => {
                     <p className="font-semibold text-2xl">{request.fullname}</p>
                     <p>{request.email}</p>
                     <p>Semester: {request.semester}</p>
+                    <a href={request.portfolio} className="text-blue-500 hover:underline hover:text-blue-600">{request.portfolio}</a>
                     <div className="mt-5 w-fit gap-2 flex">
                       {getFieldLabels(request.field_of_preference).map(
                         (label, idx) => (

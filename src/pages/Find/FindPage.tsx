@@ -351,7 +351,7 @@ const FindPage = () => {
               ref={buttonRef}
               type="button"
               onClick={toggleFilterDropdown}
-              className="h-full cursor-pointer flex group text-lg items-center w-fit text-blue-500 py-2 px-4 rounded-md duration-300 font-semibold border-2 border-blue-500 hover:bg-white hover:font-bold disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-full bg-white shadow-lg cursor-pointer flex group text-lg items-center w-fit text-blue-500 py-2 px-4 rounded-md duration-300 font-semibold border-2 border-blue-500 hover:bg-white hover:font-bold disabled:cursor-not-allowed disabled:opacity-50"
               disabled={
                 memberLength === maxMember || !isJoinCompetition || !isLeader
               }
@@ -408,16 +408,14 @@ const FindPage = () => {
                     className="flex flex-col justify-between p-3 rounded-2xl bg-neutral-100 shadow-lg mt-10"
                   >
                     <div>
+                      <p className="text-3xl font-semibold">{user.username}</p>
+                      <p className="text-lg mb-5">{user.fullname}</p>
                       <div className="flex gap-3 justify-between">
                         <div className="">
-                          <p>Fullname</p>
-                          <p>Username</p>
                           <p>Semester</p>
                           <p>Portfolio</p>
                         </div>
                         <div className="w-full">
-                          <p>: {user.fullname}</p>
-                          <p>: {user.username}</p>
                           <p>: {user.semester}</p>
                           <a
                             href={user.portfolio}
@@ -511,7 +509,7 @@ const FindPage = () => {
               {inviteesUser.map((user: any, idx) => (
                 <li
                   key={idx}
-                  className="flex flex-col border p-3 rounded-xl shadow-sm h-full"
+                  className="flex flex-col border border-[#BBB5B5] p-5 rounded-xl shadow-sm h-full bg-white"
                 >
                   <div className="flex justify-between w-full">
                     <div className="w-full mr-5">

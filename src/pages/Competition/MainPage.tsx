@@ -178,7 +178,7 @@ const MainPage = () => {
                   <div>
                     <li
                       key={idx}
-                      className="border rounded-xl shadow-sm h-full flex flex-col"
+                      className="border border-[#BBB5B5] bg-white rounded-xl shadow-sm h-full flex flex-col"
                     >
                       <img
                         src={`${CommonConstant.ImageSource}${comp.poster}`}

@@ -61,7 +61,7 @@ const FinalizedMainPage = () => {
               {transactions.map((transaction: any) => (
                 <div
                   key={transaction.proof_transaction_id}
-                  className="border rounded-2xl p-4 shadow-md mb-4 w-full"
+                  className="border border-[#e6e6e6] rounded-2xl p-4 shadow-md mb-4 w-full bg-white"
                 >
                   <h2 className="mb-1 text-2xl">
                     <span className="font-semibold">

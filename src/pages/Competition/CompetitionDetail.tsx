@@ -140,7 +140,7 @@ const CompetitionDetail = () => {
 
   return (
     <div className="main-container">
-      <div className="main-col-container">
+      <div className="main-col-container bg-white p-7 rounded-2xl shadow-md">
         <h1 className="text-4xl mb-4 font-semibold">{competition.title}</h1>
         <div className="w-full h-fit">
           <img
@@ -229,7 +229,7 @@ const CompetitionDetail = () => {
               <p className="text-lg">No participants yet.</p>
             ) : (
               participants.map((participant) => (
-                <div key={participant.id} className="border p-4 rounded-lg">
+                <div key={participant.id} className="border border-[#BBB5B5] p-4 rounded-lg">
                   <h3 className="font-semibold text-2xl">
                     {participant.team_name}
                   </h3>
@@ -241,7 +241,7 @@ const CompetitionDetail = () => {
                     ))}
                   </div>
                   <p className="font-bold mt-10 text-lg">Notes for candidate</p>
-                  <div className="mt-3 bg-slate-200 p-3 rounded-xl">
+                  <div className="mt-3 bg-[#f0f0f0] p-3 rounded-xl">
                     <p className="whitespace-pre-wrap font-semibold">
                       {participant.notes || "-"}
                     </p>
