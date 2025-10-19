@@ -51,6 +51,7 @@ const EDIT_TEAM = 'api/team/edit-team';
 const GET_ALL_CATEGORIES = 'api/competition/get-all-categories';
 const GET_ALL_TRANSACTIONS = 'api/proof-transaction/get-all-transactions';
 const FINALIZATION_FILE_SOURCE = 'uploads/finalizations';
+const GET_PROOF_TRANSACTION = 'api/proof-transaction/get-proof-transaction';
 
 // NAVIGATION CONSTANT
 const Login = BASE + '/' + LOGIN;
@@ -103,6 +104,7 @@ const GetAllCategories = BASE + '/' + GET_ALL_CATEGORIES;
 const GetAllTransactions = BASE + '/' + GET_ALL_TRANSACTIONS;
 const ImageProofSource = BASE + '/' + IMAGE_PROOF_SOURCE;
 const FinalizationFileSource = BASE_APPROVAL + '/' + FINALIZATION_FILE_SOURCE;
+const GetProofTransaction = BASE + '/' + GET_PROOF_TRANSACTION;
 
 const CommonConstant = {
     Login,
@@ -154,7 +156,8 @@ const CommonConstant = {
     GetAllCategories,
     GetAllTransactions,
     ImageProofSource,
-    FinalizationFileSource
+    FinalizationFileSource,
+    GetProofTransaction
 };
 
 export default CommonConstant;

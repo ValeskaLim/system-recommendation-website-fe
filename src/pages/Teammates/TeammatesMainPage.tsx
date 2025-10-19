@@ -27,6 +27,10 @@ const TeammatesMainPage = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [showFinalizeModal, setShowFinalizeModal] = useState(false);
   const [proofImage, setProofImage] = useState<File | null>(null);
+  const [proofTransaction, setProofTransaction] = useState<any | null>(null);
+  const [selectedText, setSelectedText] = useState<string | null>(null);
+  const [isTextLoading, setIsTextLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { errorToast, successToast, warningToast } = useToast();
   const { users } = useAuth();
@@ -96,6 +100,7 @@ const TeammatesMainPage = () => {
           setNotes(result_teammates.notes || null);
 
           await fetchListPendingRequest(result_teammates.team_id);
+          await fetchProofTransactions(result_teammates.team_id);
         }
       } catch (error) {
         console.log(error);
@@ -139,6 +144,19 @@ const TeammatesMainPage = () => {
         console.log(error);
         const errorMessage = error?.response?.data?.message;
         errorToast(errorMessage);
+      }
+    };
+
+    const fetchProofTransactions = async (teamId: number) => {
+      try {
+        const response = await axios.post(CommonConstant.GetProofTransaction, {
+          team_id: teamId,
+        });
+        if (response.data.success) {
+          setProofTransaction(response.data.data || null);
+        }
+      } catch (error: any) {
+        console.log(error);
       }
     };
 
@@ -269,11 +287,30 @@ const TeammatesMainPage = () => {
         successToast(response.data.message);
         setIsTeamFinalized(true);
         setShowFinalizeModal(false);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         errorToast(response.data.message);
       }
     } catch (error: any) {
       errorToast(error.response?.data?.message || "Failed to finalize");
+    }
+  };
+
+  const handleTextClick = async (filename: string) => {
+    try {
+      setIsTextLoading(true);
+      const response = await axios.get(
+        `${CommonConstant.FinalizationFileSource}/${filename}`,
+        { responseType: "text" }
+      );
+      setSelectedText(response.data);
+    } catch (error: any) {
+      console.error(error);
+      errorToast("Failed to load transaction details file");
+    } finally {
+      setIsTextLoading(false);
     }
   };
 
@@ -291,22 +328,24 @@ const TeammatesMainPage = () => {
                       <span className="font-semibold">{teamName}</span>
                     </h2>
                   </div>
-                  <div>
-                    {isLeader && (
+                  <div className="flex gap-3">
+                    {isTeamFinalized ? (
                       <>
-                        {isTeamFinalized ? (
-                          <GreenButton
-                            label="Team Finalized!"
-                            extendedClassName="disabled:hover:bg-green-500"
-                            disabled
-                          />
-                        ) : (
-                          <BlueButton
-                            label="Finalize Team"
-                            onClick={() => setShowFinalizeModal(true)}
-                          />
-                        )}
+                        <BlueButton label="View Proof Image" onClick={() => setSelectedImage(`${CommonConstant.ImageProofSource}/${proofTransaction.proof_image_path}`)}/>
+                        <BlueButton label="View Transaction Details" onClick={() => handleTextClick(proofTransaction.txn_hash_path)}/>
+                        <GreenButton
+                          label="Team Finalized!"
+                          extendedClassName="disabled:hover:bg-green-500"
+                          disabled
+                        />
                       </>
+                    ) : (
+                      <BlueButton
+                        label="Finalize Team"
+                        onClick={() => setShowFinalizeModal(true)}
+                        extendedClassName="disabled:opacity-50 disabled:hover:bg-blue-500 disabled:cursor-not-allowed"
+                        disabled={!isLeader}
+                      />
                     )}
                   </div>
                 </div>
@@ -498,7 +537,12 @@ const TeammatesMainPage = () => {
                     <p className="font-semibold text-2xl">{request.fullname}</p>
                     <p>{request.email}</p>
                     <p>Semester: {request.semester}</p>
-                    <a href={request.portfolio} className="text-blue-500 hover:underline hover:text-blue-600">{request.portfolio}</a>
+                    <a
+                      href={request.portfolio}
+                      className="text-blue-500 hover:underline hover:text-blue-600"
+                    >
+                      {request.portfolio}
+                    </a>
                     <div className="mt-5 w-fit gap-2 flex">
                       {getFieldLabels(request.field_of_preference).map(
                         (label, idx) => (
@@ -558,6 +602,53 @@ const TeammatesMainPage = () => {
                 onClick={handleFinalizeWithImage}
               />
             </div>
+          </div>
+        </div>
+      )}
+
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative">
+            <img
+              src={selectedImage}
+              alt="Proof"
+              className="max-h-[80vh] max-w-[90vw] rounded-lg shadow-lg"
+            />
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-2 right-2 bg-white text-black rounded-full px-2 py-1 font-bold shadow-md hover:bg-gray-200"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+
+      {selectedText && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={() => setSelectedText(null)}
+        >
+          <div
+            className="relative bg-white text-black rounded-lg p-6 max-w-2xl max-h-[80vh] overflow-y-auto shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {isTextLoading ? (
+              <p className="text-center">Loading details...</p>
+            ) : (
+              <pre className="whitespace-pre-wrap font-mono text-sm">
+                {selectedText}
+              </pre>
+            )}
+            <button
+              onClick={() => setSelectedText(null)}
+              className="absolute top-2 right-2 bg-black text-white rounded-full px-2 py-1 font-bold shadow-md hover:bg-gray-700"
+            >
+              ✕
+            </button>
           </div>
         </div>
       )}
