@@ -27,6 +27,7 @@ const FindPage = () => {
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
   const [username, setUsername] = useState("");
   const [isLeader, setIsLeader] = useState(false);
+  const [isFinalized, setIsFinalized] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
@@ -101,6 +102,7 @@ const FindPage = () => {
         const member_length = memberIds.length;
         fetchCompetitionData(response.data.data.competition_id);
         setMemberLength(member_length);
+        setIsFinalized(response.data.data.is_finalized);
       } catch (error: any) {
         console.log(error);
         errorToast(error);
@@ -328,7 +330,7 @@ const FindPage = () => {
               placeholder="Search users by username"
               className="p-3 w-full bg-slate-50 border border-gray-300 h-full rounded-l-lg"
               disabled={
-                memberLength === maxMember || !isJoinCompetition || !isLeader
+                memberLength === maxMember || !isJoinCompetition || !isLeader || isFinalized
               }
             />
             <button
@@ -336,7 +338,7 @@ const FindPage = () => {
               className="h-full cursor-pointer flex gap-2 group text-lg items-center w-fit text-white bg-blue-500 py-2 px-4 rounded-r-lg duration-300 font-semibold 
                         hover:bg-blue-600 hover:duration-300 disabled:cursor-not-allowed disabled:bg-blue-300"
               disabled={
-                memberLength === maxMember || !isJoinCompetition || !isLeader
+                memberLength === maxMember || !isJoinCompetition || !isLeader || isFinalized
               }
               onClick={async () => {
                 await fetchAllUsers();
@@ -353,7 +355,7 @@ const FindPage = () => {
               onClick={toggleFilterDropdown}
               className="h-full bg-white shadow-lg cursor-pointer flex group text-lg items-center w-fit text-blue-500 py-2 px-4 rounded-md duration-300 font-semibold border-2 border-blue-500 hover:bg-white hover:font-bold disabled:cursor-not-allowed disabled:opacity-50"
               disabled={
-                memberLength === maxMember || !isJoinCompetition || !isLeader
+                memberLength === maxMember || !isJoinCompetition || !isLeader || isFinalized
               }
             >
               <CiFilter className="font-bold text-3xl" />
